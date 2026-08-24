@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useLenis } from 'lenis/react';
 import { fetchPortfolioData } from './api/portfolioApi';
 import { hydratePortfolioDom } from './api/hydratePortfolio';
 import defaultPortfolioHtml from './portfolio-body.html?raw';
@@ -31,24 +32,32 @@ const DEFERRED_SCRIPT_GAP_MS = 50;
 const DEFERRED_FALLBACK_DELAY_MS = 10000;
 
 function parseCurrentRoute() {
+  const pathname = window.location.pathname || '/';
   const hash = window.location.hash || '';
-  const pathname = window.location.pathname || '';
 
+  // Clean up legacy #/ hash URLs by migrating to pathname
   if (hash.startsWith('#/projects/')) {
     const slug = hash.replace('#/projects/', '').split('?')[0].split('/')[0];
-    return { name: 'project-detail', slug: decodeURIComponent(slug) };
+    const cleanSlug = decodeURIComponent(slug);
+    window.history.replaceState(null, '', `/projects/${cleanSlug}`);
+    return { name: 'project-detail', slug: cleanSlug };
   }
   if (hash.startsWith('#/blog/')) {
     const slug = hash.replace('#/blog/', '').split('?')[0].split('/')[0];
-    return { name: 'blog-detail', slug: decodeURIComponent(slug) };
+    const cleanSlug = decodeURIComponent(slug);
+    window.history.replaceState(null, '', `/blog/${cleanSlug}`);
+    return { name: 'blog-detail', slug: cleanSlug };
   }
   if (hash === '#/about' || hash.startsWith('#/about?')) {
+    window.history.replaceState(null, '', '/about');
     return { name: 'about' };
   }
   if (hash === '#/experience' || hash.startsWith('#/experience?')) {
+    window.history.replaceState(null, '', '/experience');
     return { name: 'experience' };
   }
 
+  // Parse clean pathnames
   if (pathname.startsWith('/projects/')) {
     const slug = pathname.replace('/projects/', '').split('?')[0].split('/')[0];
     return { name: 'project-detail', slug: decodeURIComponent(slug) };
@@ -70,94 +79,124 @@ function parseCurrentRoute() {
 function App() {
   const [route, setRoute] = useState(parseCurrentRoute);
   const markup = defaultPortfolioHtml || '';
+  const lenis = useLenis();
 
-  // Synchronize route changes on hashchange or popstate
+  // Synchronize route changes on popstate or hashchange
   useEffect(() => {
     const handleLocationChange = () => {
       setRoute(parseCurrentRoute());
     };
 
-    window.addEventListener('hashchange', handleLocationChange);
     window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
 
     return () => {
-      window.removeEventListener('hashchange', handleLocationChange);
       window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
     };
   }, []);
+
+  // Ensure scroll is immediately reset to 0,0 on EVERY route change
+  useEffect(() => {
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [route.name, route.slug, lenis]);
 
   const navigate = useCallback((targetRoute, param) => {
     if (targetRoute === 'home') {
       if (param) {
-        window.location.hash = `#${param}`;
-      } else {
-        window.history.pushState(null, '', '/');
-        window.location.hash = '';
-      }
-      setRoute({ name: 'home' });
-
-      if (param) {
+        window.history.pushState(null, '', `/#${param}`);
+        setRoute({ name: 'home' });
         setTimeout(() => {
           const el = document.getElementById(param);
           if (el) {
-            el.scrollIntoView({ behavior: 'smooth' });
+            if (lenis) {
+              lenis.scrollTo(el, { duration: 1.2 });
+            } else {
+              el.scrollIntoView({ behavior: 'smooth' });
+            }
           }
         }, 80);
+      } else {
+        window.history.pushState(null, '', '/');
+        setRoute({ name: 'home' });
+        if (lenis) lenis.scrollTo(0, { immediate: true });
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       }
     } else if (targetRoute === 'about') {
-      window.location.hash = '#/about';
+      window.history.pushState(null, '', '/about');
       setRoute({ name: 'about' });
     } else if (targetRoute === 'experience') {
-      window.location.hash = '#/experience';
+      window.history.pushState(null, '', '/experience');
       setRoute({ name: 'experience' });
     } else if (targetRoute === 'project-detail') {
       const slug = encodeURIComponent((param || 'cardflow').toLowerCase().replace(/[^a-z0-9]/g, ''));
-      window.location.hash = `#/projects/${slug}`;
+      window.history.pushState(null, '', `/projects/${slug}`);
       setRoute({ name: 'project-detail', slug });
     } else if (targetRoute === 'blog-detail') {
       const slug = param || 'understanding-microservices-architecture';
-      window.location.hash = `#/blog/${slug}`;
+      window.history.pushState(null, '', `/blog/${slug}`);
       setRoute({ name: 'blog-detail', slug });
     }
-  }, []);
+  }, [lenis]);
 
   // Intercept click on links requesting dedicated routes
   useEffect(() => {
     const handleClick = (e) => {
       // 1. Project detail links
-      const projectLink = e.target.closest('.project-page-link, [data-project-slug]');
+      const projectLink = e.target.closest('.project-page-link, [data-project-slug], a[href^="/projects/"], a[href^="#/projects/"]');
       if (projectLink) {
         e.preventDefault();
-        const slug = projectLink.dataset.projectSlug || projectLink.getAttribute('href')?.replace('#/projects/', '');
-        navigate('project-detail', slug);
+        const rawHref = projectLink.getAttribute('href') || '';
+        const slug = projectLink.dataset.projectSlug || rawHref.replace('/projects/', '').replace('#/projects/', '').split('?')[0].split('#')[0];
+        if (slug) navigate('project-detail', slug);
         return;
       }
 
       // 2. Blog detail links
-      const blogCard = e.target.closest('.blog-card, [data-blog-slug], a[href^="#/blog/"]');
+      const blogCard = e.target.closest('.blog-card, [data-blog-slug], a[href^="/blog/"], a[href^="#/blog/"]');
       if (blogCard) {
         e.preventDefault();
-        const slug = blogCard.dataset.blogSlug || blogCard.getAttribute('href')?.replace('#/blog/', '');
-        navigate('blog-detail', slug);
+        const rawHref = blogCard.getAttribute('href') || '';
+        const slug = blogCard.dataset.blogSlug || rawHref.replace('/blog/', '').replace('#/blog/', '').split('?')[0].split('#')[0];
+        if (slug) navigate('blog-detail', slug);
         return;
       }
 
       // 3. About page links
-      const aboutLink = e.target.closest('[data-route="about"], a[href="#/about"]');
+      const aboutLink = e.target.closest('[data-route="about"], a[href="/about"], a[href="#/about"]');
       if (aboutLink) {
         e.preventDefault();
         navigate('about');
         return;
       }
 
-      // 4. Experience links — scroll to section on home page
-      const expLink = e.target.closest('[data-route="experience"], a[href="#/experience"]');
+      // 4. Experience links
+      const expLink = e.target.closest('[data-route="experience"], a[href="/experience"], a[href="#/experience"]');
       if (expLink) {
         e.preventDefault();
         navigate('experience');
+        return;
       }
 
-      // 5. Wire SFX click for React-page buttons (sounds.js only loads on home)
+      // 5. In-page anchor links when on a subpage
+      const anchorLink = e.target.closest('a[href^="#"]');
+      if (anchorLink) {
+        const hashTarget = anchorLink.getAttribute('href').replace('#', '');
+        if (hashTarget && hashTarget !== '/' && !hashTarget.startsWith('/')) {
+          if (route.name !== 'home') {
+            e.preventDefault();
+            navigate('home', hashTarget);
+            return;
+          }
+        }
+      }
+
+      // 6. Wire SFX click for React-page buttons (sounds.js only loads on home)
       const sfxTarget = e.target.closest('.btn, .nav-link, .mobile-nav-link, .doc-ctrl-btn, .blog-sb-link, .blog-sb-share-btn');
       if (sfxTarget && window._SoundEngine) {
         window._SoundEngine.initAudio();
@@ -169,7 +208,7 @@ function App() {
     return () => {
       document.removeEventListener('click', handleClick);
     };
-  }, [navigate]);
+  }, [navigate, route.name]);
 
   // Load and hydrate legacy scripts on Home view
   useEffect(() => {

@@ -825,11 +825,11 @@ function updateProjects(projects = []) {
       const hasGithub = project.has_github ?? (Boolean(githubLink) && !githubLink.includes('#') && githubLink !== 'https://github.com/logicbyroshan');
       const secondaryBtn = project.secondary_btn || (hasGithub ? '' : 'Live Preview');
 
-      let buttonsHtml = `<a href="#/projects/${projectSlug}" class="btn btn-primary project-btn project-page-link" data-project-slug="${projectSlug}">Case Study</a>`;
+      let buttonsHtml = `<a href="/projects/${projectSlug}" class="btn btn-primary project-btn project-page-link" data-project-slug="${projectSlug}">Case Study</a>`;
       if (hasGithub) {
         buttonsHtml += `<a href="${escapeHtml(githubLink)}" class="github-btn" target="_blank" rel="noopener noreferrer" aria-label="Open project repository"><i class="fab fa-github"></i></a>`;
       } else if (secondaryBtn === 'Technical Overview') {
-        buttonsHtml += `<a href="#/projects/${projectSlug}" class="btn btn-secondary project-page-link" data-project-slug="${projectSlug}">Technical Overview</a>`;
+        buttonsHtml += `<a href="/projects/${projectSlug}" class="btn btn-secondary project-page-link" data-project-slug="${projectSlug}">Technical Overview</a>`;
       } else if (secondaryBtn === 'Live Preview') {
         buttonsHtml += `<a href="https://logicbyroshan.in/#projects" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Live Preview</a>`;
       }

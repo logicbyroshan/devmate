@@ -100,14 +100,18 @@
 
 .roadmap-card {
     background: linear-gradient(180deg, var(--card-gradient-start) 0%, var(--card-gradient-end) 100%);
-    border: none;
+    border: 1px solid rgba(124, 58, 237, 0.25);
     border-radius: 16px;
-    padding: 20px;
+    padding: 24px 22px 20px;
     position: relative;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
     min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
 }
 
 .roadmap-left .roadmap-card::after {
@@ -181,56 +185,43 @@
 .roadmap-title {
     font-family: var(--font-heading);
     font-size: 20px;
-    color: var(--text-color);
-    margin-top: 8px;
-    margin-bottom: 8px;
-    font-weight: 400;
-    position: relative;
-    display: inline-block;
-}
-
-.roadmap-title::after {
-    content: '';
-    position: absolute;
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, #7c3aed 0%, transparent 100%);
-    bottom: -8px;
-    left: 0;
-}
-
-.roadmap-right .roadmap-title::after {
-    left: 0;
-}
-
-.roadmap-left .roadmap-title::after {
-    left: 0;
+    color: #ffffff;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    line-height: 1.3;
+    display: block;
+    width: 100%;
 }
 
 .roadmap-company {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
     color: #38bdf8;
-    font-size: 14px;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 13px;
     font-weight: 500;
     font-family: var(--font-body);
-    margin-top: 6px;
-    margin-bottom: 4px;
+    margin-top: 4px;
+    margin-bottom: 12px;
 }
 
 .roadmap-company i {
-    font-size: 12px;
-    color: #a78bfa;
+    font-size: 13px;
+    color: #38bdf8;
 }
 
 .roadmap-description {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 15px;
-    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    line-height: 1.6;
     font-family: var(--font-body);
-    font-weight: 300;
-    margin-top: 8px;
+    font-weight: 400;
+    margin-top: 4px;
 }
 
 .roadmap-btn {

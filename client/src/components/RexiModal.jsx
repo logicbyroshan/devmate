@@ -50,7 +50,7 @@ export default function RexiModal() {
             <a href="mailto:mail@logicbyroshan.in" className="btn btn-primary modal-btn">
               <i className="fas fa-download"></i> Request PDF
             </a>
-            <a href="#/about" className="btn btn-secondary modal-btn" data-route="about">
+            <a href="/about" className="btn btn-secondary modal-btn" data-route="about">
               <i className="fas fa-eye"></i> Full Profile
             </a>
           </div>

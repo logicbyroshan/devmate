@@ -59,7 +59,7 @@ export default function SiteFooter({ onNavigate }) {
                 <a href="#home" onClick={(e) => handleNav(e, 'home', 'home')}>Home</a>
               </li>
               <li>
-                <a href="#/about" onClick={(e) => handleNav(e, 'about')}>About</a>
+                <a href="/about" onClick={(e) => handleNav(e, 'about')}>About</a>
               </li>
               <li>
                 <a href="#skills" onClick={(e) => handleNav(e, 'home', 'skills')}>Skills</a>
@@ -68,7 +68,7 @@ export default function SiteFooter({ onNavigate }) {
                 <a href="#projects" onClick={(e) => handleNav(e, 'home', 'projects')}>Projects</a>
               </li>
               <li>
-                <a href="#/experience" onClick={(e) => handleNav(e, 'experience')}>Experience</a>
+                <a href="/experience" onClick={(e) => handleNav(e, 'experience')}>Experience</a>
               </li>
               <li>
                 <a href="#contact" onClick={(e) => handleNav(e, 'home', 'contact')}>Contact Me</a>

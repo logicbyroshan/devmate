@@ -392,7 +392,7 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
         {/* Project Discovery Navigator (Prev / Next) */}
         <div className="project-pagination-grid" style={{ marginTop: '40px' }}>
           <a
-            href={`#/projects/${getSlugOf(prevProject)}`}
+            href={`/projects/${getSlugOf(prevProject)}`}
             className="project-nav-card prev"
             onClick={(e) => {
               e.preventDefault();
@@ -407,7 +407,7 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
           </a>
 
           <a
-            href={`#/projects/${getSlugOf(nextProject)}`}
+            href={`/projects/${getSlugOf(nextProject)}`}
             className="project-nav-card next"
             onClick={(e) => {
               e.preventDefault();

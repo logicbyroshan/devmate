@@ -61,7 +61,7 @@ export default function AppNavbar({ currentRoute, onNavigate }) {
               Experience
             </a>
             <a
-              href="#/about"
+              href="/about"
               className="nav-link"
               onClick={(e) => handleNav(e, 'about')}
             >
@@ -173,7 +173,7 @@ export default function AppNavbar({ currentRoute, onNavigate }) {
               Experience
             </a>
             <a
-              href="#/about"
+              href="/about"
               className="mobile-nav-link"
               onClick={(e) => handleNav(e, 'about')}
             >
