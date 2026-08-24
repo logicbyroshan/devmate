@@ -5,6 +5,7 @@ high performance, and strict security.
 """
 
 from django.db import connection
+from django.middleware.csrf import get_token
 from django.utils import timezone
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
@@ -278,6 +279,17 @@ def portfolio_bootstrap(request):
             ).data,
         }
     )
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def get_csrf_token(request):
+    """
+    Returns CSRF cookie and token for frontend state synchronization.
+    GET /api/v1/auth/csrf/ or /api/v1/csrf/
+    """
+    token = get_token(request)
+    return Response({"csrftoken": token, "status": "ok"})
 
 
 @api_view(["GET"])

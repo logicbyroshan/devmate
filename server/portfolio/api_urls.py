@@ -26,6 +26,8 @@ urlpatterns = [
     path('health/', api_views.api_health_check, name='api-health'),
     path('contact/', api_views.create_contact_message, name='api-contact-create'),
     path('rexi/chat/', api_views.rexi_chat_api, name='api-rexi-chat'),
+    path('csrf/', api_views.get_csrf_token, name='api-csrf'),
+    path('auth/csrf/', api_views.get_csrf_token, name='api-auth-csrf'),
 
     # Interaction Endpoints
     path('projects/<slug:slug>/like/', api_views.project_like, name='api-project-like'),
