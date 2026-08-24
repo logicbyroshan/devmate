@@ -293,7 +293,7 @@
             const startTime = Date.now();
 
             try {
-                const apiBase = window.PORTFOLIO_CONFIG?.API_BASE_URL || 'http://127.0.0.1:8000/api';
+                const apiBase = window.PORTFOLIO_CONFIG?.API_BASE_URL || '/api';
                 const response = await fetch(`${apiBase}/rexi/chat/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

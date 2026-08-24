@@ -3,7 +3,6 @@ Allow: /
 Disallow: /api/
 Allow: /api/bootstrap/
 Disallow: /admin/
-Disallow: /portfolio-body.html
 
 User-agent: GPTBot
 Allow: /

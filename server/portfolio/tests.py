@@ -18,6 +18,8 @@ from .models import (
 )
 from .views import generate_unique_slug
 
+User = get_user_model()
+
 
 @override_settings(API_KEY="", SECURE_SSL_REDIRECT=False)
 class ProjectApiVisibilityTests(TestCase):
@@ -760,3 +762,133 @@ class ServiceLayerAndV1ApiTests(TestCase):
 		resp_skill = self.client.post("/api/v1/rexi/chat/", {"message": "What is Roshan's tech stack?"})
 		self.assertEqual(resp_skill.status_code, 200)
 		self.assertIn("Roshan", resp_skill.json()["reply"])
+
+
+@override_settings(API_KEY="prod-secret-key", SECURE_SSL_REDIRECT=False)
+class ProductionSecurityHardeningTests(TestCase):
+	def setUp(self):
+		category = Category.objects.create(
+			name="Security Cat",
+			slug="sec-cat",
+			category_type="project",
+		)
+		Project.objects.create(
+			title="Sec Project",
+			slug="sec-project",
+			description="Sec desc",
+			category=category,
+			status="active",
+			is_active=True,
+		)
+
+	@override_settings(DEBUG=False)
+	def test_api_key_cannot_be_bypassed_by_localhost_in_production(self):
+		"""When DEBUG=False, localhost request without X-API-Key MUST be rejected."""
+		response = self.client.get(
+			reverse("api-projects-list"),
+			HTTP_HOST="localhost",
+		)
+		self.assertIn(response.status_code, {401, 403})
+
+	@override_settings(DEBUG=True)
+	def test_api_key_can_be_bypassed_by_localhost_in_debug_only(self):
+		"""When DEBUG=True, localhost request without X-API-Key is permitted for dev."""
+		response = self.client.get(
+			reverse("api-projects-list"),
+			HTTP_HOST="localhost",
+		)
+		self.assertEqual(response.status_code, 200)
+
+
+@override_settings(API_KEY="", SECURE_SSL_REDIRECT=False)
+class ManageDetailsValidationTests(TestCase):
+	def setUp(self):
+		self.user = User.objects.create_superuser(
+			username="detailadmin",
+			email="admin@example.com",
+			password="strongpassword123",
+		)
+		self.client.force_login(self.user)
+
+	def test_personal_info_valid(self):
+		resp = self.client.post(
+			reverse("manage_details"),
+			{
+				"form_type": "personal_info",
+				"full_name": "Roshan Damor",
+				"email": "roshan@example.com",
+				"title": "Software Engineer",
+				"bio": "Building reliable systems.",
+			},
+			HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+		)
+		self.assertEqual(resp.status_code, 200)
+		self.assertTrue(resp.json()["success"])
+
+	def test_personal_info_invalid_email_rejected(self):
+		resp = self.client.post(
+			reverse("manage_details"),
+			{
+				"form_type": "personal_info",
+				"full_name": "Roshan Damor",
+				"email": "not-a-valid-email",
+				"title": "Software Engineer",
+			},
+			HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+		)
+		self.assertEqual(resp.status_code, 400)
+		self.assertFalse(resp.json()["success"])
+
+	def test_personal_info_short_name_rejected(self):
+		resp = self.client.post(
+			reverse("manage_details"),
+			{
+				"form_type": "personal_info",
+				"full_name": "R",
+				"email": "valid@example.com",
+				"title": "Software Engineer",
+			},
+			HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+		)
+		self.assertEqual(resp.status_code, 400)
+		self.assertFalse(resp.json()["success"])
+
+	def test_preferences_invalid_numbers_handled_gracefully(self):
+		resp = self.client.post(
+			reverse("manage_details"),
+			{
+				"form_type": "preferences",
+				"status": "available",
+				"work_type": "remote",
+				"hourly_rate": "invalid-rate-string",
+				"experience_years": "not-an-int",
+			},
+			HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+		)
+		self.assertEqual(resp.status_code, 200)
+		profile = UserProfile.objects.get(id=1)
+		self.assertIsNone(profile.hourly_rate)
+		self.assertEqual(profile.experience_years, 0)
+
+	def test_profile_image_invalid_extension_rejected(self):
+		from django.core.files.uploadedfile import SimpleUploadedFile
+		fake_exe = SimpleUploadedFile("malicious.exe", b"binary content", content_type="application/octet-stream")
+		resp = self.client.post(
+			reverse("manage_details"),
+			{"form_type": "profile_image", "profile_image": fake_exe},
+			HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+		)
+		self.assertEqual(resp.status_code, 400)
+		self.assertIn("Invalid image format", resp.json()["message"])
+
+	def test_resume_upload_invalid_extension_rejected(self):
+		from django.core.files.uploadedfile import SimpleUploadedFile
+		fake_script = SimpleUploadedFile("bad_script.py", b"print('hack')", content_type="text/x-python")
+		resp = self.client.post(
+			reverse("manage_details"),
+			{"form_type": "upload_resume", "resume": fake_script},
+			HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+		)
+		self.assertEqual(resp.status_code, 400)
+		self.assertIn("Invalid document format", resp.json()["message"])
+

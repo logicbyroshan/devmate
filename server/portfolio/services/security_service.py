@@ -57,7 +57,7 @@ class SecurityService:
         if not configured_key:
             return True
 
-        if SecurityService.is_localhost_request(request):
+        if getattr(settings, 'DEBUG', False) and SecurityService.is_localhost_request(request):
             return True
 
         api_key = (request.headers.get('X-API-Key') or '').strip()

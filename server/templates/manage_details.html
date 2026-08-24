@@ -67,7 +67,7 @@
             {% if profile.profile_image %}
                 <img src="{{ profile.profile_image.url }}" alt="Profile Picture" id="profile-preview">
             {% else %}
-                <img src="https://via.placeholder.com/200" alt="Profile Picture" id="profile-preview">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%231e293b'/%3E%3Cpath d='M100 90a30 30 0 100-60 30 30 0 000 60zm0 15c-35 0-65 20-65 45v10h130v-10c0-25-30-45-65-45z' fill='%2364748b'/%3E%3C/svg%3E" alt="Profile Picture" id="profile-preview">
             {% endif %}
         </div>
         <div class="upload-controls">
