@@ -60,6 +60,13 @@ export default function AppNavbar({ currentRoute, onNavigate }) {
             >
               Experience
             </a>
+            <a
+              href="#/about"
+              className="nav-link"
+              onClick={(e) => handleNav(e, 'about')}
+            >
+              About
+            </a>
           </nav>
 
           <a

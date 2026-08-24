@@ -36,13 +36,14 @@
                 <a href="#skills" class="nav-link">Skills</a>
                 <a href="#projects" class="nav-link">Projects</a>
                 <a href="#experience" class="nav-link">Experience</a>
+                <a href="#/about" class="nav-link" data-route="about">About</a>
             </nav>
             <a href="#home" class="brand">
                 <img src="/static/images/logo.webp" alt="Roshan Damor Logo" class="logo-image" width="135" height="34" decoding="async">
             </a>
             <div class="nav-actions">
-                <a href="#/about" class="btn btn-secondary btn-nav" data-route="about">About</a>
-                <button type="button" class="btn btn-primary" data-modal="modal-rexi">Ask Rexi</button>
+                <button type="button" class="btn btn-secondary btn-nav" data-modal="modal-resume">Resume</button>
+                <button type="button" class="btn btn-primary" data-modal="modal-video-resume">Video Resume</button>
             </div>
         </div>
     </div>
@@ -58,8 +59,8 @@
             <a href="#home" class="brand">
                 <img src="/static/images/logo.webp" alt="Roshan Damor Logo" class="logo-image" width="135" height="34" decoding="async">
             </a>
-            <button type="button" class="btn btn-primary mobile-resume-btn" data-modal="modal-rexi" aria-label="Ask Rexi">
-                <i class="fas fa-dragon"></i>
+            <button type="button" class="btn btn-primary mobile-resume-btn" data-modal="modal-resume" aria-label="Resume">
+                <i class="fas fa-file-alt"></i>
             </button>
         </div>
         
@@ -71,8 +72,9 @@
                 <a href="#experience" class="mobile-nav-link">Experience</a>
                 <a href="#/about" class="mobile-nav-link" data-route="about">About</a>
             </nav>
-            <div class="mobile-nav-actions">
-                <button type="button" class="btn btn-primary" data-modal="modal-rexi">Ask Rexi</button>
+            <div class="mobile-nav-actions" style="display: flex; gap: 10px; padding: 0 30px;">
+                <button type="button" class="btn btn-secondary btn-nav" style="flex: 1;" data-modal="modal-resume">Resume</button>
+                <button type="button" class="btn btn-primary" style="flex: 1;" data-modal="modal-video-resume">Video Resume</button>
             </div>
         </div>
         
@@ -93,13 +95,13 @@
                     <h1 class="hero-heading">Roshan Damor<br><span class="text-gradient">Software Engineer</span></h1>
                     <p class="hero-description">I build production software and AI-powered applications, from backend systems and SaaS platforms to LLM-powered workflows and intelligent developer tools.</p>
                     <div class="hero-btn-group">
-                        <button type="button" class="btn btn-primary" data-modal="modal-resume">
-                            <i class="fas fa-user-circle"></i>
-                            <span>About Me</span>
-                        </button>
+                        <a href="#projects" class="btn btn-primary">
+                            <i class="fas fa-th-large"></i>
+                            <span>Explore Projects</span>
+                        </a>
                         <button type="button" class="btn btn-secondary" data-modal="modal-rexi">
                             <i class="fas fa-dragon btn-icon dino-icon"></i>
-                            <span>Ask Rexi</span>
+                            <span>Ask Rexi AI</span>
                         </button>
                     </div>
                 </div>
@@ -964,10 +966,10 @@ Production Operations ◄── Cross-Platform Clients ◄── Background Proc
                     </a>
                     <p class="footer-tagline">Crafting digital experiences<br>one line of code at a time.</p>
                     <div class="footer-socials">
-                        <a href="https://github.com/" class="footer-social-btn" aria-label="GitHub" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
-                        <a href="https://linkedin.com/" class="footer-social-btn" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="https://x.com/" class="footer-social-btn" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
-                        <a href="https://leetcode.com/" class="footer-social-btn" aria-label="LeetCode" target="_blank" rel="noopener noreferrer"><i class="fas fa-code"></i></a>
+                        <a href="https://github.com/logicbyroshan" class="footer-social-btn" aria-label="GitHub" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                        <a href="https://linkedin.com/in/logicbyroshan" class="footer-social-btn" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://x.com/logicbyroshan" class="footer-social-btn" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
+                        <a href="https://leetcode.com/logicbyroshan" class="footer-social-btn" aria-label="LeetCode" target="_blank" rel="noopener noreferrer"><i class="fas fa-code"></i></a>
                     </div>
                 </div>
 
@@ -976,10 +978,10 @@ Production Operations ◄── Cross-Platform Clients ◄── Background Proc
                     <h3 class="footer-col-title">Navigation</h3>
                     <ul class="footer-links">
                         <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About</a></li>
+                        <li><a href="#/about" data-route="about">About</a></li>
                         <li><a href="#skills">Skills</a></li>
                         <li><a href="#projects">Projects</a></li>
-                        <li><a href="#experience">Experience</a></li>
+                        <li><a href="#/experience" data-route="experience">Experience</a></li>
                         <li><a href="#contact">Contact Me</a></li>
                     </ul>
                 </div>

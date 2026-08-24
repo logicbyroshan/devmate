@@ -6,6 +6,7 @@ import defaultPortfolioHtml from './portfolio-body.html?raw';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import AboutPage from './pages/AboutPage';
 import BlogDetailPage from './pages/BlogDetailPage';
+import ExperiencePage from './pages/ExperiencePage';
 import RexiModal from './components/RexiModal';
 import AppNavbar from './components/AppNavbar';
 import SiteFooter from './components/SiteFooter';
@@ -45,8 +46,7 @@ function parseCurrentRoute() {
     return { name: 'about' };
   }
   if (hash === '#/experience' || hash.startsWith('#/experience?')) {
-    // Experience no longer has a dedicated page — home page
-    return { name: 'home' };
+    return { name: 'experience' };
   }
 
   if (pathname.startsWith('/projects/')) {
@@ -61,8 +61,7 @@ function parseCurrentRoute() {
     return { name: 'about' };
   }
   if (pathname === '/experience' || pathname.startsWith('/experience/')) {
-    // Experience no longer has a dedicated page — home page
-    return { name: 'home' };
+    return { name: 'experience' };
   }
 
   return { name: 'home' };
@@ -109,14 +108,8 @@ function App() {
       window.location.hash = '#/about';
       setRoute({ name: 'about' });
     } else if (targetRoute === 'experience') {
-      // Experience is on the home page — scroll to section
-      window.history.pushState(null, '', '/');
-      window.location.hash = '';
-      setRoute({ name: 'home' });
-      setTimeout(() => {
-        const el = document.getElementById('experience');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 80);
+      window.location.hash = '#/experience';
+      setRoute({ name: 'experience' });
     } else if (targetRoute === 'project-detail') {
       const slug = encodeURIComponent((param || 'cardflow').toLowerCase().replace(/[^a-z0-9]/g, ''));
       window.location.hash = `#/projects/${slug}`;
@@ -368,7 +361,13 @@ function App() {
           <SiteFooter onNavigate={navigate} />
         </>
       )}
-      {/* Experience now lives on home page — no separate route rendered */}
+      {route.name === 'experience' && (
+        <>
+          <AppNavbar currentRoute={route} onNavigate={navigate} />
+          <ExperiencePage onNavigate={navigate} />
+          <SiteFooter onNavigate={navigate} />
+        </>
+      )}
       {route.name === 'about' && (
         <>
           <AppNavbar currentRoute={route} onNavigate={navigate} />
