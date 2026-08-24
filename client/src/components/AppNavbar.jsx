@@ -70,7 +70,7 @@ export default function AppNavbar({ currentRoute, onNavigate }) {
           </nav>
 
           <a
-            href="#home"
+            href="/"
             className="brand"
             onClick={(e) => handleNav(e, 'home')}
             aria-label="Roshan Damor Logo"
@@ -123,7 +123,7 @@ export default function AppNavbar({ currentRoute, onNavigate }) {
           </button>
 
           <a
-            href="#home"
+            href="/"
             className="brand"
             onClick={(e) => handleNav(e, 'home')}
             aria-label="Roshan Damor Logo"

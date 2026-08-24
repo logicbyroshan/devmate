@@ -92,11 +92,11 @@ export default function BlogDetailPage({ slug, onNavigate }) {
         <div className="blog-sb-section-title"><i className="fas fa-sitemap"></i> Site Navigation</div>
         <ul className="blog-sb-sitemap-list">
           <li><a href="/" onClick={e => { e.preventDefault(); onNavigate('home'); }}><i className="fas fa-home"></i> Home</a></li>
-          <li><a href="/#projects" onClick={e => { e.preventDefault(); onNavigate('home', 'projects'); }}><i className="fas fa-folder-open"></i> Projects</a></li>
-          <li><a href="/#blog" onClick={e => { e.preventDefault(); onNavigate('home', 'blog'); }}><i className="fas fa-pen-nib"></i> Blog</a></li>
+          <li><a href="/" onClick={e => { e.preventDefault(); onNavigate('home', 'projects'); }}><i className="fas fa-folder-open"></i> Projects</a></li>
+          <li><a href="/" onClick={e => { e.preventDefault(); onNavigate('home', 'blog'); }}><i className="fas fa-pen-nib"></i> Blog</a></li>
           <li><a href="/about" onClick={e => { e.preventDefault(); onNavigate('about'); }}><i className="fas fa-user"></i> About</a></li>
           <li><a href="/experience" onClick={e => { e.preventDefault(); onNavigate('experience'); }}><i className="fas fa-briefcase"></i> Experience</a></li>
-          <li><a href="/#contact" onClick={e => { e.preventDefault(); onNavigate('home', 'contact'); }}><i className="fas fa-envelope"></i> Contact</a></li>
+          <li><a href="/" onClick={e => { e.preventDefault(); onNavigate('home', 'contact'); }}><i className="fas fa-envelope"></i> Contact</a></li>
         </ul>
       </div>
 
@@ -267,7 +267,7 @@ export default function BlogDetailPage({ slug, onNavigate }) {
               <div className="blog-related-wrap">
                 <div className="blog-related-heading">
                   <span>Continue Reading</span>
-                  <a href="#home" onClick={e => { e.preventDefault(); onNavigate('home', 'blog'); }}>
+                  <a href="/" onClick={e => { e.preventDefault(); onNavigate('home', 'blog'); }}>
                     View All <i className="fas fa-arrow-right"></i>
                   </a>
                 </div>

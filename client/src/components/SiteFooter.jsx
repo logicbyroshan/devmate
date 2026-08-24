@@ -20,9 +20,9 @@ export default function SiteFooter({ onNavigate }) {
           {/* Brand Column */}
           <div className="footer-brand">
             <a 
-              href="#home" 
+              href="/" 
               className="brand footer-logo-link"
-              onClick={(e) => handleNav(e, 'home', 'home')}
+              onClick={(e) => handleNav(e, 'home')}
             >
               <img 
                 src="/static/images/logo.webp" 
@@ -56,7 +56,7 @@ export default function SiteFooter({ onNavigate }) {
             <h3 className="footer-col-title">Navigation</h3>
             <ul className="footer-links">
               <li>
-                <a href="#home" onClick={(e) => handleNav(e, 'home', 'home')}>Home</a>
+                <a href="/" onClick={(e) => handleNav(e, 'home')}>Home</a>
               </li>
               <li>
                 <a href="/about" onClick={(e) => handleNav(e, 'about')}>About</a>

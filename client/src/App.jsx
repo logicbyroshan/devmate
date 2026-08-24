@@ -35,7 +35,17 @@ function parseCurrentRoute() {
   const pathname = window.location.pathname || '/';
   const hash = window.location.hash || '';
 
-  // Clean up legacy #/ hash URLs by migrating to pathname
+  // Clean /home, /home/, /index.html, #home, #/ to clean root '/'
+  if (pathname === '/home' || pathname === '/home/' || pathname === '/index.html') {
+    window.history.replaceState(null, '', '/');
+    return { name: 'home' };
+  }
+  if (hash === '#home' || hash === '#/' || hash === '#' || hash === '#home/' || hash.startsWith('#home')) {
+    window.history.replaceState(null, '', '/');
+    return { name: 'home' };
+  }
+
+  // Clean up legacy #/ hash URLs by migrating to clean pathname
   if (hash.startsWith('#/projects/')) {
     const slug = hash.replace('#/projects/', '').split('?')[0].split('/')[0];
     const cleanSlug = decodeURIComponent(slug);
@@ -60,11 +70,19 @@ function parseCurrentRoute() {
   // Parse clean pathnames
   if (pathname.startsWith('/projects/')) {
     const slug = pathname.replace('/projects/', '').split('?')[0].split('/')[0];
-    return { name: 'project-detail', slug: decodeURIComponent(slug) };
+    if (slug) {
+      return { name: 'project-detail', slug: decodeURIComponent(slug) };
+    }
+    window.history.replaceState(null, '', '/');
+    return { name: 'home' };
   }
   if (pathname.startsWith('/blog/')) {
     const slug = pathname.replace('/blog/', '').split('?')[0].split('/')[0];
-    return { name: 'blog-detail', slug: decodeURIComponent(slug) };
+    if (slug) {
+      return { name: 'blog-detail', slug: decodeURIComponent(slug) };
+    }
+    window.history.replaceState(null, '', '/');
+    return { name: 'home' };
   }
   if (pathname === '/about' || pathname.startsWith('/about/')) {
     return { name: 'about' };
@@ -108,9 +126,10 @@ function App() {
 
   const navigate = useCallback((targetRoute, param) => {
     if (targetRoute === 'home') {
-      if (param) {
-        window.history.pushState(null, '', `/#${param}`);
-        setRoute({ name: 'home' });
+      window.history.pushState(null, '', '/');
+      setRoute({ name: 'home' });
+
+      if (param && param !== 'home') {
         setTimeout(() => {
           const el = document.getElementById(param);
           if (el) {
@@ -122,8 +141,6 @@ function App() {
           }
         }, 80);
       } else {
-        window.history.pushState(null, '', '/');
-        setRoute({ name: 'home' });
         if (lenis) lenis.scrollTo(0, { immediate: true });
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       }
@@ -147,7 +164,15 @@ function App() {
   // Intercept click on links requesting dedicated routes
   useEffect(() => {
     const handleClick = (e) => {
-      // 1. Project detail links
+      // 1. Home / Brand links
+      const homeLink = e.target.closest('a[href="/"], .brand, a[href="#home"], a[href="#/"]');
+      if (homeLink) {
+        e.preventDefault();
+        navigate('home');
+        return;
+      }
+
+      // 2. Project detail links
       const projectLink = e.target.closest('.project-page-link, [data-project-slug], a[href^="/projects/"], a[href^="#/projects/"]');
       if (projectLink) {
         e.preventDefault();
@@ -157,7 +182,7 @@ function App() {
         return;
       }
 
-      // 2. Blog detail links
+      // 3. Blog detail links
       const blogCard = e.target.closest('.blog-card, [data-blog-slug], a[href^="/blog/"], a[href^="#/blog/"]');
       if (blogCard) {
         e.preventDefault();
@@ -167,7 +192,7 @@ function App() {
         return;
       }
 
-      // 3. About page links
+      // 4. About page links
       const aboutLink = e.target.closest('[data-route="about"], a[href="/about"], a[href="#/about"]');
       if (aboutLink) {
         e.preventDefault();
@@ -175,7 +200,7 @@ function App() {
         return;
       }
 
-      // 4. Experience links
+      // 5. Experience links
       const expLink = e.target.closest('[data-route="experience"], a[href="/experience"], a[href="#/experience"]');
       if (expLink) {
         e.preventDefault();
@@ -183,20 +208,29 @@ function App() {
         return;
       }
 
-      // 5. In-page anchor links when on a subpage
+      // 6. In-page section anchor links (#skills, #projects, #contact, etc.)
       const anchorLink = e.target.closest('a[href^="#"]');
       if (anchorLink) {
         const hashTarget = anchorLink.getAttribute('href').replace('#', '');
         if (hashTarget && hashTarget !== '/' && !hashTarget.startsWith('/')) {
+          e.preventDefault();
           if (route.name !== 'home') {
-            e.preventDefault();
             navigate('home', hashTarget);
-            return;
+          } else {
+            const el = document.getElementById(hashTarget);
+            if (el) {
+              if (lenis) {
+                lenis.scrollTo(el, { duration: 1.2 });
+              } else {
+                el.scrollIntoView({ behavior: 'smooth' });
+              }
+            }
           }
+          return;
         }
       }
 
-      // 6. Wire SFX click for React-page buttons (sounds.js only loads on home)
+      // 7. Wire SFX click for React-page buttons (sounds.js only loads on home)
       const sfxTarget = e.target.closest('.btn, .nav-link, .mobile-nav-link, .doc-ctrl-btn, .blog-sb-link, .blog-sb-share-btn');
       if (sfxTarget && window._SoundEngine) {
         window._SoundEngine.initAudio();
@@ -208,7 +242,7 @@ function App() {
     return () => {
       document.removeEventListener('click', handleClick);
     };
-  }, [navigate, route.name]);
+  }, [navigate, route.name, lenis]);
 
   // Load and hydrate legacy scripts on Home view
   useEffect(() => {
