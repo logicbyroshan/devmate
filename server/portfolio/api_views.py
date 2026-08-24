@@ -292,6 +292,59 @@ def get_csrf_token(request):
     return Response({"csrftoken": token, "status": "ok"})
 
 
+@api_view(["POST", "GET"])
+@permission_classes([AllowAny])
+def api_auth_login(request):
+    """
+    API Authentication endpoint.
+    POST /api/v1/auth/login/
+    """
+    if request.method == "GET":
+        return Response({"detail": "Use POST with username and password to authenticate."})
+
+    from django.contrib.auth import authenticate, login
+    username = request.data.get("username", "")
+    password = request.data.get("password", "")
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return Response({
+            "status": "ok",
+            "message": "Authenticated successfully",
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "is_staff": user.is_staff,
+            }
+        })
+    return Response(
+        {"status": "error", "message": "Invalid username or password"},
+        status=status.HTTP_401_UNAUTHORIZED
+    )
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def api_banners_list(request):
+    """
+    Returns list of active portfolio banners and hero visuals.
+    GET /api/v1/banners/
+    """
+    return Response({
+        "status": "ok",
+        "banners": [
+            {
+                "id": 1,
+                "title": "Roshan Damor - Software Engineer & AI Developer",
+                "image_url": "/static/images/hero.webp",
+                "alt_text": "Roshan Damor Hero Visual",
+                "is_active": True,
+            }
+        ],
+        "count": 1
+    })
+
+
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def api_health_check(request):

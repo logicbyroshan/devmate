@@ -28,6 +28,8 @@ urlpatterns = [
     path('rexi/chat/', api_views.rexi_chat_api, name='api-rexi-chat'),
     path('csrf/', api_views.get_csrf_token, name='api-csrf'),
     path('auth/csrf/', api_views.get_csrf_token, name='api-auth-csrf'),
+    path('auth/login/', api_views.api_auth_login, name='api-auth-login'),
+    path('banners/', api_views.api_banners_list, name='api-banners-list'),
 
     # Interaction Endpoints
     path('projects/<slug:slug>/like/', api_views.project_like, name='api-project-like'),
