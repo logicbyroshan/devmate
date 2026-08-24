@@ -183,6 +183,24 @@ export default function AboutPage({ onNavigate }) {
                 </a>
               </div>
             </section>
+
+            {/* Education & Alma Mater */}
+            <section className="about-article-section">
+              <h3 className="about-sec-heading">
+                <i className="fas fa-graduation-cap"></i> Education &amp; Academic Background
+              </h3>
+              <div className="exp-pillar-card" style={{ padding: '20px' }}>
+                <h4 style={{ fontSize: '17px', color: '#f8fafc', margin: '0 0 4px 0' }}>
+                  Bachelor of Technology (B.Tech) in Computer Science &amp; Engineering
+                </h4>
+                <p style={{ fontSize: '14px', color: '#38bdf8', fontWeight: 600, margin: '0 0 8px 0' }}>
+                  University Institute of Technology, RGPV Bhopal (UIT RGPV)
+                </p>
+                <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, margin: 0 }}>
+                  Specialized in Data Structures &amp; Algorithms, Object-Oriented Software Design, Distributed Systems, Database Management Systems, and Artificial Intelligence workflows. Active contributor to technical development at UIT RGPV.
+                </p>
+              </div>
+            </section>
           </main>
         </div>
 

@@ -124,6 +124,55 @@ function App() {
     document.body.scrollTop = 0;
   }, [route.name, route.slug, lenis]);
 
+  // Dynamic SEO metadata synchronization across all routes
+  useEffect(() => {
+    let title = 'Roshan Damor | Software Engineer & AI Developer (UIT RGPV) Portfolio';
+    let description = 'Roshan Damor is a Software Engineer, AI Developer, and Full Stack Developer from UIT RGPV Bhopal. Creator of CardFlow SaaS (1,000+ users) and VidyaMaxx AI Platform. Specialized in Python, Django, React, PostgreSQL, Redis, LLMs, and RAG systems.';
+    let canonical = 'https://logicbyroshan.in/';
+
+    if (route.name === 'about') {
+      title = 'About Roshan Damor | Software Engineer & AI Developer (UIT RGPV)';
+      description = 'Read the full background, education at UIT RGPV Bhopal, technical skill graph, and software engineering philosophy of Roshan Damor.';
+      canonical = 'https://logicbyroshan.in/about';
+    } else if (route.name === 'experience') {
+      title = 'Experience & Career Roadmap | Roshan Damor (Software Engineer)';
+      description = 'Detailed professional journey and architectural roadmap of Roshan Damor — Software Engineer at Adarsh ID Cards, CardFlow SaaS, and Miracle Organisation.';
+      canonical = 'https://logicbyroshan.in/experience';
+    } else if (route.name === 'project-detail') {
+      const formattedSlug = (route.slug || 'cardflow').toUpperCase();
+      title = `${formattedSlug} Case Study & Architecture | Roshan Damor (AI & Software Engineer)`;
+      description = `In-depth technical case study, system topology, interactive telemetry, and architecture for ${formattedSlug} engineered by Roshan Damor.`;
+      canonical = `https://logicbyroshan.in/projects/${route.slug}`;
+    } else if (route.name === 'blog-detail') {
+      title = 'Engineering Articles & Tech Deep Dives | Roshan Damor Blog';
+      description = 'Technical deep dives on microservices architecture, scalable APIs, Docker, and Kubernetes by Roshan Damor.';
+      canonical = `https://logicbyroshan.in/blog/${route.slug}`;
+    }
+
+    document.title = title;
+
+    const descMeta = document.querySelector('meta[name="description"]');
+    if (descMeta) descMeta.setAttribute('content', description);
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', title);
+
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', description);
+
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) ogUrl.setAttribute('content', canonical);
+
+    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twitterTitle) twitterTitle.setAttribute('content', title);
+
+    const twitterDesc = document.querySelector('meta[name="twitter:description"]');
+    if (twitterDesc) twitterDesc.setAttribute('content', description);
+
+    const canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (canonicalLink) canonicalLink.setAttribute('href', canonical);
+  }, [route.name, route.slug]);
+
   const navigate = useCallback((targetRoute, param) => {
     if (targetRoute === 'home') {
       window.history.pushState(null, '', '/');
