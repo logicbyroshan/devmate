@@ -269,11 +269,38 @@ python manage.py loaddata portfolio/fixtures/initial_data.json
 
 ---
 
+## 🌿 Branch Strategy & Development Workflow
+
+This project follows a professional release engineering model:
+
+- **`main`**: **Production Deployment Branch** — strictly clean, verified, and always deployable. Production servers / CI pipelines track this branch.
+- **`dev`**: **Active Development Branch** — used for active development, prototyping, and integrating new features before merging to `main`.
+
+```bash
+# Day-to-day development
+git checkout dev
+
+# Merging stable releases for deployment
+git checkout main
+git merge dev
+git push origin main
+```
+
+---
+
+## 🚀 Production Deployment
+
+Complete step-by-step instructions for deploying to **Vercel, Netlify, Cloudflare Pages, Ubuntu VPS (Nginx + Gunicorn + PostgreSQL + Redis + Celery + Let's Encrypt SSL), and Docker/Render** are available in the dedicated deployment guide:
+
+👉 **[Read the Full Production Deployment Guide (DEPLOYMENT.md)](DEPLOYMENT.md)**
+
+---
+
 ## 🔒 Security & Performance Features
 
 - **Read-Only Public API**: All write actions (except contact message POST) are restricted to authenticated admin sessions.
 - **Strict CORS Policy**: Whitelisted origins only (`localhost:5173`, `logicbyroshan.in`).
-- **Asset Optimization**: High-resolution banners converted to ultra-lightweight WebP (~28KB), reducing initial bundle payload by >95%.
+- **Asset Optimization**: High-resolution banners converted to ultra-lightweight WebP, reducing initial bundle payload by >95%.
 - **Single-Session Preloader**: Preloader animation plays once per browser session via `sessionStorage` and is bypassed instantaneously on refreshes.
 - **N+1 Query Elimination**: Viewsets use `.select_related()` and `.prefetch_related()` for categories, images, and skills.
 
@@ -283,3 +310,4 @@ python manage.py loaddata portfolio/fixtures/initial_data.json
 
 Crafted with ❤️ by **[Roshan Damor](https://logicbyroshan.in)**  
 Licensed under the [MIT License](LICENSE).
+

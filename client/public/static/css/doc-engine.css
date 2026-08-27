@@ -1299,3 +1299,177 @@
     flex-shrink: 0;
 }
 
+/* ── 10. Comprehensive Mobile & Small Device Adaptations ───────────── */
+@media (max-width: 860px) {
+    .doc-arch-workspace {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .doc-arch-canvas {
+        min-height: 360px;
+        padding: 16px;
+    }
+
+    .doc-arch-inspector {
+        padding: 16px;
+    }
+
+    .doc-mermaid-header,
+    .doc-arch-header,
+    .doc-d2-header,
+    .doc-video-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .doc-mermaid-actions,
+    .doc-arch-filter-tabs,
+    .doc-d2-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 640px) {
+    .doc-mermaid-card,
+    .doc-arch-card,
+    .doc-d2-card,
+    .doc-code-card,
+    .doc-katex-card,
+    .doc-image-system-card,
+    .doc-video-card {
+        padding: 16px 14px;
+        border-radius: 14px;
+        margin: 20px 0;
+    }
+
+    .doc-mermaid-title,
+    .doc-arch-title,
+    .doc-d2-title,
+    .doc-code-title,
+    .doc-katex-title,
+    .doc-image-title,
+    .doc-video-title {
+        font-size: 17px;
+    }
+
+    .doc-mermaid-subtitle,
+    .doc-arch-instructions,
+    .doc-d2-spec-view {
+        font-size: 12.5px;
+    }
+
+    .doc-mermaid-canvas-wrapper {
+        padding: 20px 12px;
+        min-height: 240px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .doc-mermaid-svg-container svg {
+        min-width: 440px !important;
+        min-height: 220px;
+    }
+
+    .doc-arch-nodes-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .doc-d2-layers-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .doc-image-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .doc-stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .doc-stat-box {
+        padding: 10px 8px;
+    }
+
+    .doc-stat-val {
+        font-size: 17px;
+    }
+
+    .doc-quickjump-nav-wrap {
+        top: 56px;
+        margin: 14px 0 20px;
+        padding: 6px 8px;
+    }
+
+    .doc-quickjump-link {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .doc-lightbox-modal {
+        width: 96vw;
+        border-radius: 14px;
+    }
+
+    .doc-lightbox-info {
+        padding: 14px 16px;
+    }
+
+    .doc-lightbox-info h5 {
+        font-size: 16px;
+    }
+
+    .doc-lightbox-info p {
+        font-size: 12.5px;
+    }
+
+    .doc-code-card pre {
+        font-size: 12px;
+        padding: 12px;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (max-width: 380px) {
+    .doc-mermaid-card,
+    .doc-arch-card,
+    .doc-d2-card,
+    .doc-code-card,
+    .doc-katex-card,
+    .doc-image-system-card,
+    .doc-video-card {
+        padding: 12px 10px;
+        border-radius: 12px;
+    }
+
+    .doc-mermaid-title,
+    .doc-arch-title,
+    .doc-d2-title,
+    .doc-code-title,
+    .doc-katex-title,
+    .doc-image-title,
+    .doc-video-title {
+        font-size: 15px;
+    }
+
+    .doc-badge-pill {
+        font-size: 10.5px;
+        padding: 4px 10px;
+    }
+
+    .doc-ctrl-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+
+    .doc-stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
