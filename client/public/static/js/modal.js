@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════
-   MODAL — Shared open/close logic + Rexi chat
+   MODAL — Rexi AI Assistant Chat Modal
    ══════════════════════════════════════════ */
 
 (function () {
@@ -9,14 +9,12 @@
 
     // ── Open / Close ──────────────────────────────────────────────────────────
 
-    // ── Open / Close ──────────────────────────────────────────────────────────
-
     function openModal(id) {
         const overlay = document.getElementById(id);
         if (!overlay) return;
         
         overlay.setAttribute('data-lenis-prevent', 'true');
-        const modalBox = overlay.querySelector('.modal-box, .modal-box--blog, .modal-box-rexi, .modal-box-project');
+        const modalBox = overlay.querySelector('.modal-box-rexi, .modal-box');
         if (modalBox) {
             modalBox.setAttribute('data-lenis-prevent', 'true');
         }
@@ -35,14 +33,10 @@
     function closeModal(overlay) {
         if (!overlay) return;
         overlay.classList.remove('modal-visible');
-        const modalBox = overlay.querySelector('.modal-box, .modal-box--blog, .modal-box-rexi, .modal-box-project');
+        const modalBox = overlay.querySelector('.modal-box-rexi, .modal-box');
         if (modalBox) {
             modalBox.classList.remove('modal-box-fullscreen');
-            // Reset scroll positions of inner scrollable panels
             modalBox.scrollTop = 0;
-            const scrollables = modalBox.querySelectorAll('.modal-fs-main, .modal-sidebar, .modal-body-content, .modal-fs-body');
-            scrollables.forEach(el => { el.scrollTop = 0; });
-            // Reset expand button icon
             const expandBtn = modalBox.querySelector('.modal-expand-btn');
             if (expandBtn) {
                 expandBtn.innerHTML = '<i class="fas fa-expand"></i>';
@@ -59,62 +53,15 @@
         }
     }
 
-    function populateProjectModal(card) {
-        const modal = document.getElementById('modal-project');
-        if (!modal || !card) return;
-
-        const title = card.querySelector('.project-title')?.textContent.trim() || 'Project Showcase';
-        const nickname = card.querySelector('.project-nickname')?.textContent.trim() || card.querySelector('.project-category')?.textContent.trim() || 'Featured Project';
-        const img = card.querySelector('.project-image img')?.getAttribute('src') || card.querySelector('img')?.getAttribute('src') || '/static/images/hero.webp';
-        const desc = card.querySelector('.project-description')?.textContent.trim() || 'No description available for this project.';
-        const techBadges = Array.from(card.querySelectorAll('.project-tech-badge')).map(b => b.outerHTML).join(' ');
-        const githubHref = card.querySelector('.github-btn')?.getAttribute('href') || '#';
-
-        const titleEl = modal.querySelector('.project-modal-title');
-        if (titleEl) titleEl.textContent = title;
-
-        // Update nickname in BOTH main body and sidebar
-        modal.querySelectorAll('.project-modal-nickname').forEach(el => { el.textContent = nickname; });
-
-        const imgEl = modal.querySelector('.project-modal-img');
-        if (imgEl) {
-            imgEl.src = img;
-            imgEl.alt = title;
-        }
-
-        const descEl = modal.querySelector('.project-modal-desc');
-        if (descEl) descEl.textContent = desc;
-
-        // Update tech stack in BOTH main body and sidebar
-        modal.querySelectorAll('.project-modal-stack').forEach(el => {
-            // Sidebar: render as sb-tech-item list
-            if (el.classList.contains('sb-tech-list')) {
-                const techs = Array.from(card.querySelectorAll('.project-tech-badge')).map(b => b.textContent.trim());
-                el.innerHTML = techs.map(t =>
-                    `<li class="sb-tech-item"><span class="sb-tech-dot"></span>${t}</li>`
-                ).join('');
-            } else {
-                el.innerHTML = techBadges;
-            }
-        });
-
-        const githubEl = modal.querySelector('.project-modal-github');
-        if (githubEl) githubEl.href = githubHref;
-
-        // Update sidebar links hrefs
-        const sidebarGithub = modal.querySelector('.modal-sidebar .project-modal-github');
-        if (sidebarGithub) sidebarGithub.href = githubHref;
-
-        const liveEl = modal.querySelector('.project-modal-live');
-        const sidebarLive = modal.querySelector('.modal-sidebar .project-modal-live');
-        if (liveEl && sidebarLive) sidebarLive.href = liveEl.href || '#';
-    }
+    // Expose openModal and closeModal globally
+    window.openModal = openModal;
+    window.closeModal = closeModal;
 
     // Prevent background wheel scrolling when modal is open
     document.addEventListener('wheel', function (e) {
         const open = document.querySelector('.modal-overlay.modal-visible');
         if (!open) return;
-        const modalBox = e.target.closest('.modal-box, .modal-box--blog, .modal-box-rexi, .modal-box-project');
+        const modalBox = e.target.closest('.modal-box-rexi, .modal-box');
         if (!modalBox) {
             e.preventDefault();
         }
@@ -124,7 +71,7 @@
     document.addEventListener('touchmove', function (e) {
         const open = document.querySelector('.modal-overlay.modal-visible');
         if (!open) return;
-        const modalBox = e.target.closest('.modal-box, .modal-box--blog, .modal-box-rexi, .modal-box-project');
+        const modalBox = e.target.closest('.modal-box-rexi, .modal-box');
         if (!modalBox) {
             e.preventDefault();
         }
@@ -133,20 +80,18 @@
     // ── Wire trigger buttons & Window controls ───────────────────────────────
 
     document.addEventListener('click', function (e) {
-        // Full Page View (Fullscreen Toggle) button
-        const expandBtn = e.target.closest('.modal-expand-btn');
+        // Fullscreen Toggle button
+        const expandBtn = e.target.closest('.modal-expand-btn, #rexi-fullscreen-btn');
         if (expandBtn) {
             e.preventDefault();
             e.stopPropagation();
-            const modalBox = expandBtn.closest('.modal-box, .modal-box--blog, .modal-box-rexi, .modal-box-project');
+            const modalBox = expandBtn.closest('.modal-box-rexi, .modal-box');
             if (modalBox) {
                 modalBox.classList.toggle('modal-box-fullscreen');
                 const isFull = modalBox.classList.contains('modal-box-fullscreen');
-                // Also toggle class on overlay for CSS targeting
                 const overlay = modalBox.closest('.modal-overlay');
                 if (overlay) {
                     overlay.classList.toggle('modal-overlay-fullscreen', isFull);
-                    // Scroll modal box back to top on restore
                     if (!isFull) modalBox.scrollTop = 0;
                 }
                 expandBtn.innerHTML = isFull ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
@@ -165,42 +110,23 @@
             return;
         }
 
-        // Modal triggers (Project cards, Blog cards, About buttons, Rexi AI button)
+        // Generic data-modal trigger — works for modal-rexi, modal-resume, modal-video-resume, etc.
         const trigger = e.target.closest('[data-modal]');
         if (trigger) {
-            // If github external link clicked inside card, don't intercept modal
-            if (e.target.closest('.github-btn')) return;
-
             e.preventDefault();
-            const modalId = trigger.dataset.modal;
-
-            if (modalId === 'modal-project') {
-                const projectCard = trigger.closest('.project-card') || trigger;
-                populateProjectModal(projectCard);
-            }
-
-            openModal(modalId);
+            const modalId = trigger.getAttribute('data-modal');
+            if (modalId) openModal(modalId);
             return;
         }
 
         // Click on backdrop (outside card)
-        if (e.target.classList.contains('modal-overlay') && !e.target.classList.contains('has-minimized-modal')) {
+        if (e.target.classList.contains('modal-overlay')) {
             closeModal(e.target);
         }
     });
 
     // Escape key closes topmost visible modal
     document.addEventListener('keydown', function (e) {
-        if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches('[data-modal][role="button"]')) {
-            e.preventDefault();
-            const modalId = e.target.dataset.modal;
-            if (modalId === 'modal-project') {
-                populateProjectModal(e.target.closest('.project-card') || e.target);
-            }
-            openModal(modalId);
-            return;
-        }
-
         if (e.key !== 'Escape') return;
         const open = document.querySelector('.modal-overlay.modal-visible');
         if (open) closeModal(open);
@@ -210,15 +136,15 @@
 
     const REXI_KNOWLEDGE = {
         name:       'Roshan Damor',
-        role:       'AI Full Stack Developer',
-        location:   'Bhopal, Madhya Pradesh, India',
-        tech:       'React, Next.js, Node.js, Python, Django, FastAPI, AWS, Docker, PostgreSQL, MongoDB, TypeScript, Tailwind CSS',
+        role:       'Software Engineer & AI Full Stack Developer',
+        location:   'India',
+        tech:       'Python, Django, React, PostgreSQL, Redis, Celery, REST APIs, Electron, Docker, Nginx, Linux, Tailwind CSS',
         dsa:        '1300+ DSA problems solved across LeetCode, CodeForces and HackerRank',
-        projects:   'CardFlow (ID Management), JobPilot (AI Job Matcher), VidyaFlow (School OS), RiseTogether',
-        experience: 'Full-stack software engineering; built and shipped production applications',
+        projects:   'CardFlow (Enterprise ID Card Management SaaS in production for 1000+ users), VidyaMaxx (AI-First School Management Platform in pilot), PrintNexx (Internal image processing tool), EazeTrip (Tour operations platform), TaskFlixx (AI task manager), PrepSarthi (AI exam prep)',
+        experience: 'Software Engineer at Adarsh ID Cards (Dec 2025 - Present) building CardFlow SaaS; previously Graphic Designer Intern at Miracle Organisation (Apr - May 2025)',
         contact:    'mail@logicbyroshan.in | Available via LinkedIn or the contact form on this site',
         education:  'B.Tech Computer Science with specialization in AI & Machine Learning',
-        hobbies:    'Competitive programming, open-source contributions, exploring new AI tools',
+        hobbies:    'System design, open-source building, competitive programming, exploring LLM architectures',
     };
 
     const REXI_RESPONSES = [
@@ -228,31 +154,31 @@
         },
         {
             pattern: /who is roshan|about roshan|who is he|roshan damor|who is roshan damor|tell me about roshan/i,
-            reply:   `Roshan Damor is an **${REXI_KNOWLEDGE.role}** based in ${REXI_KNOWLEDGE.location}. A builder at heart with a love for clean code, AI solutions, and hard problems! 🚀`,
+            reply:   `Roshan Damor is a **${REXI_KNOWLEDGE.role}** based in ${REXI_KNOWLEDGE.location}. A builder at heart with a love for clean code, scalable architecture, and hard problems! 🚀`,
         },
         {
             pattern: /role|job|work|does|what/i,
-            reply:   `Roshan is an **${REXI_KNOWLEDGE.role}** — building AI-powered solutions, scalable web apps, and modern cloud applications. 💻`,
+            reply:   `Roshan is a **${REXI_KNOWLEDGE.role}** — building AI-powered SaaS platforms, high-throughput web systems, and modern cloud applications. 💻`,
         },
         {
             pattern: /tech|stack|skill|language|framework/i,
-            reply:   `Roshan's core stack: **${REXI_KNOWLEDGE.tech}**. He picks the right tool for every job. 🛠️`,
+            reply:   `Roshan's core stack: **${REXI_KNOWLEDGE.tech}**. He picks the right tool for every system requirement. 🛠️`,
         },
         {
             pattern: /dsa|algorithm|leetcode|problem|competitive/i,
-            reply:   `${REXI_KNOWLEDGE.dsa}. Strong in dynamic programming, graphs, and system design. 🧠`,
+            reply:   `${REXI_KNOWLEDGE.dsa}. Strong in dynamic programming, graphs, data structures, and system design. 🧠`,
         },
         {
             pattern: /project/i,
-            reply:   `He's built: ${REXI_KNOWLEDGE.projects}. Check the Projects section for live demos! 🔭`,
+            reply:   `He has built: ${REXI_KNOWLEDGE.projects}. Check the dedicated project pages for full engineering breakdowns! 🔭`,
         },
         {
             pattern: /experience|intern|work history/i,
-            reply:   `${REXI_KNOWLEDGE.experience}. His experience spans frontend, backend, AI, and cloud. ☁️`,
+            reply:   `${REXI_KNOWLEDGE.experience}. Check the Experience page for detailed architectural contributions! ☁️`,
         },
         {
             pattern: /contact|reach|email|hire/i,
-            reply:   `${REXI_KNOWLEDGE.contact}. He's open to exciting opportunities! 📩`,
+            reply:   `${REXI_KNOWLEDGE.contact}. He's open to exciting engineering opportunities! 📩`,
         },
         {
             pattern: /education|college|degree|study/i,
@@ -260,7 +186,7 @@
         },
         {
             pattern: /hobby|interest|free time|passion/i,
-            reply:   `${REXI_KNOWLEDGE.hobbies}. Never a dull moment! 🎮`,
+            reply:   `${REXI_KNOWLEDGE.hobbies}. 🎮`,
         },
         {
             pattern: /location|where|city/i,
@@ -345,21 +271,6 @@
     }
 
     function initRexi() {
-        // Wire fullscreen toggle button (works regardless of rexiInitialized flag)
-        const fullscreenBtn = document.getElementById('rexi-fullscreen-btn');
-        if (fullscreenBtn && !fullscreenBtn.dataset.bound) {
-            fullscreenBtn.dataset.bound = 'true';
-            fullscreenBtn.addEventListener('click', function () {
-                const modalBox = this.closest('.modal-box-rexi');
-                if (modalBox) {
-                    modalBox.classList.toggle('modal-box-fullscreen');
-                    const isFullscreen = modalBox.classList.contains('modal-box-fullscreen');
-                    this.innerHTML = isFullscreen ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
-                    this.setAttribute('title', isFullscreen ? 'Exit Fullscreen' : 'Toggle Fullscreen');
-                }
-            });
-        }
-
         if (rexiInitialized) return;
 
         const input      = document.getElementById('rexi-input');
@@ -382,16 +293,15 @@
             const startTime = Date.now();
 
             try {
-                const apiBase = window.PORTFOLIO_CONFIG?.API_BASE_URL || 'http://127.0.0.1:8000/api';
+                const apiBase = window.PORTFOLIO_CONFIG?.API_BASE_URL || '/api';
                 const response = await fetch(`${apiBase}/rexi/chat/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: text }),
                 });
 
-                // Ensure at least 1.4s typing animation for a realistic human pace
                 const elapsed = Date.now() - startTime;
-                const minDelay = 1400 + Math.random() * 600;
+                const minDelay = 1200 + Math.random() * 500;
                 if (elapsed < minDelay) {
                     await new Promise(r => setTimeout(r, minDelay - elapsed));
                 }
@@ -404,7 +314,7 @@
                     typingEl.remove();
                     appendMessage(messages, getRexiReply(text), false);
                 }
-            } catch (err) {
+            } catch {
                 typingEl.remove();
                 appendMessage(messages, getRexiReply(text), false);
             } finally {

@@ -83,10 +83,11 @@ def normalize_host(value):
 
 def host_aliases(host):
     aliases = []
-    if "roshandamor.me" in host:
-        aliases.append(host.replace("roshandamor.me", "roshandmaor.me"))
-    if "roshandmaor.me" in host:
-        aliases.append(host.replace("roshandmaor.me", "roshandamor.me"))
+    if "logicbyroshan.in" in host:
+        if host.startswith("www."):
+            aliases.append(host.replace("www.", "", 1))
+        elif not host.startswith("admin."):
+            aliases.append(f"www.{host}")
     return aliases
 
 
@@ -143,8 +144,8 @@ ALLOWED_HOSTS = env_list(
     "127.0.0.1,localhost,testserver" if (DEBUG or RUNNING_TESTS) else "",
 )
 
-PUBLIC_SITE_DOMAIN = normalize_host(os.getenv("PUBLIC_SITE_DOMAIN", ""))
-ADMIN_SITE_DOMAIN = normalize_host(os.getenv("ADMIN_SITE_DOMAIN", ""))
+PUBLIC_SITE_DOMAIN = normalize_host(os.getenv("PUBLIC_SITE_DOMAIN", "logicbyroshan.in"))
+ADMIN_SITE_DOMAIN = normalize_host(os.getenv("ADMIN_SITE_DOMAIN", "admin.logicbyroshan.in"))
 
 configured_hosts = [normalize_host(host) for host in ALLOWED_HOSTS]
 domain_hosts = unique_list(
@@ -335,12 +336,19 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle'
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/hour',
-        'user': '1000/hour'
-    }
+        'user': '1000/hour',
+        'contact': '10/minute',
+        'rexi': '30/minute',
+        'interaction': '60/minute',
+    },
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
+    'ALLOWED_VERSIONS': ['v1'],
+    'DEFAULT_VERSION': 'v1',
 }
 
 SIMPLE_JWT = {

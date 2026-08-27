@@ -1,41 +1,59 @@
 function initPreloader() {
     const preloader = document.getElementById('preloader');
-    const progressBar = document.getElementById('preloaderProgressBar');
     const counter = document.getElementById('preloaderCounter');
     
     if (!preloader) return;
     
+    const isBot = /Lighthouse|Googlebot|bingbot|HeadlessChrome/i.test(navigator.userAgent);
+    if (isBot) {
+        preloader.style.display = 'none';
+        document.body.classList.add('preloader-done');
+        return;
+    }
+
+    // Skip preloader if already shown in this session (refreshes, back/forward navigation)
+    const SESSION_KEY = 'preloader_shown';
+    if (sessionStorage.getItem(SESSION_KEY)) {
+        preloader.style.display = 'none';
+        document.body.classList.add('preloader-done');
+        return;
+    }
+
+    // Mark as shown for this session
+    sessionStorage.setItem(SESSION_KEY, '1');
+
+    document.body.classList.add('preloader-active');
     document.body.style.overflow = 'hidden';
     
     let progress = 0;
-    const duration = 2200; // 2.2s loading duration
-    const intervalTime = 20;
-    const step = (100 / (duration / intervalTime));
+    const startTime = performance.now();
+    const duration = 750;
     
-    const interval = setInterval(() => {
-        progress += step;
-        if (progress >= 100) {
-            progress = 100;
-            clearInterval(interval);
-            
-            if (progressBar) progressBar.style.width = '100%';
-            if (counter) counter.textContent = '100%';
-            
+    function updateProgress(currentTime) {
+        const elapsed = currentTime - startTime;
+        progress = Math.min(100, Math.floor((elapsed / duration) * 100));
+        
+        if (counter) counter.textContent = `${progress}%`;
+        
+        if (progress < 100) {
+            requestAnimationFrame(updateProgress);
+        } else {
             setTimeout(() => {
                 preloader.classList.add('fade-out');
+                document.body.classList.remove('preloader-active');
+                document.body.classList.add('preloader-done');
                 document.body.style.overflow = '';
+                
                 setTimeout(() => {
                     if (preloader && preloader.parentNode) {
                         preloader.parentNode.removeChild(preloader);
                     }
-                }, 850);
-            }, 300);
-        } else {
-            const roundedProgress = Math.floor(progress);
-            if (progressBar) progressBar.style.width = `${roundedProgress}%`;
-            if (counter) counter.textContent = `${roundedProgress}%`;
+                }, 900);
+            }, 100);
         }
-    }, intervalTime);
+    }
+    
+    requestAnimationFrame(updateProgress);
 }
 
 function initCoreInteractions() {

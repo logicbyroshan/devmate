@@ -110,9 +110,12 @@
                         <div class="date-tag" id="current-date"></div>
                         
                         <!-- Logout Button -->
-                        <button class="logout-btn" onclick="window.location.href='/admin/logout/';" title="Logout">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </button>
+                        <form method="post" action="{% url 'admin:logout' %}" style="display: inline;" id="admin-logout-form">
+                            {% csrf_token %}
+                            <button type="submit" class="logout-btn" title="Logout" style="background:none;border:none;cursor:pointer;">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </form>
                         
                         <div class="user-profile">
                             <div class="user-avatar">A</div>

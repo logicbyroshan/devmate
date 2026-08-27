@@ -170,15 +170,15 @@
             <div class="security">
                 <h4>⚠️ Important Security Notes</h4>
                 <ul>
-                    <li><strong>Read-Only:</strong> All API endpoints are READ-ONLY. No write operations (POST, PUT, DELETE) are allowed from external sources.</li>
-                    <li><strong>CORS:</strong> API is restricted to allowed origins only. Update <code>CORS_ALLOWED_ORIGINS</code> in settings.py.</li>
-                    <li><strong>Rate Limiting:</strong> Anonymous users: 100 requests/hour</li>
-                    <li><strong>Data Filter:</strong> Only active and published content is exposed via API</li>
+                    <li><strong>API Architecture:</strong> Versioned REST API available under <code>/api/v1/</code> with canonical aliases under <code>/api/</code>.</li>
+                    <li><strong>CORS:</strong> API is restricted to allowed origins only. Update <code>CORS_ALLOWED_ORIGINS</code> in settings.py or .env.</li>
+                    <li><strong>Rate Limiting:</strong> Standard rate: 100 requests/minute. Contact endpoints protected with sliding window throttles and anti-spam heuristic filters.</li>
+                    <li><strong>Data Filtering:</strong> Only active and published content is exposed to public endpoints.</li>
                 </ul>
             </div>
 
             <h3>Base URL</h3>
-            <div class="url">http://localhost:8000/api/</div>
+            <div class="url">/api/v1/ (or /api/)</div>
         </div>
 
         <div class="section">
@@ -187,7 +187,7 @@
             <div class="endpoint">
                 <div>
                     <span class="method get">GET</span>
-                    <span class="url">/api/projects/</span>
+                    <span class="url">/api/v1/projects/</span>
                 </div>
                 <div class="description">Get all active projects</div>
                 <div class="params">
@@ -197,7 +197,7 @@
                     </div>
                     <div class="param">
                         <span class="param-name">status</span>
-                        <span class="param-desc">Filter by status: draft, in_progress, published (optional)</span>
+                        <span class="param-desc">Filter by status: active, completed, on-hold (optional)</span>
                     </div>
                 </div>
             </div>

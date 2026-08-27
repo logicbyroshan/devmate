@@ -1,7 +1,14 @@
+from decimal import Decimal, InvalidOperation
+from pathlib import Path
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.db import IntegrityError, transaction
+from django.db.models import Count
+from django.utils.text import slugify
 from .models import (
     Project,
     Category,
@@ -12,15 +19,31 @@ from .models import (
     Skill,
     Achievement,
 )
-from .forms import ProjectForm, CategoryForm, UserProfileForm, ExperienceForm, SkillForm, AchievementForm
-from django.utils.text import slugify
-import json
+from .forms import (
+    ProjectForm,
+    CategoryForm,
+    UserProfileForm,
+    ExperienceForm,
+    SkillForm,
+    AchievementForm,
+)
 
 
 def parse_int(value):
     try:
         return int(value)
     except (TypeError, ValueError):
+        return None
+
+
+def parse_decimal(value):
+    if value is None or str(value).strip() == "":
+        return None
+    try:
+        cleaned = str(value).strip().replace("$", "").replace(",", "")
+        dec = Decimal(cleaned)
+        return dec if dec >= 0 else None
+    except (InvalidOperation, TypeError, ValueError):
         return None
 
 
@@ -54,9 +77,9 @@ def generate_unique_slug(model_class, raw_value, slug_field="slug", max_attempts
 
 
 # Dashboard Views
+@staff_member_required(login_url="/admin/login/")
 def dashboard(request):
     """Main dashboard view with real data"""
-    from django.db.models import Count
     
     # Get counts
     total_projects = Project.objects.count()
@@ -91,6 +114,7 @@ def dashboard(request):
 
 
 # Project Views
+@staff_member_required(login_url="/admin/login/")
 def manage_projects(request):
     """Manage projects view with AJAX support"""
     if request.method == "POST":
@@ -118,7 +142,7 @@ def manage_projects(request):
                 )
 
     # Get recent projects (latest 6 projects regardless of status)
-    recent_projects = Project.objects.all().order_by('-created_at')[:6]
+    recent_projects = Project.objects.select_related("category").all().order_by("-created_at")[:6]
 
     context = {
         "recent_projects": recent_projects,
@@ -127,6 +151,7 @@ def manage_projects(request):
     return render(request, "manage_projects.html", context)
 
 
+@staff_member_required(login_url="/admin/login/")
 def create_project(request):
     """Create new project view with AJAX support"""
     if request.method == "POST":
@@ -202,6 +227,7 @@ def create_project(request):
     return render(request, "create_project.html", context)
 
 
+@staff_member_required(login_url="/admin/login/")
 def edit_project(request, project_id):
     """Edit existing project"""
     project = get_object_or_404(Project, id=project_id)
@@ -286,6 +312,7 @@ def edit_project(request, project_id):
     return render(request, "create_project.html", context)
 
 
+@staff_member_required(login_url="/admin/login/")
 def delete_project(request, project_id):
     """Delete project"""
     if request.method == "POST":
@@ -309,14 +336,15 @@ def delete_project(request, project_id):
     return JsonResponse({"success": False, "message": "Invalid request"}, status=400)
 
 
+@staff_member_required(login_url="/admin/login/")
 def list_projects(request):
     """List all projects view with filtering"""
     filter_type = request.GET.get("filter", "all")
 
     if filter_type == "draft":
-        projects = Project.objects.filter(status="draft")
+        projects = Project.objects.select_related("category").filter(status="draft")
     else:
-        projects = Project.objects.all()
+        projects = Project.objects.select_related("category").all()
 
     context = {
         "projects": projects,
@@ -328,6 +356,7 @@ def list_projects(request):
 
 
 # Experience Views
+@staff_member_required(login_url="/admin/login/")
 def manage_experience(request):
     """Manage experience view"""
     if request.method == "POST":
@@ -354,7 +383,7 @@ def manage_experience(request):
                     {"success": False, "message": "Experience not found"}, status=404
                 )
 
-    experiences = Experience.objects.all()[:6]  # Get latest 6
+    experiences = Experience.objects.select_related("category").all()[:6]  # Get latest 6
     total_count = Experience.objects.count()
 
     context = {
@@ -364,6 +393,7 @@ def manage_experience(request):
     return render(request, "manage_experience.html", context)
 
 
+@staff_member_required(login_url="/admin/login/")
 def create_experience(request):
     """Create new experience view"""
     if request.method == "POST":
@@ -376,8 +406,11 @@ def create_experience(request):
             if len(start_date) == 7:  # Format: YYYY-MM
                 post_data['start_date'] = f"{start_date}-01"
         
-        # Convert end_date from YYYY-MM to YYYY-MM-01
-        if 'end_date' in post_data and post_data['end_date']:
+        # Convert end_date from YYYY-MM to YYYY-MM-01 or clear if currently working
+        is_currently_working = post_data.get("currently_working") in {"on", "true", "1", True}
+        if is_currently_working or not post_data.get('end_date'):
+            post_data['end_date'] = ''
+        elif 'end_date' in post_data and post_data['end_date']:
             end_date = post_data['end_date']
             if len(end_date) == 7:  # Format: YYYY-MM
                 post_data['end_date'] = f"{end_date}-01"
@@ -393,6 +426,8 @@ def create_experience(request):
             # Handle draft status from button click
             is_draft = request.POST.get("is_draft", "false")
             experience.is_draft = is_draft == "true"
+            if is_currently_working:
+                experience.end_date = None
 
             # Generate a collision-safe slug from position.
             if not experience.slug:
@@ -465,6 +500,7 @@ def create_experience(request):
     return render(request, "create_experience.html", context)
 
 
+@staff_member_required(login_url="/admin/login/")
 def edit_experience(request, experience_id):
     """Edit existing experience"""
     experience = get_object_or_404(Experience, id=experience_id)
@@ -479,8 +515,11 @@ def edit_experience(request, experience_id):
             if len(start_date) == 7:  # Format: YYYY-MM
                 post_data['start_date'] = f"{start_date}-01"
         
-        # Convert end_date from YYYY-MM to YYYY-MM-01
-        if 'end_date' in post_data and post_data['end_date']:
+        # Convert end_date from YYYY-MM to YYYY-MM-01 or clear if currently working
+        is_currently_working = post_data.get("currently_working") in {"on", "true", "1", True}
+        if is_currently_working or not post_data.get('end_date'):
+            post_data['end_date'] = ''
+        elif 'end_date' in post_data and post_data['end_date']:
             end_date = post_data['end_date']
             if len(end_date) == 7:  # Format: YYYY-MM
                 post_data['end_date'] = f"{end_date}-01"
@@ -488,7 +527,10 @@ def edit_experience(request, experience_id):
         form = ExperienceForm(post_data, request.FILES, instance=experience)
         if form.is_valid():
             with transaction.atomic():
-                experience = form.save()
+                experience = form.save(commit=False)
+                if is_currently_working:
+                    experience.end_date = None
+                experience.save()
 
                 # Handle workplace image uploads
                 workplace_files = request.FILES.getlist("workplace_images")
@@ -535,6 +577,7 @@ def edit_experience(request, experience_id):
     return render(request, "create_experience.html", context)
 
 
+@staff_member_required(login_url="/admin/login/")
 def delete_experience(request, experience_id):
     """Delete experience"""
     if request.method == "POST":
@@ -556,14 +599,15 @@ def delete_experience(request, experience_id):
     return JsonResponse({"success": False, "message": "Invalid request"}, status=400)
 
 
+@staff_member_required(login_url="/admin/login/")
 def list_experience(request):
     """List all experience view"""
     filter_type = request.GET.get("filter", "all")
 
     if filter_type == "draft":
-        experiences = Experience.objects.filter(is_draft=True)
+        experiences = Experience.objects.select_related("category").filter(is_draft=True)
     else:
-        experiences = Experience.objects.all()
+        experiences = Experience.objects.select_related("category").all()
 
     context = {
         "experiences": experiences,
@@ -575,6 +619,7 @@ def list_experience(request):
 
 
 # Skills Views
+@staff_member_required(login_url="/admin/login/")
 def manage_skills(request):
     """Manage skills view - show recent 6 skills only"""
     # Handle AJAX toggle
@@ -600,7 +645,7 @@ def manage_skills(request):
             return JsonResponse({"success": False, "error": "Skill not found"}, status=404)
 
     # Get latest 6 skills (regardless of draft status)
-    recent_skills = Skill.objects.all().order_by("-created_at")[:6]
+    recent_skills = Skill.objects.select_related("category").all().order_by("-created_at")[:6]
     total_count = Skill.objects.count()
 
     context = {
@@ -610,6 +655,7 @@ def manage_skills(request):
     return render(request, "manage_skills.html", context)
 
 
+@staff_member_required(login_url="/admin/login/")
 def create_skill(request):
     """Create new skill view"""
     if request.method == "POST":
@@ -635,14 +681,15 @@ def create_skill(request):
     return render(request, "create_skill.html", {"form": form})
 
 
+@staff_member_required(login_url="/admin/login/")
 def list_skills(request):
     """List all skills view with filtering (All/Draft only)"""
     filter_type = request.GET.get("filter", "all")
 
     if filter_type == "draft":
-        skills = Skill.objects.filter(is_draft=True).order_by("-created_at")
+        skills = Skill.objects.select_related("category").filter(is_draft=True).order_by("-created_at")
     else:  # all
-        skills = Skill.objects.all().order_by("-created_at")
+        skills = Skill.objects.select_related("category").all().order_by("-created_at")
 
     # Get counts
     total_count = Skill.objects.count()
@@ -657,6 +704,7 @@ def list_skills(request):
     return render(request, "list_skills.html", context)
 
 
+@staff_member_required(login_url="/admin/login/")
 def edit_skill(request, skill_id):
     """Edit skill view"""
     skill = get_object_or_404(Skill, id=skill_id)
@@ -675,6 +723,7 @@ def edit_skill(request, skill_id):
     return render(request, "create_skill.html", {"form": form, "skill": skill})
 
 
+@staff_member_required(login_url="/admin/login/")
 def delete_skill(request, skill_id):
     """Delete skill"""
     if request.method == "POST":
@@ -697,6 +746,7 @@ def delete_skill(request, skill_id):
 
 
 # Achievements Views
+@staff_member_required(login_url="/admin/login/")
 def manage_achievements(request):
     """Manage achievements view - show recent 6 achievements"""
     if request.method == "POST" and request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -715,9 +765,9 @@ def manage_achievements(request):
             achievement.save()
             return JsonResponse({"success": True})
         except Achievement.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Achievement not found"})
+            return JsonResponse({"success": False, "error": "Achievement not found"}, status=404)
 
-    recent_achievements = Achievement.objects.all().order_by("-created_at")[:6]
+    recent_achievements = Achievement.objects.select_related("category").all().order_by("-created_at")[:6]
     total_count = Achievement.objects.count()
 
     context = {
@@ -727,6 +777,7 @@ def manage_achievements(request):
     return render(request, "manage_achievements.html", context)
 
 
+@staff_member_required(login_url="/admin/login/")
 def create_achievement(request):
     """Create new achievement view"""
     if request.method == "POST":
@@ -749,6 +800,7 @@ def create_achievement(request):
     return render(request, "create_achievement.html", {"form": form})
 
 
+@staff_member_required(login_url="/admin/login/")
 def edit_achievement(request, achievement_id):
     """Edit achievement view"""
     achievement = get_object_or_404(Achievement, id=achievement_id)
@@ -772,6 +824,7 @@ def edit_achievement(request, achievement_id):
     return render(request, "create_achievement.html", context)
 
 
+@staff_member_required(login_url="/admin/login/")
 def delete_achievement(request, achievement_id):
     """Delete achievement"""
     if request.method == "POST":
@@ -793,14 +846,15 @@ def delete_achievement(request, achievement_id):
     return JsonResponse({"success": False, "message": "Invalid request"}, status=400)
 
 
+@staff_member_required(login_url="/admin/login/")
 def list_achievements(request):
     """List all achievements view"""
     filter_type = request.GET.get("filter", "all")
 
     if filter_type == "draft":
-        achievements = Achievement.objects.filter(is_draft=True)
+        achievements = Achievement.objects.select_related("category").filter(is_draft=True)
     else:
-        achievements = Achievement.objects.all()
+        achievements = Achievement.objects.select_related("category").all()
 
     achievements = achievements.order_by("-achievement_date")
 
@@ -818,6 +872,7 @@ def list_achievements(request):
 
 
 # Categories Views
+@staff_member_required(login_url="/admin/login/")
 def manage_categories(request):
     """Manage categories view with AJAX support"""
     if (
@@ -854,7 +909,8 @@ def manage_categories(request):
                         "success": False,
                         "message": "Invalid data. Please check the form.",
                         "errors": form.errors,
-                    }
+                    },
+                    status=400,
                 )
 
         # Update category
@@ -888,11 +944,13 @@ def manage_categories(request):
                             "success": False,
                             "message": "Invalid data. Please check the form.",
                             "errors": form.errors,
-                        }
+                        },
+                        status=400,
                     )
             except Category.DoesNotExist:
                 return JsonResponse(
-                    {"success": False, "message": "Category not found."}
+                    {"success": False, "message": "Category not found."},
+                    status=404,
                 )
 
         # Delete category
@@ -910,7 +968,8 @@ def manage_categories(request):
                 )
             except Category.DoesNotExist:
                 return JsonResponse(
-                    {"success": False, "message": "Category not found."}
+                    {"success": False, "message": "Category not found."},
+                    status=404,
                 )
 
         # Get category for editing
@@ -934,7 +993,8 @@ def manage_categories(request):
                 )
             except Category.DoesNotExist:
                 return JsonResponse(
-                    {"success": False, "message": "Category not found."}
+                    {"success": False, "message": "Category not found."},
+                    status=404,
                 )
 
     # GET request - display categories
@@ -945,8 +1005,9 @@ def manage_categories(request):
 
 
 # Details Views
+@staff_member_required(login_url="/admin/login/")
 def manage_details(request):
-    """Manage user profile details with AJAX support"""
+    """Manage user profile details with AJAX support and input validation"""
     # Get or create user profile (assuming single user)
     profile, created = UserProfile.objects.get_or_create(
         id=1,
@@ -963,12 +1024,34 @@ def manage_details(request):
             form_type = request.POST.get("form_type")
 
             if form_type == "personal_info":
-                profile.full_name = request.POST.get("full_name", profile.full_name)
-                profile.email = request.POST.get("email", profile.email)
-                profile.phone = request.POST.get("phone", "")
-                profile.location = request.POST.get("location", "")
-                profile.title = request.POST.get("title", profile.title)
-                profile.bio = request.POST.get("bio", "")
+                full_name = request.POST.get("full_name", "").strip()
+                email = request.POST.get("email", "").strip().lower()
+                title = request.POST.get("title", "").strip()
+
+                if len(full_name) < 2:
+                    return JsonResponse(
+                        {"success": False, "message": "Full name must be at least 2 characters."},
+                        status=400,
+                    )
+                try:
+                    validate_email(email)
+                except ValidationError:
+                    return JsonResponse(
+                        {"success": False, "message": "Please enter a valid email address."},
+                        status=400,
+                    )
+                if not title:
+                    return JsonResponse(
+                        {"success": False, "message": "Professional title is required."},
+                        status=400,
+                    )
+
+                profile.full_name = full_name
+                profile.email = email
+                profile.phone = request.POST.get("phone", "").strip()
+                profile.location = request.POST.get("location", "").strip()
+                profile.title = title
+                profile.bio = request.POST.get("bio", "").strip()
                 profile.save()
                 return JsonResponse(
                     {
@@ -978,36 +1061,46 @@ def manage_details(request):
                 )
 
             elif form_type == "social_links":
-                profile.github = request.POST.get("github", "")
-                profile.linkedin = request.POST.get("linkedin", "")
-                profile.twitter = request.POST.get("twitter", "")
-                profile.instagram = request.POST.get("instagram", "")
-                profile.youtube = request.POST.get("youtube", "")
-                profile.website = request.POST.get("website", "")
+                profile.github = request.POST.get("github", "").strip()
+                profile.linkedin = request.POST.get("linkedin", "").strip()
+                profile.twitter = request.POST.get("twitter", "").strip()
+                profile.instagram = request.POST.get("instagram", "").strip()
+                profile.youtube = request.POST.get("youtube", "").strip()
+                profile.website = request.POST.get("website", "").strip()
                 profile.save()
                 return JsonResponse(
                     {"success": True, "message": "Social links updated successfully!"}
                 )
 
             elif form_type == "seo":
-                profile.meta_title = request.POST.get("meta_title", "")
-                profile.meta_description = request.POST.get("meta_description", "")
-                profile.meta_keywords = request.POST.get("meta_keywords", "")
+                profile.meta_title = request.POST.get("meta_title", "").strip()
+                profile.meta_description = request.POST.get("meta_description", "").strip()
+                profile.meta_keywords = request.POST.get("meta_keywords", "").strip()
                 profile.save()
                 return JsonResponse(
                     {"success": True, "message": "SEO settings updated successfully!"}
                 )
 
             elif form_type == "preferences":
-                profile.status = request.POST.get("status", "available")
-                profile.work_type = request.POST.get("work_type", "remote")
-                profile.hourly_rate = request.POST.get("hourly_rate") or None
-                profile.experience_years = request.POST.get("experience_years", 0)
+                status_val = request.POST.get("status", "available").strip()
+                work_type_val = request.POST.get("work_type", "remote").strip()
+                hourly_rate_raw = request.POST.get("hourly_rate")
+                exp_years_raw = request.POST.get("experience_years")
+
+                hourly_rate = parse_decimal(hourly_rate_raw)
+                exp_years = parse_int(exp_years_raw)
+                if exp_years is None or exp_years < 0:
+                    exp_years = 0
+
+                profile.status = status_val if status_val in dict(UserProfile.STATUS_CHOICES) else "available"
+                profile.work_type = work_type_val if work_type_val in dict(UserProfile.WORK_TYPE_CHOICES) else "remote"
+                profile.hourly_rate = hourly_rate
+                profile.experience_years = exp_years
                 profile.open_to_opportunities = (
-                    request.POST.get("open_to_opportunities") == "on"
+                    request.POST.get("open_to_opportunities") in {"on", "true", "1", True}
                 )
                 profile.available_for_freelance = (
-                    request.POST.get("available_for_freelance") == "on"
+                    request.POST.get("available_for_freelance") in {"on", "true", "1", True}
                 )
                 profile.save()
                 return JsonResponse(
@@ -1016,7 +1109,19 @@ def manage_details(request):
 
             elif form_type == "profile_image":
                 if "profile_image" in request.FILES:
-                    profile.profile_image = request.FILES["profile_image"]
+                    img_file = request.FILES["profile_image"]
+                    ext = Path(img_file.name).suffix.lower()
+                    if ext not in {".jpg", ".jpeg", ".png", ".webp", ".gif"}:
+                        return JsonResponse(
+                            {"success": False, "message": "Invalid image format. Allowed: JPG, PNG, WebP, GIF."},
+                            status=400,
+                        )
+                    if img_file.size > 10 * 1024 * 1024:
+                        return JsonResponse(
+                            {"success": False, "message": "Image size exceeds 10MB limit."},
+                            status=400,
+                        )
+                    profile.profile_image = img_file
                     profile.save()
                     return JsonResponse(
                         {
@@ -1030,7 +1135,8 @@ def manage_details(request):
                         }
                     )
                 return JsonResponse(
-                    {"success": False, "message": "No image file provided"}
+                    {"success": False, "message": "No image file provided"},
+                    status=400,
                 )
 
             elif form_type == "delete_profile_image":
@@ -1049,16 +1155,40 @@ def manage_details(request):
 
             elif form_type == "upload_resume":
                 if "resume" in request.FILES:
-                    profile.resume = request.FILES["resume"]
+                    doc_file = request.FILES["resume"]
+                    ext = Path(doc_file.name).suffix.lower()
+                    if ext not in {".pdf", ".doc", ".docx"}:
+                        return JsonResponse(
+                            {"success": False, "message": "Invalid document format. Allowed: PDF, DOC, DOCX."},
+                            status=400,
+                        )
+                    if doc_file.size > 15 * 1024 * 1024:
+                        return JsonResponse(
+                            {"success": False, "message": "File size exceeds 15MB limit."},
+                            status=400,
+                        )
+                    profile.resume = doc_file
                     profile.save()
                     return JsonResponse(
                         {"success": True, "message": "Resume uploaded successfully!"}
                     )
-                return JsonResponse({"success": False, "message": "No file provided"})
+                return JsonResponse({"success": False, "message": "No file provided"}, status=400)
 
             elif form_type == "upload_cover_letter":
                 if "cover_letter" in request.FILES:
-                    profile.cover_letter = request.FILES["cover_letter"]
+                    doc_file = request.FILES["cover_letter"]
+                    ext = Path(doc_file.name).suffix.lower()
+                    if ext not in {".pdf", ".doc", ".docx"}:
+                        return JsonResponse(
+                            {"success": False, "message": "Invalid document format. Allowed: PDF, DOC, DOCX."},
+                            status=400,
+                        )
+                    if doc_file.size > 15 * 1024 * 1024:
+                        return JsonResponse(
+                            {"success": False, "message": "File size exceeds 15MB limit."},
+                            status=400,
+                        )
+                    profile.cover_letter = doc_file
                     profile.save()
                     return JsonResponse(
                         {
@@ -1066,7 +1196,7 @@ def manage_details(request):
                             "message": "Cover letter uploaded successfully!",
                         }
                     )
-                return JsonResponse({"success": False, "message": "No file provided"})
+                return JsonResponse({"success": False, "message": "No file provided"}, status=400)
 
             elif form_type == "delete_resume":
                 if profile.resume:
@@ -1094,7 +1224,7 @@ def manage_details(request):
                 )
 
             elif form_type == "video_resume":
-                profile.video_resume = request.POST.get("video_resume", "")
+                profile.video_resume = request.POST.get("video_resume", "").strip()
                 profile.save()
                 return JsonResponse(
                     {
@@ -1103,7 +1233,7 @@ def manage_details(request):
                     }
                 )
 
-            return JsonResponse({"success": False, "message": "Invalid form type"})
+            return JsonResponse({"success": False, "message": "Invalid form type"}, status=400)
 
     form = UserProfileForm(instance=profile)
     

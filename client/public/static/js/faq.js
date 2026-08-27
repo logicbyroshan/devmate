@@ -55,7 +55,7 @@ function initFaqSection() {
 
     // Initialize with currently active tab.
     const activeTab = document.querySelector('.faq-tab.active');
-    applyCategoryFilter(activeTab ? activeTab.getAttribute('data-category') : 'all');
+    applyCategoryFilter(activeTab ? activeTab.getAttribute('data-category') : 'general');
 
     // Single Intersection Observer for scroll animations
     const observerOptions = {

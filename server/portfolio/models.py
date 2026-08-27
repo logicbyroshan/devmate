@@ -73,6 +73,7 @@ class Category(models.Model):
         ordering = ["category_type", "name"]
         indexes = [
             models.Index(fields=["category_type", "name"]),
+            models.Index(fields=["category_type", "slug"]),
         ]
 
     def __str__(self):
@@ -172,6 +173,8 @@ class Project(models.Model):
             models.Index(fields=["is_active", "status", "order", "created_at"]),
             models.Index(fields=["is_featured", "is_active", "status"]),
             models.Index(fields=["category", "is_active", "status"]),
+            models.Index(fields=["slug", "is_active"]),
+            models.Index(fields=["is_active", "views"]),
         ]
 
     def __str__(self):
@@ -379,6 +382,7 @@ class Experience(models.Model):
             models.Index(fields=["is_active", "is_draft", "order", "start_date"]),
             models.Index(fields=["employment_type", "is_active", "is_draft"]),
             models.Index(fields=["category", "is_active", "is_draft"]),
+            models.Index(fields=["slug", "is_active", "is_draft"]),
         ]
 
     def __str__(self):
@@ -509,6 +513,7 @@ class Skill(models.Model):
             models.Index(fields=["is_active", "is_draft", "proficiency", "name"]),
             models.Index(fields=["skill_level", "is_active", "is_draft"]),
             models.Index(fields=["category", "is_active", "is_draft"]),
+            models.Index(fields=["slug", "is_active", "is_draft"]),
         ]
 
     def __str__(self):
@@ -594,6 +599,7 @@ class Achievement(models.Model):
         indexes = [
             models.Index(fields=["is_active", "is_draft", "achievement_date", "created_at"]),
             models.Index(fields=["category", "is_active", "is_draft"]),
+            models.Index(fields=["slug", "is_active", "is_draft"]),
         ]
 
     def __str__(self):
@@ -638,6 +644,7 @@ class ContactMessage(models.Model):
             models.Index(fields=["created_at"]),
             models.Index(fields=["email", "created_at"]),
             models.Index(fields=["ip_address", "created_at"]),
+            models.Index(fields=["is_read", "created_at"]),
         ]
 
     def __str__(self):

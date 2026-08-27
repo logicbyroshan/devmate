@@ -55,7 +55,7 @@
 
 .blog-image-wrapper {
     width: 100%;
-    aspect-ratio: 3 / 2;
+    aspect-ratio: 16 / 9;
     height: auto;
     overflow: hidden;
     position: relative;
@@ -64,13 +64,14 @@
     background: linear-gradient(180deg, var(--card-gradient-start) 0%, rgba(25, 30, 65, 0.6) 50%, var(--card-gradient-end) 100%);
     backdrop-filter: blur(10px);
     border: none;
-    padding: 16px;
+    padding: 12px;
 }
 
 .blog-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     border-radius: 12px;
 }
 

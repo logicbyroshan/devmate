@@ -7,9 +7,8 @@
 
     let ctx = null;
     let bgAudio = null;
-    let bgStarted = false;
     let audioReady = false;
-    const BG_VOLUME = 0.01;
+    const BG_VOLUME = 0.08;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let isMuted = localStorage.getItem('portfolioMuted') === 'true' || prefersReducedMotion;
     let soundBindingsReady = false;
@@ -39,16 +38,25 @@
         if (!bgAudio) {
             bgAudio = new Audio('/portfolio-bgm.mp3');
             bgAudio.loop = true;
+            bgAudio.volume = BG_VOLUME;
         }
-        bgAudio.volume = BG_VOLUME;
-        bgStarted = true;
-        if (!isMuted) {
+        // Only set volume if not already at the correct level (prevents accumulation)
+        if (Math.abs(bgAudio.volume - BG_VOLUME) > 0.001) {
+            bgAudio.volume = BG_VOLUME;
+        }
+        if (!isMuted && bgAudio.paused) {
             bgAudio.play().catch(function (err) {
                 console.log('Background music waiting for user interaction', err);
             });
-        } else {
+        } else if (isMuted) {
             bgAudio.pause();
         }
+        // Guard: ensure volume never drifts above BG_VOLUME
+        bgAudio.addEventListener('volumechange', function () {
+            if (bgAudio.volume > BG_VOLUME + 0.001) {
+                bgAudio.volume = BG_VOLUME;
+            }
+        }, { once: false });
     }
 
 
@@ -219,66 +227,46 @@
 
         updateSoundToggleUI();
 
-        // ── General button / link clicks ──
-        const clickSelectors = [
-            '.btn',
-            '.nav-link',
-            '.mobile-nav-link',
-            '.faq-tab',
-            '.scroll-top-btn',
-            '.hamburger-menu',
-            '.github-btn',
-            '.mobile-nav-actions .btn',
-        ];
-        document.querySelectorAll(clickSelectors.join(', ')).forEach(el => {
-            el.addEventListener('click', () => {
+        // ── Event delegation for clicks (supports dynamically hydrated elements) ──
+        const clickSelector = '.btn, .nav-link, .mobile-nav-link, .faq-tab, .scroll-top-btn, .hamburger-menu, .github-btn, .mobile-nav-actions .btn, .modal-close, .modal-expand-btn, .chat-send-btn, .project-btn, .cs-link-pill, .download-option-card';
+        
+        document.addEventListener('click', (e) => {
+            const faqQ = e.target.closest('.faq-question');
+            if (faqQ) {
                 initAudio();
-                playClick();
-            });
-        });
+                const opening = !faqQ.closest('.faq-item')?.classList.contains('active');
+                playPop(opening);
+                return;
+            }
 
-        // ── Hover tick on nav links (very subtle) ──
-        document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                if (!audioReady) return;
-                playHover();
-            });
-        });
-
-        // ── Project card prev / next ──
-        const prevBtn = document.querySelector('.prev-btn');
-        const nextBtn = document.querySelector('.next-btn');
-        if (prevBtn) {
-            prevBtn.addEventListener('click', () => {
+            const prevBtn = e.target.closest('.prev-btn');
+            if (prevBtn) {
                 initAudio();
                 playSlide(-1);
-            });
-        }
-        if (nextBtn) {
-            nextBtn.addEventListener('click', () => {
+                return;
+            }
+
+            const nextBtn = e.target.closest('.next-btn');
+            if (nextBtn) {
                 initAudio();
                 playSlide(1);
-            });
-        }
+                return;
+            }
 
-        // ── FAQ accordion open/close ──
-        // Use capture:true so we read the class BEFORE faq.js toggles it
-        document.querySelectorAll('.faq-question').forEach(q => {
-            q.addEventListener('click', () => {
-                initAudio();
-                const opening = !q.closest('.faq-item').classList.contains('active');
-                playPop(opening);
-            }, true); // capture phase — fires before faq.js bubble handler
-        });
-
-        // ── Scroll-to-top button ──
-        const scrollBtn = document.getElementById('scrollTopBtn');
-        if (scrollBtn) {
-            scrollBtn.addEventListener('click', () => {
+            const btn = e.target.closest(clickSelector);
+            if (btn) {
                 initAudio();
                 playClick();
-            });
-        }
+            }
+        }, true);
+
+        // ── Hover tick on nav links (very subtle) ──
+        document.addEventListener('mouseover', (e) => {
+            const link = e.target.closest('.nav-link, .mobile-nav-link');
+            if (link && audioReady) {
+                playHover();
+            }
+        });
 
         if (isMuted) {
             applyMuteState();

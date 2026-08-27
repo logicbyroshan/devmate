@@ -7,8 +7,18 @@ from django.test import TestCase, override_settings
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 
-from .models import Achievement, Category, Experience, Project, Skill
+from .models import (
+	Achievement,
+	Category,
+	ContactMessage,
+	Experience,
+	Project,
+	Skill,
+	UserProfile,
+)
 from .views import generate_unique_slug
+
+User = get_user_model()
 
 
 @override_settings(API_KEY="", SECURE_SSL_REDIRECT=False)
@@ -267,16 +277,20 @@ class ApiQueryPerformanceTests(TestCase):
 		self.assertLessEqual(len(ctx.captured_queries), 14)
 
 
-@override_settings(API_KEY="", SECURE_SSL_REDIRECT=False)
+@override_settings(
+	API_KEY="",
+	SECURE_SSL_REDIRECT=False,
+	ALLOWED_HOSTS=["admin.logicbyroshan.in", "logicbyroshan.in", "www.logicbyroshan.in", "testserver"],
+)
 class AdminSubdomainAccessTests(TestCase):
 	def test_intended_admin_subdomain_reaches_login(self):
-		response = self.client.get("/", HTTP_HOST="admin.roshandmaor.me")
+		response = self.client.get("/", HTTP_HOST="admin.logicbyroshan.in")
 
 		self.assertEqual(response.status_code, 302)
 		self.assertIn("/admin/login/", response["Location"])
 
-	def test_legacy_admin_subdomain_still_reaches_login(self):
-		response = self.client.get("/", HTTP_HOST="admin.roshandamor.me")
+	def test_root_domain_also_reaches_login_when_unauthenticated(self):
+		response = self.client.get("/", HTTP_HOST="logicbyroshan.in")
 
 		self.assertEqual(response.status_code, 302)
 		self.assertIn("/admin/login/", response["Location"])
@@ -617,3 +631,264 @@ class AdminCrudFlowTests(TestCase):
 			)
 			self.assertEqual(response.status_code, 400, msg=f"Expected 400 for {url}")
 			self.assertFalse(response.json().get("success", False))
+
+
+@override_settings(API_KEY="", SECURE_SSL_REDIRECT=False)
+class ServiceLayerAndV1ApiTests(TestCase):
+	def setUp(self):
+		self.cat = Category.objects.create(
+			name="Full Stack",
+			slug="full-stack",
+			category_type="project",
+		)
+		self.project = Project.objects.create(
+			title="CardFlow SaaS",
+			slug="cardflow-saas",
+			description="ID Card SaaS",
+			technologies="Django, React",
+			category=self.cat,
+			status="active",
+			is_active=True,
+			is_featured=True,
+			views=10,
+			likes=5,
+		)
+		self.profile = UserProfile.objects.create(
+			full_name="Roshan Damor",
+			email="mail@logicbyroshan.in",
+			title="AI Full Stack Developer",
+			location="India",
+			experience_years=3,
+		)
+
+	def test_api_v1_health_endpoint(self):
+		response = self.client.get("/api/v1/health/")
+		self.assertEqual(response.status_code, 200)
+		data = response.json()
+		self.assertEqual(data["status"], "healthy")
+		self.assertEqual(data["api_version"], "v1")
+		self.assertEqual(data["database"]["status"], "ok")
+
+	def test_api_canonical_health_endpoint(self):
+		response = self.client.get("/api/health/")
+		self.assertEqual(response.status_code, 200)
+		data = response.json()
+		self.assertEqual(data["status"], "healthy")
+
+	def test_api_v1_projects_and_actions(self):
+		# List
+		response = self.client.get("/api/v1/projects/")
+		self.assertEqual(response.status_code, 200)
+
+		# Featured
+		response_featured = self.client.get("/api/v1/projects/featured/")
+		self.assertEqual(response_featured.status_code, 200)
+		self.assertTrue(len(response_featured.json()) >= 1)
+
+		# Detail
+		response_detail = self.client.get("/api/v1/projects/cardflow-saas/")
+		self.assertEqual(response_detail.status_code, 200)
+		self.assertEqual(response_detail.json()["slug"], "cardflow-saas")
+
+		# Like action
+		response_like = self.client.post("/api/v1/projects/cardflow-saas/like/")
+		self.assertEqual(response_like.status_code, 200)
+		self.assertEqual(response_like.json()["likes"], 6)
+
+		# View action
+		response_view = self.client.post("/api/v1/projects/cardflow-saas/view/")
+		self.assertEqual(response_view.status_code, 200)
+		self.assertEqual(response_view.json()["views"], 11)
+
+	def test_contact_service_spam_and_rate_limiting(self):
+		# Short message rejected
+		resp = self.client.post(
+			"/api/v1/contact/",
+			{"full_name": "Alice", "email": "alice@example.com", "message": "Hi"},
+		)
+		self.assertEqual(resp.status_code, 400)
+		self.assertFalse(resp.json()["success"])
+
+		# Crypto spam rejected
+		resp_spam = self.client.post(
+			"/api/v1/contact/",
+			{"full_name": "Spammer", "email": "spammer@example.com", "message": "Buy best crypto investment now on our site!"},
+		)
+		self.assertEqual(resp_spam.status_code, 400)
+		self.assertIn("spam", resp_spam.json()["message"].lower())
+
+		# Too many links rejected
+		resp_links = self.client.post(
+			"/api/v1/contact/",
+			{"full_name": "Linker", "email": "linker@example.com", "message": "Check https://site1.com and https://site2.com and https://site3.com for deals!"},
+		)
+		self.assertEqual(resp_links.status_code, 400)
+		self.assertIn("links", resp_links.json()["message"].lower())
+
+		# Valid submission
+		resp_ok = self.client.post(
+			"/api/v1/contact/",
+			{
+				"full_name": "Valid Client",
+				"email": "client@example.com",
+				"message": "Hello Roshan, we would like to discuss a software engineering contract with you.",
+			},
+		)
+		self.assertEqual(resp_ok.status_code, 201)
+		self.assertTrue(resp_ok.json()["success"])
+
+		# Duplicate rejected
+		resp_dup = self.client.post(
+			"/api/v1/contact/",
+			{
+				"full_name": "Valid Client",
+				"email": "client@example.com",
+				"message": "Hello Roshan, we would like to discuss a software engineering contract with you.",
+			},
+		)
+		self.assertEqual(resp_dup.status_code, 409)
+
+	def test_rexi_chat_service(self):
+		# Empty query rejected
+		resp_empty = self.client.post("/api/v1/rexi/chat/", {"message": ""})
+		self.assertEqual(resp_empty.status_code, 400)
+
+		# Identity query
+		resp_id = self.client.post("/api/v1/rexi/chat/", {"message": "Who are you?"})
+		self.assertEqual(resp_id.status_code, 200)
+		self.assertIn("Rexi", resp_id.json()["reply"])
+
+		# Skill query
+		resp_skill = self.client.post("/api/v1/rexi/chat/", {"message": "What is Roshan's tech stack?"})
+		self.assertEqual(resp_skill.status_code, 200)
+		self.assertIn("Roshan", resp_skill.json()["reply"])
+
+
+@override_settings(API_KEY="prod-secret-key", SECURE_SSL_REDIRECT=False)
+class ProductionSecurityHardeningTests(TestCase):
+	def setUp(self):
+		category = Category.objects.create(
+			name="Security Cat",
+			slug="sec-cat",
+			category_type="project",
+		)
+		Project.objects.create(
+			title="Sec Project",
+			slug="sec-project",
+			description="Sec desc",
+			category=category,
+			status="active",
+			is_active=True,
+		)
+
+	@override_settings(DEBUG=False)
+	def test_api_key_cannot_be_bypassed_by_localhost_in_production(self):
+		"""When DEBUG=False, localhost request without X-API-Key MUST be rejected."""
+		response = self.client.get(
+			reverse("api-projects-list"),
+			HTTP_HOST="localhost",
+		)
+		self.assertIn(response.status_code, {401, 403})
+
+	@override_settings(DEBUG=True)
+	def test_api_key_can_be_bypassed_by_localhost_in_debug_only(self):
+		"""When DEBUG=True, localhost request without X-API-Key is permitted for dev."""
+		response = self.client.get(
+			reverse("api-projects-list"),
+			HTTP_HOST="localhost",
+		)
+		self.assertEqual(response.status_code, 200)
+
+
+@override_settings(API_KEY="", SECURE_SSL_REDIRECT=False)
+class ManageDetailsValidationTests(TestCase):
+	def setUp(self):
+		self.user = User.objects.create_superuser(
+			username="detailadmin",
+			email="admin@example.com",
+			password="strongpassword123",
+		)
+		self.client.force_login(self.user)
+
+	def test_personal_info_valid(self):
+		resp = self.client.post(
+			reverse("manage_details"),
+			{
+				"form_type": "personal_info",
+				"full_name": "Roshan Damor",
+				"email": "roshan@example.com",
+				"title": "Software Engineer",
+				"bio": "Building reliable systems.",
+			},
+			HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+		)
+		self.assertEqual(resp.status_code, 200)
+		self.assertTrue(resp.json()["success"])
+
+	def test_personal_info_invalid_email_rejected(self):
+		resp = self.client.post(
+			reverse("manage_details"),
+			{
+				"form_type": "personal_info",
+				"full_name": "Roshan Damor",
+				"email": "not-a-valid-email",
+				"title": "Software Engineer",
+			},
+			HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+		)
+		self.assertEqual(resp.status_code, 400)
+		self.assertFalse(resp.json()["success"])
+
+	def test_personal_info_short_name_rejected(self):
+		resp = self.client.post(
+			reverse("manage_details"),
+			{
+				"form_type": "personal_info",
+				"full_name": "R",
+				"email": "valid@example.com",
+				"title": "Software Engineer",
+			},
+			HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+		)
+		self.assertEqual(resp.status_code, 400)
+		self.assertFalse(resp.json()["success"])
+
+	def test_preferences_invalid_numbers_handled_gracefully(self):
+		resp = self.client.post(
+			reverse("manage_details"),
+			{
+				"form_type": "preferences",
+				"status": "available",
+				"work_type": "remote",
+				"hourly_rate": "invalid-rate-string",
+				"experience_years": "not-an-int",
+			},
+			HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+		)
+		self.assertEqual(resp.status_code, 200)
+		profile = UserProfile.objects.get(id=1)
+		self.assertIsNone(profile.hourly_rate)
+		self.assertEqual(profile.experience_years, 0)
+
+	def test_profile_image_invalid_extension_rejected(self):
+		from django.core.files.uploadedfile import SimpleUploadedFile
+		fake_exe = SimpleUploadedFile("malicious.exe", b"binary content", content_type="application/octet-stream")
+		resp = self.client.post(
+			reverse("manage_details"),
+			{"form_type": "profile_image", "profile_image": fake_exe},
+			HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+		)
+		self.assertEqual(resp.status_code, 400)
+		self.assertIn("Invalid image format", resp.json()["message"])
+
+	def test_resume_upload_invalid_extension_rejected(self):
+		from django.core.files.uploadedfile import SimpleUploadedFile
+		fake_script = SimpleUploadedFile("bad_script.py", b"print('hack')", content_type="text/x-python")
+		resp = self.client.post(
+			reverse("manage_details"),
+			{"form_type": "upload_resume", "resume": fake_script},
+			HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+		)
+		self.assertEqual(resp.status_code, 400)
+		self.assertIn("Invalid document format", resp.json()["message"])
+

@@ -1,18 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- 1. Home Root -->
   <url>
-    <loc>https://www.roshandmaor.me/</loc>
-    <lastmod>2026-04-09</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://logicbyroshan.in/</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://www.roshandmaor.me/static/images/hero.png</image:loc>
-      <image:title>Roshan Damor Portfolio Hero</image:title>
+      <image:loc>https://logicbyroshan.in/static/images/hero.webp</image:loc>
+      <image:title>Roshan Damor - Software Engineer &amp; AI Developer Portfolio</image:title>
+      <image:caption>Roshan Damor - Software Engineer from UIT RGPV Bhopal building production web systems and AI applications</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://www.roshandmaor.me/static/images/logo.png</image:loc>
-      <image:title>Roshan Damor Portfolio Logo</image:title>
+      <image:loc>https://logicbyroshan.in/static/images/logo.webp</image:loc>
+      <image:title>Roshan Damor Brand Logo</image:title>
+    </image:image>
+  </url>
+
+  <!-- 2. About & Full Profile -->
+  <url>
+    <loc>https://logicbyroshan.in/about</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://logicbyroshan.in/static/images/profile-img.webp</image:loc>
+      <image:title>Roshan Damor - Software Engineer Biography and Resume</image:title>
+    </image:image>
+  </url>
+
+  <!-- 3. Professional Experience Roadmap -->
+  <url>
+    <loc>https://logicbyroshan.in/experience</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- 4. Projects: CardFlow SaaS -->
+  <url>
+    <loc>https://logicbyroshan.in/projects/cardflow</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://logicbyroshan.in/static/images/projects/cardflow/admin_dashboard.webp</image:loc>
+      <image:title>CardFlow SaaS Architecture and Case Study by Roshan Damor</image:title>
+    </image:image>
+  </url>
+
+  <!-- 5. Projects: VidyaMaxx AI School Management -->
+  <url>
+    <loc>https://logicbyroshan.in/projects/vidyamaxx</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://logicbyroshan.in/static/images/projects/vidyamaxx/vidyamaxx_dash.webp</image:loc>
+      <image:title>VidyaMaxx AI Platform Case Study by Roshan Damor</image:title>
+    </image:image>
+  </url>
+
+  <!-- 6. Projects: PrintNexx Internal Automation Tool -->
+  <url>
+    <loc>https://logicbyroshan.in/projects/printnexx</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://logicbyroshan.in/static/images/projects/printnexx/dashboard.webp</image:loc>
+      <image:title>PrintNexx Image Processing Tool by Roshan Damor</image:title>
+    </image:image>
+  </url>
+
+  <!-- 7. Projects: EazeTrip Client Travel SaaS -->
+  <url>
+    <loc>https://logicbyroshan.in/projects/eazetrip</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 8. Projects: TaskFlixx AI Task Manager -->
+  <url>
+    <loc>https://logicbyroshan.in/projects/taskflixx</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 9. Projects: PrepSarthi AI Learning Platform -->
+  <url>
+    <loc>https://logicbyroshan.in/projects/prepsarthi</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 10. Blog: Microservices Architecture Guide -->
+  <url>
+    <loc>https://logicbyroshan.in/blog/understanding-microservices-architecture</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:title>Understanding Microservices Architecture by Roshan Damor</image:title>
+    </image:image>
+  </url>
+
+  <!-- 11. Blog: Scalable APIs with Node & GraphQL -->
+  <url>
+    <loc>https://logicbyroshan.in/blog/building-scalable-apis-nodejs-graphql</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:title>Building Scalable APIs with Node.js and GraphQL by Roshan Damor</image:title>
+    </image:image>
+  </url>
+
+  <!-- 12. Blog: Docker & Kubernetes Guide -->
+  <url>
+    <loc>https://logicbyroshan.in/blog/docker-kubernetes-container-orchestration</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=1200&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:title>Docker and Kubernetes Container Orchestration Guide by Roshan Damor</image:title>
     </image:image>
   </url>
 </urlset>

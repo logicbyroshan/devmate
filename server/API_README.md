@@ -1,259 +1,84 @@
-# Portfolio API
+# Portfolio REST API & Service Layer Documentation
 
-## 🚀 Quick Start
+## 🚀 Overview & Architecture
 
-### 1. Access API Documentation
-Visit: `http://localhost:8000/api-docs/`
+The backend is built with **Django REST Framework (DRF)** using a strict **Service Layer Architecture**:
+- **Views / ViewSets**: Lean controllers handling HTTP routing, permissions, throttling, and serialization.
+- **Service Layer (`portfolio/services/`)**: Isolated business logic, multi-layer spam defense, AI chat generation, atomic counters, and query selectors.
+- **Database & Model Layer**: Optimized composite indexing, `select_related`/`prefetch_related` relations, and zero N+1 queries.
+- **API Versioning**: Standardized `/api/v1/` routes with canonical `/api/` fallback for full backward compatibility.
 
-### 2. Test API Endpoints
-```bash
-# Health check
-curl http://localhost:8000/api/health/
+---
 
-# Get all projects
-curl http://localhost:8000/api/projects/
+## 📡 API Endpoints (Version 1 & Canonical)
 
-# Get portfolio summary
-curl http://localhost:8000/api/summary/
+All endpoints support both `/api/v1/<endpoint>` and `/api/<endpoint>`:
 
-# Get bootstrap payload (single hydration call)
-curl http://localhost:8000/api/bootstrap/
+### 1. System & Health
+- `GET /api/v1/health/` — Health diagnostics, database connectivity verification, API versioning info.
+- `GET /api/v1/bootstrap/` — High-speed single payload (Profile + Featured Projects + Top Skills + Recent Experience) for frontend hydration.
+- `GET /api/v1/summary/` — Single-pass aggregated portfolio statistics.
 
-# Get user profile
-curl http://localhost:8000/api/profile/
+### 2. Projects
+- `GET /api/v1/projects/` — List all active projects (Filter params: `?category=slug&status=active&featured=true`).
+- `GET /api/v1/projects/{slug}/` — Retrieve single project details with screenshots and categories.
+- `GET /api/v1/projects/featured/` — Top featured projects.
+- `POST /api/v1/projects/{slug}/like/` — Atomic increment project likes counter.
+- `POST /api/v1/projects/{slug}/view/` — Atomic increment project views counter.
 
-# Get all skills
-curl http://localhost:8000/api/skills/
+### 3. Experience
+- `GET /api/v1/experience/` — List active work experience entries (Filter params: `?employment_type=full-time&category=slug`).
+- `GET /api/v1/experience/{slug}/` — Retrieve single experience entry by slug.
 
-# Get top skills
-curl http://localhost:8000/api/skills/top/
-```
+### 4. Technical Skills
+- `GET /api/v1/skills/` — List all active skills (Filter params: `?level=advanced&category=slug`).
+- `GET /api/v1/skills/{slug}/` — Retrieve single skill by slug.
+- `GET /api/v1/skills/top/` — Retrieve top 10 skills sorted by proficiency.
 
-## 🔒 Security Features
+### 5. Achievements & Certifications
+- `GET /api/v1/achievements/` — List active achievements and awards (Filter params: `?category=slug`).
+- `GET /api/v1/achievements/{slug}/` — Retrieve single achievement by slug.
 
-### READ-ONLY Access
-- ✅ All API endpoints are **READ-ONLY**
-- ❌ No POST, PUT, DELETE operations allowed from external sources
-- ✅ Only active and published content is exposed
+### 6. Categories & Taxonomies
+- `GET /api/v1/categories/` — List all categories with annotated real-time `item_count` (Filter params: `?type=project|skill|achievement|experience`).
+- `GET /api/v1/categories/{slug}/` — Retrieve category details by slug.
 
-### CORS Protection
-- Only configured origins can access the API
-- Update `CORS_ALLOWED_ORIGINS` in `config/settings.py` with your portfolio URL
+### 7. User Profile
+- `GET /api/v1/profile/` — Retrieve developer profile and social links.
 
-### Rate Limiting
-- Anonymous users: **100 requests/hour**
-- Authenticated users: **1000 requests/hour**
+### 8. Contact & AI Assistant
+- `POST /api/v1/contact/` — Secure contact form submission (Payload: `full_name`, `email`, `message`, `is_urgent`).
+- `POST /api/v1/rexi/chat/` — Rexi AI Assistant query endpoint powered by Qwen3-0.6B with 3rd-person grounded responses (Payload: `message`).
 
-### Data Filtering
-- Only `is_active=True` and `is_draft=False` items are returned
-- Sensitive data (resume, cover letter files) are excluded
+---
 
-## 📡 Available Endpoints
+## 🔒 Security Architecture
 
-### Projects
-- `GET /api/projects/` - List all projects
-- `GET /api/projects/{slug}/` - Get project by slug
-- `GET /api/projects/featured/` - Get featured projects (top 6)
-- Query params: `?category=web-development&status=published`
+1. **Multi-layer Spam Defense (`ContactMessageService`)**:
+   - Content length boundary enforcement.
+   - Regex-based keyword spam filtering (crypto, casino, viagra, seo service, etc.).
+   - Link threshold limits ($\le 2$ links allowed).
+   - Sliding window IP rate limiting ($10$ msgs / $10$ min) and email rate limiting ($5$ msgs / $10$ min).
+   - $24$-hour duplicate message hash prevention.
 
-### Experience
-- `GET /api/experience/` - List all experience
-- `GET /api/experience/{id}/` - Get single experience
+2. **Scoped Throttling**:
+   - `contact`: 10 requests / minute
+   - `rexi`: 30 requests / minute
+   - `interaction`: 60 requests / minute
+   - `anon`: 100 requests / hour
+   - `user`: 1000 requests / hour
 
-### Skills
-- `GET /api/skills/` - List all skills
-- `GET /api/skills/{id}/` - Get single skill
-- `GET /api/skills/top/` - Get top 10 skills by proficiency
-- Query params: `?category=programming`
+3. **Safe Read-Only Operations**:
+   - Public data endpoints strictly enforce `ReadOnlyPermission` (GET, HEAD, OPTIONS).
+   - Modification operations (Likes, Views, Contact, Rexi) are routed through dedicated, validated service methods.
 
-### Achievements
-- `GET /api/achievements/` - List all achievements
-- `GET /api/achievements/{id}/` - Get single achievement
-- Query params: `?category=certifications`
+4. **Constant-Time API Key Verification (`SecurityService`)**:
+   - Uses `secrets.compare_digest` to prevent timing attacks when `PORTFOLIO_API_KEY` is configured.
 
-### Categories
-- `GET /api/categories/` - List all categories
-- `GET /api/categories/{slug}/` - Get category by slug
-- Query params: `?type=project`
+---
 
-### Profile
-- `GET /api/profile/` - Get user profile
+## ⚡ Database Performance & Optimization
 
-### Summary
-- `GET /api/summary/` - Get portfolio statistics
-
-### Bootstrap
-- `GET /api/bootstrap/` - Get profile + featured projects + top skills + recent experience in one payload
-
-### Health
-- `GET /api/health/` - API health check
-
-## 🔧 Configuration
-
-### 1. Add Your Portfolio URL to CORS
-
-In `config/settings.py`:
-
-```python
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React dev
-    "http://localhost:5173",  # Vite dev
-    "https://yourportfolio.com",  # Production
-]
-```
-
-### 2. Optional: API Key
-
-For additional security, set API key validation by environment value:
-
-In `.env`:
-```python
-PORTFOLIO_API_KEY=your-secure-random-key-here
-```
-
-Then in your portfolio frontend:
-```javascript
-fetch('http://localhost:8000/api/projects/', {
-  headers: {
-    'X-API-Key': 'your-secure-random-key-here'
-  }
-})
-```
-
-## ⚡ Performance and Reliability Notes
-
-- Query-heavy API paths use selective field loading and relation prefetching.
-- Category `item_count` values are annotated to avoid N+1 count queries.
-- PostgreSQL composite indexes are added for common API filters and sorting patterns.
-- Contact anti-spam checks use indexed columns and bounded query windows.
-- Frontend hydration should prefer `/api/bootstrap/` to reduce browser round trips and total latency.
-
-## 💻 Usage in Frontend
-
-### React/Next.js Example
-
-```javascript
-// utils/api.js
-const API_BASE_URL = 'http://localhost:8000/api';
-
-export const api = {
-  // Get all projects
-  async getProjects(params = {}) {
-    const query = new URLSearchParams(params).toString();
-    const response = await fetch(`${API_BASE_URL}/projects/?${query}`);
-    return response.json();
-  },
-
-  // Get featured projects
-  async getFeaturedProjects() {
-    const response = await fetch(`${API_BASE_URL}/projects/featured/`);
-    return response.json();
-  },
-
-  // Get all skills
-  async getSkills() {
-    const response = await fetch(`${API_BASE_URL}/skills/`);
-    return response.json();
-  },
-
-  // Get portfolio summary
-  async getSummary() {
-    const response = await fetch(`${API_BASE_URL}/summary/`);
-    return response.json();
-  },
-
-  // Get profile
-  async getProfile() {
-    const response = await fetch(`${API_BASE_URL}/profile/`);
-    return response.json();
-  }
-};
-
-// Usage in component
-import { api } from './utils/api';
-
-function Projects() {
-  const [projects, setProjects] = useState([]);
-
-  useEffect(() => {
-    api.getProjects({ category: 'web-development' })
-      .then(data => setProjects(data.results));
-  }, []);
-
-  return (
-    <div>
-      {projects.map(project => (
-        <ProjectCard key={project.id} project={project} />
-      ))}
-    </div>
-  );
-}
-```
-
-### Vue.js Example
-
-```javascript
-// services/api.js
-import axios from 'axios';
-
-const client = axios.create({
-  baseURL: 'http://localhost:8000/api',
-  timeout: 10000,
-});
-
-export default {
-  getProjects: (params) => client.get('/projects/', { params }),
-  getFeaturedProjects: () => client.get('/projects/featured/'),
-  getSkills: () => client.get('/skills/'),
-  getExperience: () => client.get('/experience/'),
-  getProfile: () => client.get('/profile/'),
-  getSummary: () => client.get('/summary/'),
-};
-```
-
-## 📦 Response Format
-
-All list endpoints return paginated results:
-
-```json
-{
-  "count": 100,
-  "next": "http://localhost:8000/api/projects/?page=2",
-  "previous": null,
-  "results": [...]
-}
-```
-
-## 🧪 Testing
-
-Test all endpoints:
-
-```bash
-# Install httpie (optional, better than curl)
-pip install httpie
-
-# Test endpoints
-http GET http://localhost:8000/api/health/
-http GET http://localhost:8000/api/projects/
-http GET http://localhost:8000/api/skills/top/
-http GET http://localhost:8000/api/summary/
-```
-
-## 🚢 Production Deployment
-
-1. **Update CORS** with your production domain
-2. **Set DEBUG=False** in settings.py
-3. **Use environment variables** for SECRET_KEY and API_KEY
-4. **Enable HTTPS** for secure communication
-5. **Consider caching** for better performance
-
-## 📝 Notes
-
-- API returns only **active** and **published** content
-- All write operations must be done through the admin interface
-- Media files (images) are served from `/media/` endpoint
-- Pagination is enabled (20 items per page by default)
-
-## 🆘 Support
-
-For issues or questions, refer to the API documentation at `/api-docs/`
+- **Composite Database Indexes**: Added for `(slug, is_active)`, `(category_type, slug)`, `(is_active, status, order, created_at)`, `(is_read, created_at)`.
+- **Query Elimination**: Zero N+1 queries using Django ORM `select_related()` and `prefetch_related()`.
+- **Atomic Concurrency**: View and like counters utilize database `F()` expressions to prevent race conditions under high concurrent traffic.

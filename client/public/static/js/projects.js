@@ -1,99 +1,126 @@
 // Projects Section Slider
-function initProjectsSlider() {
-    const projectCards = document.querySelectorAll('.project-card');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
-    if (!projectCards.length) {
-        return;
-    }
-
+(function () {
     let currentIndex = 0;
     let isAnimating = false;
+    let eventsBound = false;
+
+    function getCards() {
+        return Array.from(document.querySelectorAll('.project-card'));
+    }
 
     function showProject(index) {
-        projectCards.forEach((card, i) => {
-            card.classList.remove('active');
-            if (i === index) {
-                card.classList.add('active');
-            }
+        const cards = getCards();
+        if (!cards.length) return;
+        currentIndex = ((index % cards.length) + cards.length) % cards.length;
+        cards.forEach((card, i) => {
+            card.classList.toggle('active', i === currentIndex);
         });
     }
 
     function nextProject() {
-        if (isAnimating) return;
+        const cards = getCards();
+        if (!cards.length || isAnimating) return;
         isAnimating = true;
 
         const oldIndex = currentIndex;
-        currentIndex = (currentIndex + 1) % projectCards.length;
-        
-        projectCards[oldIndex].classList.remove('active');
-        projectCards[oldIndex].classList.add('slide-out-left');
-        
-        projectCards[currentIndex].classList.add('active', 'slide-in-right');
-        
+        currentIndex = (currentIndex + 1) % cards.length;
+
+        const oldCard = cards[oldIndex];
+        const newCard = cards[currentIndex];
+
+        if (oldCard) {
+            oldCard.classList.remove('active');
+            oldCard.classList.add('slide-out-left');
+        }
+        if (newCard) {
+            newCard.classList.add('active', 'slide-in-right');
+        }
+
         setTimeout(() => {
-            projectCards[oldIndex].classList.remove('slide-out-left');
-            projectCards[currentIndex].classList.remove('slide-in-right');
+            if (oldCard) oldCard.classList.remove('slide-out-left');
+            if (newCard) newCard.classList.remove('slide-in-right');
             isAnimating = false;
         }, 600);
     }
 
     function prevProject() {
-        if (isAnimating) return;
+        const cards = getCards();
+        if (!cards.length || isAnimating) return;
         isAnimating = true;
 
         const oldIndex = currentIndex;
-        currentIndex = (currentIndex - 1 + projectCards.length) % projectCards.length;
-        
-        projectCards[oldIndex].classList.remove('active');
-        projectCards[oldIndex].classList.add('slide-out-right');
-        
-        projectCards[currentIndex].classList.add('active', 'slide-in-left');
-        
+        currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+
+        const oldCard = cards[oldIndex];
+        const newCard = cards[currentIndex];
+
+        if (oldCard) {
+            oldCard.classList.remove('active');
+            oldCard.classList.add('slide-out-right');
+        }
+        if (newCard) {
+            newCard.classList.add('active', 'slide-in-left');
+        }
+
         setTimeout(() => {
-            projectCards[oldIndex].classList.remove('slide-out-right');
-            projectCards[currentIndex].classList.remove('slide-in-left');
+            if (oldCard) oldCard.classList.remove('slide-out-right');
+            if (newCard) newCard.classList.remove('slide-in-left');
             isAnimating = false;
         }, 600);
     }
 
-    // Event listeners for navigation buttons
-    if (nextBtn) {
-        nextBtn.addEventListener('click', nextProject);
-    }
+    function bindEvents() {
+        if (eventsBound) return;
+        eventsBound = true;
 
-    if (prevBtn) {
-        prevBtn.addEventListener('click', prevProject);
-    }
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
 
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-        const target = e.target;
-        const isTyping = target && (
-            target.tagName === 'INPUT' ||
-            target.tagName === 'TEXTAREA' ||
-            target.tagName === 'SELECT' ||
-            target.isContentEditable
-        );
-
-        const isModalOpen = Boolean(document.querySelector('.modal-overlay.modal-visible'));
-        if (isTyping || isModalOpen) {
-            return;
+        if (nextBtn) {
+            nextBtn.addEventListener('click', nextProject);
         }
 
-        if (e.key === 'ArrowLeft') {
-            prevProject();
-        } else if (e.key === 'ArrowRight') {
-            nextProject();
+        if (prevBtn) {
+            prevBtn.addEventListener('click', prevProject);
         }
-    });
 
-    // Initialize first project
-    showProject(0);
-}
+        // Keyboard navigation
+        document.addEventListener('keydown', function (e) {
+            const target = e.target;
+            const isTyping = target && (
+                target.tagName === 'INPUT' ||
+                target.tagName === 'TEXTAREA' ||
+                target.tagName === 'SELECT' ||
+                target.isContentEditable
+            );
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initProjectsSlider, { once: true });
-} else {
-    initProjectsSlider();
-}
+            const isModalOpen = Boolean(document.querySelector('.modal-overlay.modal-visible'));
+            if (isTyping || isModalOpen) {
+                return;
+            }
+
+            if (e.key === 'ArrowLeft') {
+                prevProject();
+            } else if (e.key === 'ArrowRight') {
+                nextProject();
+            }
+        });
+    }
+
+    function initProjectsSlider() {
+        bindEvents();
+        const cards = getCards();
+        if (!cards.length) return;
+        // Keep current active index if valid, or reset to 0
+        const activeIdx = cards.findIndex(c => c.classList.contains('active'));
+        showProject(activeIdx >= 0 ? activeIdx : 0);
+    }
+
+    window.initProjectsSlider = initProjectsSlider;
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initProjectsSlider, { once: true });
+    } else {
+        initProjectsSlider();
+    }
+})();
