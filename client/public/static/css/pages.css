@@ -47,8 +47,9 @@
     font-size: 44px;
     font-weight: 700;
     color: #ffffff;
-    line-height: 1.25;
-    margin-bottom: 14px;
+    line-height: 1.35;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
 }
 
 .page-title .text-gradient {
@@ -62,7 +63,8 @@
     color: rgba(255, 255, 255, 0.78);
     max-width: 760px;
     margin: 0 auto;
-    line-height: 1.65;
+    line-height: 1.75;
+    letter-spacing: 0.25px;
 }
 
 /* ── Project Details 16:9 Standardized Hero ── */

@@ -4,7 +4,7 @@
 
 **DevMate Portfolio** is an enterprise-grade developer portfolio and technical showcase engineered to highlight scalable full-stack software development, distributed systems architecture, production AI applications, and algorithmic engineering.
 
-Built by **Roshan Damor**, a Software Engineer focused on high-throughput backend services and AI-driven platforms, this project demonstrates production-level engineering practices:
+Built by **Roshan Damor**, Software Engineer focused on high-throughput backend services and AI-driven platforms, this project demonstrates production-level engineering practices:
 - **Clean Architectural Separation**: Domain services decoupled from HTTP views and database controllers.
 - **Defensive Reliability**: Atomic database counter expressions, input sanitization, sliding-window rate limiters, and anti-spam heuristics.
 - **High-Performance Hydration**: Single-pass aggregated bootstrap payload (`/api/v1/bootstrap/`) eliminating N+1 API cascades on initial page load.

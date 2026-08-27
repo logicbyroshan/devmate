@@ -127,7 +127,7 @@ function App() {
   // Dynamic SEO metadata synchronization across all routes
   useEffect(() => {
     let title = 'Roshan Damor | Software Engineer & AI Developer (UIT RGPV) Portfolio';
-    let description = 'Roshan Damor is a Software Engineer, AI Developer, and Full Stack Developer from UIT RGPV Bhopal. Creator of CardFlow SaaS (1,000+ users) and VidyaMaxx AI Platform. Specialized in Python, Django, React, PostgreSQL, Redis, LLMs, and RAG systems.';
+    let description = 'Roshan Damor is Software Engineer, AI Developer, and Full Stack Developer from UIT RGPV Bhopal. Creator of CardFlow SaaS (1,000+ users) and VidyaMaxx AI Platform. Specialized in Python, Django, React, PostgreSQL, Redis, LLMs, and RAG systems.';
     let canonical = 'https://logicbyroshan.in/';
 
     if (route.name === 'about') {

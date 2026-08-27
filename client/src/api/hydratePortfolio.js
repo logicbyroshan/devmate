@@ -77,7 +77,7 @@ function updateSeoMetadata(profile, projects) {
   const alternateName = 'Roshand Damor';
   const canonicalUrl = 'https://logicbyroshan.in/';
   const title = profile?.meta_title || `${fullName} | Software Engineer Portfolio`;
-  const description = profile?.meta_description || `${fullName} is a software engineer focused on building production-grade web systems, SaaS platforms, and practical AI-powered applications.`;
+  const description = profile?.meta_description || `${fullName} is Software Engineer focused on building production-grade web systems, SaaS platforms, and practical AI-powered applications.`;
   const keywords = profile?.meta_keywords || 'Roshan Damor, Software Engineer, Portfolio, Full Stack, AI Engineer, React, Django, Python';
   const ogImage = toAbsoluteUrl(
     projects?.[0]?.thumbnail || '/static/images/hero.png',

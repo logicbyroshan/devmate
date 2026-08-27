@@ -6,7 +6,7 @@ Alternate name: Roshand Damor
 Role: Software Engineer
 
 Summary:
-Roshan Damor is a software engineer focused on building production-grade web systems,
+Roshan Damor is Software Engineer focused on building production-grade web systems,
 SaaS platforms, and practical AI-powered applications.
 This website contains public profile, featured projects, skills, experience,
 and contact information.
