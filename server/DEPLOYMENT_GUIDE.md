@@ -333,12 +333,22 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
-    client_max_body_size 25M;
+    client_max_body_size 100M;
+    client_body_buffer_size 128k;
+    proxy_connect_timeout 300s;
+    proxy_send_timeout 300s;
+    proxy_read_timeout 300s;
 }
 
 # 2. Staff Admin Subdomain
 server {
     server_name admin.logicbyroshan.in;
+
+    client_max_body_size 100M;
+    client_body_buffer_size 128k;
+    proxy_connect_timeout 300s;
+    proxy_send_timeout 300s;
+    proxy_read_timeout 300s;
 
     location /static/ {
         alias /var/www/devmate/server/staticfiles/;
@@ -354,8 +364,6 @@ server {
         include proxy_params;
         proxy_pass http://unix:/run/gunicorn.sock;
     }
-
-    client_max_body_size 25M;
 }
 ```
 

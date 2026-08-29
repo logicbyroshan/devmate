@@ -20,6 +20,68 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    /**
+     * Automatic Client-Side Image Compression using HTML5 Canvas.
+     * Prevents HTTP 413 Entity Too Large by optimizing high-res images
+     * to crisp WebP/JPEG under ~500KB while preserving aspect ratio.
+     */
+    async function compressImageFile(file, maxDimension = 1920, quality = 0.85) {
+        if (!file || !file.type || !file.type.startsWith('image/')) {
+            return file;
+        }
+        if (file.type === 'image/svg+xml' || file.type === 'image/gif') {
+            return file; // Do not compress SVGs or animated GIFs
+        }
+        if (file.size < 350 * 1024) {
+            return file; // Already lightweight (<350 KB)
+        }
+
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxDimension || height > maxDimension) {
+                        if (width > height) {
+                            height = Math.round((height * maxDimension) / width);
+                            width = maxDimension;
+                        } else {
+                            width = Math.round((width * maxDimension) / height);
+                            height = maxDimension;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const outputMime = 'image/jpeg';
+                    canvas.toBlob((blob) => {
+                        if (!blob || blob.size >= file.size) {
+                            resolve(file);
+                            return;
+                        }
+                        const cleanName = (file.name || 'image').replace(/\.[^/.]+$/, '') + '.jpg';
+                        const compressedFile = new File([blob], cleanName, {
+                            type: outputMime,
+                            lastModified: Date.now()
+                        });
+                        resolve(compressedFile);
+                    }, outputMime, quality);
+                };
+                img.onerror = () => resolve(file);
+                img.src = e.target.result;
+            };
+            reader.onerror = () => resolve(file);
+            reader.readAsDataURL(file);
+        });
+    }
+
     // Global function to clear thumbnail
     window.clearThumbnail = function() {
         const thumbnailPreview = document.getElementById('thumbnail-preview');
@@ -50,22 +112,27 @@ document.addEventListener('DOMContentLoaded', function() {
             thumbnailUploadArea.style.borderColor = '';
         });
 
-        thumbnailUploadArea.addEventListener('drop', (e) => {
+        thumbnailUploadArea.addEventListener('drop', async (e) => {
             e.preventDefault();
             thumbnailUploadArea.style.borderColor = '';
             const file = e.dataTransfer.files[0];
             if (file && file.type.startsWith('image/')) {
+                const optimizedFile = await compressImageFile(file);
                 const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
+                dataTransfer.items.add(optimizedFile);
                 thumbnailInput.files = dataTransfer.files;
-                handleThumbnailUpload(file);
+                handleThumbnailUpload(optimizedFile);
             }
         });
 
-        thumbnailInput.addEventListener('change', (e) => {
+        thumbnailInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (file) {
-                handleThumbnailUpload(file);
+                const optimizedFile = await compressImageFile(file);
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(optimizedFile);
+                thumbnailInput.files = dataTransfer.files;
+                handleThumbnailUpload(optimizedFile);
             }
         });
     }
@@ -106,44 +173,26 @@ document.addEventListener('DOMContentLoaded', function() {
             screenshotsUploadArea.style.borderColor = '';
         });
 
-        screenshotsUploadArea.addEventListener('drop', (e) => {
+        screenshotsUploadArea.addEventListener('drop', async (e) => {
             e.preventDefault();
             screenshotsUploadArea.style.borderColor = '';
             const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-            handleScreenshotsUpload(files);
+            await handleScreenshotsUpload(files);
         });
 
-        screenshotsInput.addEventListener('change', (e) => {
+        screenshotsInput.addEventListener('change', async (e) => {
             const files = Array.from(e.target.files);
-            handleScreenshotsUpload(files);
+            await handleScreenshotsUpload(files);
+            screenshotsInput.value = ''; // Reset input to allow re-selecting same files
         });
     }
 
-    function handleScreenshotsUpload(files) {
-        files.forEach(file => {
-            screenshotFiles.push(file);
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const index = screenshotFiles.length - 1;
-                const previewItem = document.createElement('div');
-                previewItem.className = 'preview-item';
-                previewItem.dataset.index = index;
-                previewItem.innerHTML = `
-                    <img src="${e.target.result}" alt="Screenshot">
-                    <button type="button" class="preview-remove">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                
-                // Add remove functionality
-                previewItem.querySelector('.preview-remove').addEventListener('click', function() {
-                    removeScreenshot(index);
-                });
-                
-                screenshotsPreview.appendChild(previewItem);
-            };
-            reader.readAsDataURL(file);
-        });
+    async function handleScreenshotsUpload(files) {
+        for (const file of files) {
+            const optimizedFile = await compressImageFile(file);
+            screenshotFiles.push(optimizedFile);
+        }
+        renderScreenshots();
     }
 
     function removeScreenshot(index) {
@@ -221,62 +270,102 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Form Submission
     if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            // Create FormData object to handle file uploads
-            const formData = new FormData(form);
-            
-            // Add screenshot files to FormData
-            screenshotFiles.forEach((file, index) => {
-                formData.append('screenshots', file);
+
+            // Sync TinyMCE rich text editor content back to textareas
+            if (typeof tinymce !== 'undefined') {
+                tinymce.triggerSave();
+            }
+
+            // Set loading state on submit buttons
+            const buttons = form.querySelectorAll('button[type="submit"], button[type="button"]');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.dataset.originalHtml = btn.innerHTML;
             });
+            if (publishBtn) publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            if (saveDraftBtn) saveDraftBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
             
-            // Submit form via AJAX
-            fetch(form.action || window.location.href, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            try {
+                // Create FormData object to handle file uploads
+                const formData = new FormData(form);
+                
+                // Add optimized screenshot files to FormData
+                for (let i = 0; i < screenshotFiles.length; i++) {
+                    const optimized = await compressImageFile(screenshotFiles[i]);
+                    formData.append('screenshots', optimized);
                 }
-            })
-            .then(async response => {
+                
+                // Submit form via AJAX
+                const response = await fetch(form.action || window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    }
+                });
+
                 const contentType = response.headers.get('content-type') || '';
                 const isJson = contentType.includes('application/json');
-                const payload = isJson ? await response.json() : {};
+                let payload = {};
 
-                if (!response.ok) {
-                    return {
-                        success: false,
-                        errors: payload.errors || { general: [payload.message || 'Failed to save project.'] },
-                    };
+                if (isJson) {
+                    try {
+                        payload = await response.json();
+                    } catch (parseErr) {
+                        payload = {};
+                    }
                 }
 
-                return payload;
-            })
-            .then(data => {
-                if (data.success) {
+                if (!response.ok) {
+                    if (response.status === 413) {
+                        alert('Error 413 (Payload Too Large):\nThe total size of the uploaded files exceeds the server upload limit. Please upload smaller images or fewer screenshots at once.');
+                        return;
+                    }
+
+                    let errorMsg = 'Error saving project:\n';
+                    if (payload.errors) {
+                        for (let field in payload.errors) {
+                            const errs = Array.isArray(payload.errors[field]) ? payload.errors[field].join(', ') : payload.errors[field];
+                            errorMsg += `\n• ${field}: ${errs}`;
+                        }
+                    } else {
+                        errorMsg += payload.message || `Server returned error (${response.status})`;
+                    }
+                    alert(errorMsg);
+                    return;
+                }
+
+                if (payload.success) {
                     const isDraft = formData.get('status') === 'draft';
-                    const message = isDraft ? 'Project saved as draft!' : (data.message || 'Project saved successfully!');
+                    const message = isDraft ? 'Project saved as draft!' : (payload.message || 'Project saved successfully!');
                     alert(message);
-                    if (data.redirect_url) {
-                        window.location.href = data.redirect_url;
+                    if (payload.redirect_url) {
+                        window.location.href = payload.redirect_url;
                     }
                 } else {
                     let errorMsg = 'Error saving project:\n';
-                    if (data.errors) {
-                        for (let field in data.errors) {
-                            errorMsg += `${field}: ${data.errors[field].join(', ')}\n`;
+                    if (payload.errors) {
+                        for (let field in payload.errors) {
+                            const errs = Array.isArray(payload.errors[field]) ? payload.errors[field].join(', ') : payload.errors[field];
+                            errorMsg += `\n• ${field}: ${errs}`;
                         }
                     }
                     alert(errorMsg);
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while saving the project.');
-            });
+                alert('A network or server error occurred while saving the project. Please verify your connection and try again.');
+            } finally {
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    if (btn.dataset.originalHtml) {
+                        btn.innerHTML = btn.dataset.originalHtml;
+                    }
+                });
+            }
         });
     }
 });

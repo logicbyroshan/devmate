@@ -26,7 +26,14 @@ client/.env
 !client/.env.example
 !client/.env.production.example
 
+# Media and local test files
+server/media/
+server/staticfiles/
+server/scratch/
+*.log
+
 # OS/editor
 .DS_Store
 Thumbs.db
 .vscode/
+.idea/

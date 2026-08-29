@@ -34,6 +34,66 @@ document.addEventListener('DOMContentLoaded', function() {
         iconFontAwesomeSection.style.display = 'block';
     }
 
+    /**
+     * Automatic Client-Side Image Compression using HTML5 Canvas.
+     */
+    async function compressImageFile(file, maxDimension = 1920, quality = 0.85) {
+        if (!file || !file.type || !file.type.startsWith('image/')) {
+            return file;
+        }
+        if (file.type === 'image/svg+xml' || file.type === 'image/gif') {
+            return file;
+        }
+        if (file.size < 350 * 1024) {
+            return file;
+        }
+
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxDimension || height > maxDimension) {
+                        if (width > height) {
+                            height = Math.round((height * maxDimension) / width);
+                            width = maxDimension;
+                        } else {
+                            width = Math.round((width * maxDimension) / height);
+                            height = maxDimension;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const outputMime = 'image/jpeg';
+                    canvas.toBlob((blob) => {
+                        if (!blob || blob.size >= file.size) {
+                            resolve(file);
+                            return;
+                        }
+                        const cleanName = (file.name || 'icon').replace(/\.[^/.]+$/, '') + '.jpg';
+                        const compressedFile = new File([blob], cleanName, {
+                            type: outputMime,
+                            lastModified: Date.now()
+                        });
+                        resolve(compressedFile);
+                    }, outputMime, quality);
+                };
+                img.onerror = () => resolve(file);
+                img.src = e.target.result;
+            };
+            reader.onerror = () => resolve(file);
+            reader.readAsDataURL(file);
+        });
+    }
+
     // Icon Upload
     const iconUpload = document.getElementById('icon-upload');
     const iconInput = iconUpload.querySelector('input[type="file"]');
@@ -50,19 +110,27 @@ document.addEventListener('DOMContentLoaded', function() {
         iconUpload.style.borderColor = '';
     });
 
-    iconUpload.addEventListener('drop', (e) => {
+    iconUpload.addEventListener('drop', async (e) => {
         e.preventDefault();
         iconUpload.style.borderColor = '';
         const file = e.dataTransfer.files[0];
         if (file && file.type.startsWith('image/')) {
-            handleIconUpload(file);
+            const optimized = await compressImageFile(file);
+            const dt = new DataTransfer();
+            dt.items.add(optimized);
+            iconInput.files = dt.files;
+            handleIconUpload(optimized);
         }
     });
 
-    iconInput.addEventListener('change', (e) => {
+    iconInput.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (file) {
-            handleIconUpload(file);
+            const optimized = await compressImageFile(file);
+            const dt = new DataTransfer();
+            dt.items.add(optimized);
+            iconInput.files = dt.files;
+            handleIconUpload(optimized);
         }
     });
 

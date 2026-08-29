@@ -1,21 +1,83 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize TinyMCE
-    tinymce.init({
-        selector: '.tinymce-editor',
-        height: 400,
-        menubar: false,
-        plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-        ],
-        toolbar: 'undo redo | formatselect | bold italic underline strikethrough | ' +
-            'alignleft aligncenter alignright alignjustify | ' +
-            'bullist numlist outdent indent | link image | ' +
-            'forecolor backcolor | code fullscreen | help',
-        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; }'
-    });
+    if (typeof tinymce !== 'undefined') {
+        tinymce.init({
+            selector: '.tinymce-editor',
+            height: 400,
+            menubar: false,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | formatselect | bold italic underline strikethrough | ' +
+                'alignleft aligncenter alignright alignjustify | ' +
+                'bullist numlist outdent indent | link image | ' +
+                'forecolor backcolor | code fullscreen | help',
+            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; }'
+        });
+    }
+
+    /**
+     * Automatic Client-Side Image Compression using HTML5 Canvas.
+     */
+    async function compressImageFile(file, maxDimension = 1920, quality = 0.85) {
+        if (!file || !file.type || !file.type.startsWith('image/')) {
+            return file;
+        }
+        if (file.type === 'image/svg+xml' || file.type === 'image/gif') {
+            return file;
+        }
+        if (file.size < 350 * 1024) {
+            return file;
+        }
+
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxDimension || height > maxDimension) {
+                        if (width > height) {
+                            height = Math.round((height * maxDimension) / width);
+                            width = maxDimension;
+                        } else {
+                            width = Math.round((width * maxDimension) / height);
+                            height = maxDimension;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const outputMime = 'image/jpeg';
+                    canvas.toBlob((blob) => {
+                        if (!blob || blob.size >= file.size) {
+                            resolve(file);
+                            return;
+                        }
+                        const cleanName = (file.name || 'image').replace(/\.[^/.]+$/, '') + '.jpg';
+                        const compressedFile = new File([blob], cleanName, {
+                            type: outputMime,
+                            lastModified: Date.now()
+                        });
+                        resolve(compressedFile);
+                    }, outputMime, quality);
+                };
+                img.onerror = () => resolve(file);
+                img.src = e.target.result;
+            };
+            reader.onerror = () => resolve(file);
+            reader.readAsDataURL(file);
+        });
+    }
 
     // Currently Working Checkbox
     const currentlyWorkingCheckbox = document.querySelector('input[name="currently_working"]');
@@ -51,22 +113,27 @@ document.addEventListener('DOMContentLoaded', function() {
             logoUpload.style.borderColor = '';
         });
 
-        logoUpload.addEventListener('drop', (e) => {
+        logoUpload.addEventListener('drop', async (e) => {
             e.preventDefault();
             logoUpload.style.borderColor = '';
             const file = e.dataTransfer.files[0];
             if (file && file.type.startsWith('image/')) {
+                const optimizedFile = await compressImageFile(file);
                 const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
+                dataTransfer.items.add(optimizedFile);
                 logoInput.files = dataTransfer.files;
-                handleLogoUpload(file);
+                handleLogoUpload(optimizedFile);
             }
         });
 
-        logoInput.addEventListener('change', (e) => {
+        logoInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (file) {
-                handleLogoUpload(file);
+                const optimizedFile = await compressImageFile(file);
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(optimizedFile);
+                logoInput.files = dataTransfer.files;
+                handleLogoUpload(optimizedFile);
             }
         });
 
@@ -120,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
             workplaceUpload.style.borderColor = '';
         });
 
-        workplaceUpload.addEventListener('drop', (e) => {
+        workplaceUpload.addEventListener('drop', async (e) => {
             e.preventDefault();
             workplaceUpload.style.borderColor = '';
             if (workplaceFiles.length >= MAX_WORKPLACE_IMAGES) {
@@ -128,15 +195,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-            handleWorkplaceUpload(files);
+            await handleWorkplaceUpload(files);
         });
 
-        workplaceInput.addEventListener('change', (e) => {
+        workplaceInput.addEventListener('change', async (e) => {
             const files = Array.from(e.target.files);
-            handleWorkplaceUpload(files);
+            await handleWorkplaceUpload(files);
+            workplaceInput.value = '';
         });
 
-        function handleWorkplaceUpload(files) {
+        async function handleWorkplaceUpload(files) {
             const remainingSlots = MAX_WORKPLACE_IMAGES - workplaceFiles.length;
             const filesToAdd = files.slice(0, remainingSlots);
             
@@ -144,25 +212,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(`Only ${remainingSlots} more image(s) can be added. Maximum ${MAX_WORKPLACE_IMAGES} images allowed.`);
             }
 
-            filesToAdd.forEach(file => {
-                workplaceFiles.push(file);
-            });
+            for (const file of filesToAdd) {
+                const optimizedFile = await compressImageFile(file);
+                workplaceFiles.push(optimizedFile);
+            }
             
-            updateWorkplaceInput();
             renderWorkplaceImages();
-        }
-
-        function updateWorkplaceInput() {
-            const dataTransfer = new DataTransfer();
-            workplaceFiles.forEach(file => {
-                dataTransfer.items.add(file);
-            });
-            workplaceInput.files = dataTransfer.files;
         }
 
         window.removeWorkplaceImage = function(index) {
             workplaceFiles.splice(index, 1);
-            updateWorkplaceInput();
             renderWorkplaceImages();
         };
 
@@ -195,8 +254,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('create-experience-form');
     
     // Handle draft and publish buttons
-    const draftBtn = form.querySelector('button[name="save_draft"]');
-    const publishBtn = form.querySelector('button[name="publish"]');
+    const draftBtn = form ? form.querySelector('button[name="save_draft"]') : null;
+    const publishBtn = form ? form.querySelector('button[name="publish"]') : null;
     
     // Form validation function
     function validateForm() {
@@ -237,59 +296,121 @@ document.addEventListener('DOMContentLoaded', function() {
         return true;
     }
     
+    async function submitExperienceForm(isDraft) {
+        if (!isDraft && !validateForm()) {
+            return;
+        }
+
+        // Trigger TinyMCE save
+        if (typeof tinymce !== 'undefined') {
+            tinymce.triggerSave();
+        }
+
+        const buttons = form.querySelectorAll('button[type="submit"], button[type="button"]');
+        buttons.forEach(btn => {
+            btn.disabled = true;
+            btn.dataset.originalHtml = btn.innerHTML;
+        });
+        if (publishBtn && !isDraft) publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        if (draftBtn && isDraft) draftBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+        try {
+            const formData = new FormData(form);
+            formData.set('is_draft', isDraft ? 'true' : 'false');
+
+            // Append optimized workplace images
+            formData.delete('workplace_images');
+            for (let i = 0; i < workplaceFiles.length; i++) {
+                const opt = await compressImageFile(workplaceFiles[i]);
+                formData.append('workplace_images', opt);
+            }
+
+            const response = await fetch(form.action || window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            });
+
+            const contentType = response.headers.get('content-type') || '';
+            const isJson = contentType.includes('application/json');
+            let payload = {};
+
+            if (isJson) {
+                try {
+                    payload = await response.json();
+                } catch (parseErr) {
+                    payload = {};
+                }
+            }
+
+            if (!response.ok) {
+                if (response.status === 413) {
+                    alert('Error 413 (Payload Too Large):\nThe uploaded images exceed the server upload limit. Please use smaller images.');
+                    return;
+                }
+
+                let errorMsg = 'Error saving experience:\n';
+                if (payload.errors) {
+                    for (let field in payload.errors) {
+                        const errs = Array.isArray(payload.errors[field]) ? payload.errors[field].join(', ') : payload.errors[field];
+                        errorMsg += `\n• ${field}: ${errs}`;
+                    }
+                } else {
+                    errorMsg += payload.message || `Server returned error (${response.status})`;
+                }
+                alert(errorMsg);
+                return;
+            }
+
+            if (payload.success) {
+                alert(payload.message || 'Experience saved successfully!');
+                if (payload.redirect_url) {
+                    window.location.href = payload.redirect_url;
+                }
+            } else {
+                let errorMsg = 'Error saving experience:\n';
+                if (payload.errors) {
+                    for (let field in payload.errors) {
+                        const errs = Array.isArray(payload.errors[field]) ? payload.errors[field].join(', ') : payload.errors[field];
+                        errorMsg += `\n• ${field}: ${errs}`;
+                    }
+                }
+                alert(errorMsg);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('A network error occurred while saving the experience. Please try again.');
+        } finally {
+            buttons.forEach(btn => {
+                btn.disabled = false;
+                if (btn.dataset.originalHtml) {
+                    btn.innerHTML = btn.dataset.originalHtml;
+                }
+            });
+        }
+    }
+
     if (draftBtn) {
         draftBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            
-            // Trigger TinyMCE save
-            if (typeof tinymce !== 'undefined') {
-                tinymce.triggerSave();
-            }
-            
-            // Set is_draft to true
-            let draftInput = form.querySelector('input[name="is_draft"]');
-            if (!draftInput) {
-                draftInput = document.createElement('input');
-                draftInput.type = 'hidden';
-                draftInput.name = 'is_draft';
-                form.appendChild(draftInput);
-            }
-            draftInput.value = 'true';
-            form.submit();
+            submitExperienceForm(true);
         });
     }
     
     if (publishBtn) {
         publishBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            
-            // Validate form before submission
-            if (!validateForm()) {
-                return;
-            }
-            
-            // Trigger TinyMCE save
-            if (typeof tinymce !== 'undefined') {
-                tinymce.triggerSave();
-            }
-            
-            // Set is_draft to false
-            let draftInput = form.querySelector('input[name="is_draft"]');
-            if (!draftInput) {
-                draftInput = document.createElement('input');
-                draftInput.type = 'hidden';
-                draftInput.name = 'is_draft';
-                form.appendChild(draftInput);
-            }
-            draftInput.value = 'false';
-            form.submit();
+            submitExperienceForm(false);
         });
     }
 
-    form.addEventListener('submit', (e) => {
-        // Trigger TinyMCE save before form submission
-        if (typeof tinymce !== 'undefined') {
-            tinymce.triggerSave();
-        }
-    });
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitExperienceForm(false);
+        });
+    }
 });

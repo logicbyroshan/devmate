@@ -184,6 +184,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'portfolio',
+    'admin_api',
 ]
 
 MIDDLEWARE = [
@@ -461,3 +462,10 @@ LOGOUT_REDIRECT_URL = '/admin/login/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# File & Data Upload Limits (100 MB default to prevent 413 / RequestDataTooBig)
+# 100 MB = 104857600 bytes
+DATA_UPLOAD_MAX_MEMORY_SIZE = env_int('DATA_UPLOAD_MAX_MEMORY_SIZE', 104857600)
+FILE_UPLOAD_MAX_MEMORY_SIZE = env_int('FILE_UPLOAD_MAX_MEMORY_SIZE', 104857600)
+DATA_UPLOAD_MAX_NUMBER_FIELDS = env_int('DATA_UPLOAD_MAX_NUMBER_FIELDS', 5000)
+FILE_UPLOAD_PERMISSIONS = 0o644

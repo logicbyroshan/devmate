@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, RequestDataTooBig
 from django.core.validators import validate_email
 from django.db import IntegrityError, transaction
 from django.db.models import Count
@@ -164,16 +164,12 @@ def create_project(request):
                     # Handle screenshot uploads
                     screenshot_files = request.FILES.getlist("screenshots")
                     if screenshot_files:
-                        ProjectScreenshot.objects.bulk_create(
-                            [
-                                ProjectScreenshot(
-                                    project=project,
-                                    image=screenshot_file,
-                                    order=index,
-                                )
-                                for index, screenshot_file in enumerate(screenshot_files)
-                            ]
-                        )
+                        for index, screenshot_file in enumerate(screenshot_files):
+                            ProjectScreenshot.objects.create(
+                                project=project,
+                                image=screenshot_file,
+                                order=index,
+                            )
             except IntegrityError:
                 error_payload = {
                     "slug": [
@@ -246,16 +242,12 @@ def edit_project(request, project_id):
                         project.screenshots.all().delete()
 
                         # Add new screenshots
-                        ProjectScreenshot.objects.bulk_create(
-                            [
-                                ProjectScreenshot(
-                                    project=project,
-                                    image=screenshot_file,
-                                    order=index,
-                                )
-                                for index, screenshot_file in enumerate(screenshot_files)
-                            ]
-                        )
+                        for index, screenshot_file in enumerate(screenshot_files):
+                            ProjectScreenshot.objects.create(
+                                project=project,
+                                image=screenshot_file,
+                                order=index,
+                            )
             except IntegrityError:
                 error_payload = {
                     "slug": [
@@ -440,16 +432,12 @@ def create_experience(request):
                     # Handle workplace image uploads
                     workplace_files = request.FILES.getlist("workplace_images")
                     if workplace_files:
-                        ExperienceImage.objects.bulk_create(
-                            [
-                                ExperienceImage(
-                                    experience=experience,
-                                    image=image_file,
-                                    order=index,
-                                )
-                                for index, image_file in enumerate(workplace_files)
-                            ]
-                        )
+                        for index, image_file in enumerate(workplace_files):
+                            ExperienceImage.objects.create(
+                                experience=experience,
+                                image=image_file,
+                                order=index,
+                            )
             except IntegrityError:
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     return JsonResponse(
@@ -539,16 +527,12 @@ def edit_experience(request, experience_id):
                     experience.images.all().delete()
 
                     # Add new images
-                    ExperienceImage.objects.bulk_create(
-                        [
-                            ExperienceImage(
-                                experience=experience,
-                                image=image_file,
-                                order=index,
-                            )
-                            for index, image_file in enumerate(workplace_files)
-                        ]
-                    )
+                    for index, image_file in enumerate(workplace_files):
+                        ExperienceImage.objects.create(
+                            experience=experience,
+                            image=image_file,
+                            order=index,
+                        )
 
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return JsonResponse(

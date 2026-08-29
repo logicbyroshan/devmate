@@ -323,8 +323,14 @@ server {
     listen 80;
     server_name logicbyroshan.in www.logicbyroshan.in;
 
-    # Maximum file upload size for project thumbnails / assets
-    client_max_body_size 50M;
+    # Maximum file upload size for project thumbnails / screenshots (100MB)
+    client_max_body_size 100M;
+    client_body_buffer_size 128k;
+
+    # Proxy timeouts for large uploads
+    proxy_connect_timeout 300s;
+    proxy_send_timeout 300s;
+    proxy_read_timeout 300s;
 
     # Gzip Compression
     gzip on;
@@ -337,11 +343,12 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
-    # 2. Django Admin & API Reverse Proxy
-    location ~ ^/(api|admin)/ {
+    # 2. Django Admin, Staff Dashboard & API Reverse Proxy
+    location ~ ^/(api|admin|projects|experience|skills|achievements|categories|details)/ {
         include proxy_params;
         proxy_pass http://unix:/run/gunicorn.sock;
         proxy_set_header X-Forwarded-Proto https;
+        client_max_body_size 100M;
     }
 
     # 3. Django Static files

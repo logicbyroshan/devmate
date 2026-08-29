@@ -4,13 +4,19 @@ The DevMate Portfolio API is a production REST API offering high-speed, aggregat
 
 All endpoints are versioned under `/api/v1/` and mirrored under canonical `/api/` aliases.
 
+- **Public API**: `/api/v1/`
+- **Staff Admin API**: `/api/v1/admin/` (Detailed Guide: [ADMIN_API.md](file:///e:/E/DevMate/ADMIN_API.md))
+- **Interactive Admin Docs**: `/api/v1/admin/docs/`
+
 ---
 
 ## Base URLs
 
-- **Version 1 (Canonical)**: `https://logicbyroshan.in/api/v1/`
+- **Public Version 1 (Canonical)**: `https://logicbyroshan.in/api/v1/`
+- **Staff Admin Version 1**: `https://logicbyroshan.in/api/v1/admin/`
 - **Root Alias**: `https://logicbyroshan.in/api/`
 - **Local Development**: `http://127.0.0.1:8000/api/`
+- **Admin Docs**: `http://127.0.0.1:8000/api/v1/admin/docs/`
 
 ---
 

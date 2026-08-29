@@ -79,6 +79,17 @@ class Category(models.Model):
     def __str__(self):
         return f"{self.name} ({self.get_category_type_display()})"
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name or "category") or "category"
+            existing_slugs = set(
+                Category.objects.filter(slug__startswith=base_slug)
+                .exclude(pk=self.pk)
+                .values_list("slug", flat=True)
+            )
+            self.slug = build_unique_slug(base_slug, existing_slugs)
+        super().save(*args, **kwargs)
+
     def item_count(self):
         """Return the number of items in this category based on type"""
         count_attr_map = {
@@ -388,6 +399,17 @@ class Experience(models.Model):
     def __str__(self):
         return f"{self.position} at {self.company_name}"
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.position or "experience") or "experience"
+            existing_slugs = set(
+                Experience.objects.filter(slug__startswith=base_slug)
+                .exclude(pk=self.pk)
+                .values_list("slug", flat=True)
+            )
+            self.slug = build_unique_slug(base_slug, existing_slugs)
+        super().save(*args, **kwargs)
+
     @property
     def duration(self):
         """Return formatted duration string"""
@@ -518,6 +540,17 @@ class Skill(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.get_skill_level_display()})"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name or "skill") or "skill"
+            existing_slugs = set(
+                Skill.objects.filter(slug__startswith=base_slug)
+                .exclude(pk=self.pk)
+                .values_list("slug", flat=True)
+            )
+            self.slug = build_unique_slug(base_slug, existing_slugs)
+        super().save(*args, **kwargs)
 
 
 class Achievement(models.Model):

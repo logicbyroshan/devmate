@@ -21,6 +21,66 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    /**
+     * Automatic Client-Side Image Compression using HTML5 Canvas.
+     */
+    async function compressImageFile(file, maxDimension = 1920, quality = 0.85) {
+        if (!file || !file.type || !file.type.startsWith('image/')) {
+            return file;
+        }
+        if (file.type === 'image/svg+xml' || file.type === 'image/gif') {
+            return file;
+        }
+        if (file.size < 350 * 1024) {
+            return file;
+        }
+
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxDimension || height > maxDimension) {
+                        if (width > height) {
+                            height = Math.round((height * maxDimension) / width);
+                            width = maxDimension;
+                        } else {
+                            width = Math.round((width * maxDimension) / height);
+                            height = maxDimension;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const outputMime = 'image/jpeg';
+                    canvas.toBlob((blob) => {
+                        if (!blob || blob.size >= file.size) {
+                            resolve(file);
+                            return;
+                        }
+                        const cleanName = (file.name || 'credential').replace(/\.[^/.]+$/, '') + '.jpg';
+                        const compressedFile = new File([blob], cleanName, {
+                            type: outputMime,
+                            lastModified: Date.now()
+                        });
+                        resolve(compressedFile);
+                    }, outputMime, quality);
+                };
+                img.onerror = () => resolve(file);
+                img.src = e.target.result;
+            };
+            reader.onerror = () => resolve(file);
+            reader.readAsDataURL(file);
+        });
+    }
+
     // Credential Upload
     const credentialUpload = document.getElementById('credential-upload');
     const credentialInput = document.querySelector('input[name="credential_file"]');
@@ -34,21 +94,26 @@ document.addEventListener('DOMContentLoaded', function() {
         credentialUpload.addEventListener('dragleave', () => {
             credentialUpload.style.borderColor = '';
         });
-        credentialUpload.addEventListener('drop', (e) => {
+        credentialUpload.addEventListener('drop', async (e) => {
             e.preventDefault();
             credentialUpload.style.borderColor = '';
             const file = e.dataTransfer.files[0];
             if (file) {
+                const optimizedFile = await compressImageFile(file);
                 const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
+                dataTransfer.items.add(optimizedFile);
                 credentialInput.files = dataTransfer.files;
-                handleCredentialUpload(file);
+                handleCredentialUpload(optimizedFile);
             }
         });
-        credentialInput.addEventListener('change', (e) => {
+        credentialInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (file) {
-                handleCredentialUpload(file);
+                const optimizedFile = await compressImageFile(file);
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(optimizedFile);
+                credentialInput.files = dataTransfer.files;
+                handleCredentialUpload(optimizedFile);
             }
         });
     }

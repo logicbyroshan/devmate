@@ -167,13 +167,74 @@ document.getElementById('video-resume-form')?.addEventListener('submit', async f
     }
 });
 
+/**
+ * Automatic Client-Side Image Compression using HTML5 Canvas.
+ */
+async function compressImageFile(file, maxDimension = 1920, quality = 0.85) {
+    if (!file || !file.type || !file.type.startsWith('image/')) {
+        return file;
+    }
+    if (file.type === 'image/svg+xml' || file.type === 'image/gif') {
+        return file;
+    }
+    if (file.size < 350 * 1024) {
+        return file;
+    }
+
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxDimension || height > maxDimension) {
+                    if (width > height) {
+                        height = Math.round((height * maxDimension) / width);
+                        width = maxDimension;
+                    } else {
+                        width = Math.round((width * maxDimension) / height);
+                        height = maxDimension;
+                    }
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                const outputMime = 'image/jpeg';
+                canvas.toBlob((blob) => {
+                    if (!blob || blob.size >= file.size) {
+                        resolve(file);
+                        return;
+                    }
+                    const cleanName = (file.name || 'profile').replace(/\.[^/.]+$/, '') + '.jpg';
+                    const compressedFile = new File([blob], cleanName, {
+                        type: outputMime,
+                        lastModified: Date.now()
+                    });
+                    resolve(compressedFile);
+                }, outputMime, quality);
+            };
+            img.onerror = () => resolve(file);
+            img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(file);
+        reader.readAsDataURL(file);
+    });
+}
+
 // Profile Image Upload
 document.getElementById('profile-upload')?.addEventListener('change', async function(e) {
     const file = e.target.files[0];
     if (!file) return;
     
+    const optimizedFile = await compressImageFile(file);
     const formData = new FormData(document.getElementById('profile-image-form'));
-    formData.append('profile_image', file);
+    formData.set('profile_image', optimizedFile);
     
     try {
         const response = await fetch(window.location.href, {
@@ -184,6 +245,11 @@ document.getElementById('profile-upload')?.addEventListener('change', async func
             },
             body: formData
         });
+
+        if (response.status === 413) {
+            showNotification('Image upload failed: File is too large for server.', 'error');
+            return;
+        }
         
         const data = await response.json();
         if (data.success) {

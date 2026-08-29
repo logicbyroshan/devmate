@@ -26,9 +26,9 @@
 - ⚡ **Ultra-Fast Hybrid Hydration**: React SPA client bootstraps static HTML instantly (`dangerouslySetInnerHTML`), then seamlessly hydrates dynamic content via `/api/bootstrap/` without layout shift.
 - 🪪 **Deep Engineering Case Studies**: Interactive modals with system design flowcharts, architecture diagrams, technical tables, and ASCII workflows for hero SaaS projects like **CardFlow** and **VidyaMaxx**.
 - 🐉 **Rexi AI Assistant**: Mascot & intelligent interactive assistant powered by Qwen AI with fallback intent matching for skills, experience, and tech inquiries.
-- 🔊 **Custom Web Audio Engine**: Procedural synthesizers for UI clicks, slide transitions, modal pops, and optional ambient background music with state persistence.
-- 📱 **100% Mobile Responsive**: Comprehensive media queries optimized down to 320px screens with zero horizontal overflow, touch-friendly navigation, and adaptive modals.
-- 🛡️ **Production-Hardened Django Backend**: Granular CORS, rate limiting (100 req/hr anon, 1000 req/hr auth), optimized queries with prefetching, security headers, and data fixtures.
+- 🔊 **Custom Web Audio Engine**: Procedural synthesizers for UI clicks, slide transitions, modal pops, and optional ambient backgr- 📱 **100% Mobile Responsive**: Comprehensive media queries optimized down to 320px screens with zero horizontal overflow, touch-friendly navigation, and adaptive modals.
+- 🛡️ **Production-Hardened Django Backend & Admin REST API**: Enterprise `admin_api` app with JWT authentication, role gating (`IsStaffUser`), file/MIME validation, XSS sanitization, 100MB upload capacity, and client-side canvas compression.
+- 📖 **Interactive API Documentation Portal**: Built-in developer portal at `/api/v1/admin/docs/` with live endpoint schemas, test payloads, and cURL snippets.
 
 ---
 
@@ -40,8 +40,8 @@
                                │   React 18 + Vite 5 + Vanilla CSS      │
                                └──────────────────┬─────────────────────┘
                                                   │
-                              HTTP / REST API     │   Web Audio SFX
-                             (/api/bootstrap/)    │   Session Storage
+                                HTTP / REST API     │   Web Audio SFX
+                               (/api/bootstrap/)    │   Session Storage
                                                   ▼
                                ┌────────────────────────────────────────┐
                                │       Django REST Framework (API)      │
@@ -78,14 +78,19 @@ DevMate/
     ├── config/                          # Project settings, URLs, WSGI/ASGI
     │   ├── settings.py                  # Database, CORS, rate limits, apps
     │   └── urls.py                      # Root routing & admin endpoints
-    ├── media/
-    │   └── projects/thumbnails/         # Optimized WebP thumbnails
+    ├── admin_api/                       # Staff Admin REST API & Docs
+    │   ├── serializers/                 # CRUD Serializers (projects, exp, skills, profile)
+    │   ├── views/                       # ViewSets, screenshot actions, analytics
+    │   ├── utils/                       # MIME/file validator, HTML sanitization
+    │   ├── docs_views.py                # Interactive Swagger-like Developer Portal
+    │   └── tests/                       # Automated test suite
+    ├── media/                           # User-uploaded assets
     └── portfolio/                       # Portfolio core application
         ├── models.py                    # Project, Experience, Skill, UserProfile models
         ├── serializers.py               # DRF serializers with computed fields
-        ├── api_views.py                 # Read-only REST viewsets & bootstrap endpoint
+        ├── api_views.py                 # Public read-only REST viewsets & bootstrap
         └── fixtures/
-            └── initial_data.json        # Complete UTF-8 database seed fixture
+            └── initial_data.json        # Database seed fixture
 ```
 
 ---
