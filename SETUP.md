@@ -6,8 +6,9 @@ This guide provides end-to-end instructions for running the DevMate Portfolio pr
 
 ## Architecture Overview
 
-- **Backend (`server/`)**: Python 3.11+, Django 5.2, Django REST Framework, SQLite (Development) / PostgreSQL (Production).
-- **Frontend (`client/`)**: React 18, Vite 5, Lenis Smooth Scroll, KaTeX, Mermaid, Vanilla CSS Design System.
+- **Backend (`server/`)**: Python 3.11+, Django 5.2, Django REST Framework, SQLite (Development) / PostgreSQL (Production). Functions as a pure Headless REST API and media storage backend.
+- **Frontend (`client/`)**: React 18, Vite 5, Lenis Smooth Scroll, KaTeX, Mermaid, Shiki, Vanilla CSS Design System.
+- **Admin Dashboard**: Managed via your separate Admin Portfolio project using the Staff Admin REST API (`/api/v1/admin/`).
 
 ---
 
@@ -28,7 +29,7 @@ cd devmate-portfolio
 
 ---
 
-## Step 2: Backend Setup (Django)
+## Step 2: Backend Setup (Django Headless API)
 
 1. Navigate to the `server/` directory:
    ```bash
@@ -67,7 +68,7 @@ cd devmate-portfolio
    python manage.py loaddata portfolio/fixtures/initial_data.json
    ```
 
-7. (Optional) Create a superuser for administrative access:
+7. (Optional) Create a superuser for staff REST API access:
    ```bash
    python manage.py createsuperuser
    ```
@@ -76,8 +77,8 @@ cd devmate-portfolio
    ```bash
    python manage.py runserver 8000
    ```
-   *Backend will be accessible at: `http://127.0.0.1:8000/`*
-   *Admin Panel: `http://127.0.0.1:8000/dashboard/`*
+   *Public API: `http://127.0.0.1:8000/api/`*
+   *Staff Admin API: `http://127.0.0.1:8000/api/v1/admin/`*
 
 ---
 
@@ -124,7 +125,7 @@ npm run build   # Validates production Vite bundle
 
 | Variable | Default (Dev) | Description |
 |---|---|---|
-| `DJANGO_SECRET_KEY` | `django-insecure-...` | Cryptographic secret key for hashing and sessions |
+| `DJANGO_SECRET_KEY` | `django-insecure-...` | Cryptographic secret key for hashing and JWT tokens |
 | `DJANGO_DEBUG` | `True` | Debug mode (Must be `False` in production) |
 | `DJANGO_ALLOWED_HOSTS` | `127.0.0.1,localhost` | Comma-separated list of valid Host headers |
 | `PORTFOLIO_API_KEY` | `(empty)` | Optional API key requirement for external consumers |

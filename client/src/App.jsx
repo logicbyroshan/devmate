@@ -200,7 +200,7 @@ function App() {
       window.history.pushState(null, '', '/experience');
       setRoute({ name: 'experience' });
     } else if (targetRoute === 'project-detail') {
-      const slug = encodeURIComponent((param || 'cardflow').toLowerCase().replace(/[^a-z0-9]/g, ''));
+      const slug = encodeURIComponent((param || 'cardflow').toLowerCase().replace(/[^a-z0-9-]/g, ''));
       window.history.pushState(null, '', `/projects/${slug}`);
       setRoute({ name: 'project-detail', slug });
     } else if (targetRoute === 'blog-detail') {

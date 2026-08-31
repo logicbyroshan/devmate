@@ -19,6 +19,18 @@ class AdminUserProfileSerializer(serializers.ModelSerializer):
             "title",
             "bio",
             "profile_image",
+            "hero_image",
+            "hero_badge",
+            "hero_description",
+            "hero_stat_1_value",
+            "hero_stat_1_label",
+            "hero_stat_1_icon",
+            "hero_stat_2_value",
+            "hero_stat_2_label",
+            "hero_stat_2_icon",
+            "hero_stat_3_value",
+            "hero_stat_3_label",
+            "hero_stat_3_icon",
             "github",
             "linkedin",
             "twitter",
@@ -43,6 +55,11 @@ class AdminUserProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created_at", "updated_at"]
 
     def validate_profile_image(self, value):
+        if value:
+            validate_uploaded_image(value)
+        return value
+
+    def validate_hero_image(self, value):
         if value:
             validate_uploaded_image(value)
         return value

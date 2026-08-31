@@ -164,3 +164,50 @@ def admin_profile_delete_document(request):
     return Response(
         {"success": True, "message": f"{doc_type.replace('_', ' ').title()} removed successfully."}
     )
+
+
+@api_view(["POST"])
+@permission_classes([IsStaffUser])
+@parser_classes([MultiPartParser, FormParser])
+def admin_profile_upload_hero_image(request):
+    """
+    POST /api/v1/admin/profile/upload-hero-image/
+    Upload custom hero image.
+    """
+    file_obj = request.FILES.get("hero_image")
+    if not file_obj:
+        return Response(
+            {"success": False, "message": "No 'hero_image' file provided."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    validate_uploaded_image(file_obj)
+    profile = get_or_create_user_profile()
+    profile.hero_image = file_obj
+    profile.save()
+
+    return Response(
+        {
+            "success": True,
+            "message": "Hero visual image updated successfully!",
+            "hero_image_url": profile.hero_image.url if profile.hero_image else None,
+        }
+    )
+
+
+@api_view(["DELETE"])
+@permission_classes([IsStaffUser])
+def admin_profile_delete_hero_image(request):
+    """
+    DELETE /api/v1/admin/profile/delete-hero-image/
+    Remove custom hero image.
+    """
+    profile = get_or_create_user_profile()
+    if profile.hero_image:
+        profile.hero_image.delete(save=False)
+        profile.hero_image = None
+        profile.save()
+
+    return Response(
+        {"success": True, "message": "Hero image removed successfully."}
+    )

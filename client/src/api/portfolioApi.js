@@ -48,6 +48,23 @@ function withBase(path) {
 async function requestJson(path, options = {}) {
   const timeoutMs = parsePositiveInt(options.timeoutMs, DEFAULT_API_TIMEOUT_MS);
   const retryAttempts = parsePositiveInt(options.retryAttempts, DEFAULT_API_RETRY_ATTEMPTS);
+  const method = options.method || 'GET';
+  const headers = {
+    Accept: 'application/json',
+    ...(options.headers || {}),
+  };
+
+  let body = undefined;
+  if (options.body) {
+    if (typeof options.body === 'string') {
+      body = options.body;
+      headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+    } else {
+      body = JSON.stringify(options.body);
+      headers['Content-Type'] = 'application/json';
+    }
+  }
+
   let lastError = null;
 
   for (let attempt = 0; attempt <= retryAttempts; attempt += 1) {
@@ -56,9 +73,9 @@ async function requestJson(path, options = {}) {
 
     try {
       const response = await fetch(withBase(path), {
-        headers: {
-          Accept: 'application/json',
-        },
+        method,
+        headers,
+        body,
         signal: controller.signal,
       });
 
@@ -68,7 +85,18 @@ async function requestJson(path, options = {}) {
           continue;
         }
 
-        throw new Error(`API request failed: ${response.status} ${path}`);
+        let errorMessage = `API request failed: ${response.status} ${path}`;
+        try {
+          const errData = await response.json();
+          if (errData?.message) errorMessage = errData.message;
+          else if (errData?.detail) errorMessage = errData.detail;
+        } catch {
+          // ignore non-json error responses
+        }
+
+        const err = new Error(errorMessage);
+        err.status = response.status;
+        throw err;
       }
 
       return response.json();
@@ -172,6 +200,19 @@ function writeCachedPortfolioPayload(payload) {
   }
 }
 
+export function clearPortfolioCache() {
+  portfolioCache = null;
+  portfolioCacheExpiresAt = 0;
+  const storage = getSessionStorage();
+  if (storage) {
+    try {
+      storage.removeItem(CACHE_KEY);
+    } catch {
+      // Ignore storage errors
+    }
+  }
+}
+
 function settledValue(result) {
   if (result.status !== 'fulfilled') {
     return null;
@@ -180,10 +221,17 @@ function settledValue(result) {
   return result.value;
 }
 
-export async function fetchPortfolioData() {
-  const cachedPayload = readCachedPortfolioPayload();
-  if (cachedPayload) {
-    return cachedPayload;
+/**
+ * Fetch unified bootstrap payload for home view.
+ */
+export async function fetchPortfolioData(forceRefresh = false) {
+  if (forceRefresh) {
+    clearPortfolioCache();
+  } else {
+    const cachedPayload = readCachedPortfolioPayload();
+    if (cachedPayload) {
+      return cachedPayload;
+    }
   }
 
   if (inFlightPortfolioRequest) {
@@ -201,8 +249,8 @@ export async function fetchPortfolioData() {
     } catch {
       const [profileResult, projectsResult, skillsResult, experienceResult] = await Promise.allSettled([
         requestJson('/profile/'),
-        requestJson('/projects/featured/'),
-        requestJson('/skills/top/'),
+        requestJson('/projects/'),
+        requestJson('/skills/'),
         requestJson('/experience/'),
       ]);
 
@@ -222,3 +270,125 @@ export async function fetchPortfolioData() {
 
   return inFlightPortfolioRequest;
 }
+
+/**
+ * Fetch all active projects dynamically from API.
+ */
+export async function fetchProjects() {
+  const data = await requestJson('/projects/');
+  return unwrapResults(data);
+}
+
+/**
+ * Fetch single project by slug from API.
+ */
+export async function fetchProjectBySlug(slug) {
+  if (!slug) return null;
+  const cleanSlug = encodeURIComponent(String(slug).trim());
+  return requestJson(`/projects/${cleanSlug}/`);
+}
+
+/**
+ * Fetch all active skills from API.
+ */
+export async function fetchSkills() {
+  const data = await requestJson('/skills/');
+  return unwrapResults(data);
+}
+
+/**
+ * Fetch all active work experiences from API.
+ */
+export async function fetchExperiences() {
+  const data = await requestJson('/experience/');
+  return unwrapResults(data);
+}
+
+/**
+ * Fetch single experience by slug from API.
+ */
+export async function fetchExperienceBySlug(slug) {
+  if (!slug) return null;
+  const cleanSlug = encodeURIComponent(String(slug).trim());
+  return requestJson(`/experience/${cleanSlug}/`);
+}
+
+/**
+ * Fetch all active achievements from API.
+ */
+export async function fetchAchievements() {
+  const data = await requestJson('/achievements/');
+  return unwrapResults(data);
+}
+
+/**
+ * Fetch user profile from API.
+ */
+export async function fetchProfile() {
+  return requestJson('/profile/');
+}
+
+/**
+ * Fetch aggregated portfolio summary metrics from API.
+ */
+export async function fetchSummary() {
+  return requestJson('/summary/');
+}
+
+/**
+ * Increment project likes counter on backend.
+ */
+export async function likeProject(slug) {
+  if (!slug) return { success: false };
+  const cleanSlug = encodeURIComponent(String(slug).trim());
+  return requestJson(`/projects/${cleanSlug}/like/`, { method: 'POST' });
+}
+
+/**
+ * Increment project views counter on backend.
+ */
+export async function viewProject(slug) {
+  if (!slug) return { success: false };
+  const cleanSlug = encodeURIComponent(String(slug).trim());
+  return requestJson(`/projects/${cleanSlug}/view/`, { method: 'POST' });
+}
+
+/**
+ * Submit public contact message.
+ */
+export async function submitContactMessage(payload) {
+  return requestJson('/contact/', {
+    method: 'POST',
+    body: payload,
+  });
+}
+
+/**
+ * Send Rexi AI assistant chat prompt.
+ */
+export async function sendRexiChatMessage(message) {
+  return requestJson('/rexi/chat/', {
+    method: 'POST',
+    body: { message },
+  });
+}
+
+/**
+ * Fetch all published blog articles summary list.
+ */
+export async function fetchBlogs() {
+  const data = await requestJson('/blogs/');
+  return unwrapResults(data);
+}
+
+/**
+ * Fetch a single blog article by slug.
+ */
+export async function fetchBlogBySlug(slug) {
+  if (!slug) return null;
+  const cleanSlug = encodeURIComponent(String(slug).trim());
+  const res = await requestJson(`/blogs/${cleanSlug}/`);
+  return res?.data || res;
+}
+
+export { API_BASE_URL };

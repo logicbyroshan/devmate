@@ -1,16 +1,65 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { fetchBlogBySlug, fetchBlogs } from '../api/portfolioApi';
 import { BLOG_ARTICLES } from '../api/blogData';
 import CodeBlockShiki from '../components/doc/CodeBlockShiki';
 
 export default function BlogDetailPage({ slug, onNavigate }) {
   const [copiedLink, setCopiedLink] = useState(false);
-  const article = BLOG_ARTICLES[slug] || BLOG_ARTICLES['understanding-microservices-architecture'];
-  const relatedArticles = Object.values(BLOG_ARTICLES).filter(a => a.slug !== article.slug);
+  const [dynamicArticle, setDynamicArticle] = useState(null);
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fallbackArticle = useMemo(() => {
+    return BLOG_ARTICLES[slug] || BLOG_ARTICLES['understanding-microservices-architecture'];
+  }, [slug]);
+
+  const article = dynamicArticle || fallbackArticle;
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
+    let isMounted = true;
+
+    async function loadArticle() {
+      setLoading(true);
+      try {
+        const [singleRes, listRes] = await Promise.allSettled([
+          fetchBlogBySlug(slug),
+          fetchBlogs(),
+        ]);
+
+        if (!isMounted) return;
+
+        if (singleRes.status === 'fulfilled' && singleRes.value && !singleRes.value.detail) {
+          setDynamicArticle(singleRes.value);
+        }
+
+        if (listRes.status === 'fulfilled' && Array.isArray(listRes.value)) {
+          setAllBlogs(listRes.value);
+        }
+      } catch {
+        // Fallback to static articles
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    loadArticle();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [slug]);
+
+  useEffect(() => {
     document.title = `${article.title} | Roshan Damor Blog`;
   }, [article]);
+
+  const relatedArticles = useMemo(() => {
+    if (allBlogs.length > 0) {
+      return allBlogs.filter((a) => a.slug !== article.slug);
+    }
+    return Object.values(BLOG_ARTICLES).filter((a) => a.slug !== article.slug);
+  }, [allBlogs, article]);
 
   const handleShareCopy = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -23,12 +72,12 @@ export default function BlogDetailPage({ slug, onNavigate }) {
     <aside className="blog-sidebar">
       {/* Author card */}
       <div className="blog-sb-author">
-        <img src={article.author.avatar} alt={article.author.name} className="blog-sb-avatar" />
-        <div className="blog-sb-author-name">{article.author.name}</div>
-        <div className="blog-sb-author-role">{article.author.role}</div>
-        <p className="blog-sb-author-bio">{article.author.bio}</p>
+        <img src={article.author?.avatar || '/static/images/hero.webp'} alt={article.author?.name || 'Author'} className="blog-sb-avatar" />
+        <div className="blog-sb-author-name">{article.author?.name || 'Roshan Damor'}</div>
+        <div className="blog-sb-author-role">{article.author?.role || 'Software Engineer'}</div>
+        <p className="blog-sb-author-bio">{article.author?.bio || 'Full-stack software engineer focused on distributed backend architectures.'}</p>
         <div className="blog-sb-author-links">
-          <a href="#about" onClick={e => { e.preventDefault(); onNavigate('about'); }} className="blog-sb-link">
+          <a href="#about" onClick={(e) => { e.preventDefault(); onNavigate('about'); }} className="blog-sb-link">
             <i className="fas fa-user"></i> Profile
           </a>
           <a href="https://github.com/logicbyroshan" target="_blank" rel="noopener noreferrer" className="blog-sb-link">
@@ -45,7 +94,7 @@ export default function BlogDetailPage({ slug, onNavigate }) {
         <nav className="blog-sb-toc" aria-label="Table of Contents">
           <div className="blog-sb-section-title"><i className="fas fa-list-ul"></i> Contents</div>
           <ul className="blog-sb-toc-list">
-            {article.toc.map(item => (
+            {article.toc.map((item) => (
               <li key={item.id}>
                 <a href={`#${item.id}`}>{item.title}</a>
               </li>
@@ -58,14 +107,14 @@ export default function BlogDetailPage({ slug, onNavigate }) {
       {relatedArticles.length > 0 && (
         <div className="blog-sb-related">
           <div className="blog-sb-section-title"><i className="fas fa-newspaper"></i> More Articles</div>
-          {relatedArticles.slice(0, 2).map(rel => (
+          {relatedArticles.slice(0, 2).map((rel) => (
             <div
               key={rel.slug}
               className="blog-sb-related-card"
               onClick={() => onNavigate('blog-detail', rel.slug)}
               role="button"
               tabIndex="0"
-              onKeyDown={e => e.key === 'Enter' && onNavigate('blog-detail', rel.slug)}
+              onKeyDown={(e) => e.key === 'Enter' && onNavigate('blog-detail', rel.slug)}
             >
               <div className="blog-sb-related-img">
                 <img src={rel.image} alt={rel.title} />
@@ -91,12 +140,12 @@ export default function BlogDetailPage({ slug, onNavigate }) {
       <div className="blog-sb-sitemap">
         <div className="blog-sb-section-title"><i className="fas fa-sitemap"></i> Site Navigation</div>
         <ul className="blog-sb-sitemap-list">
-          <li><a href="/" onClick={e => { e.preventDefault(); onNavigate('home'); }}><i className="fas fa-home"></i> Home</a></li>
-          <li><a href="/" onClick={e => { e.preventDefault(); onNavigate('home', 'projects'); }}><i className="fas fa-folder-open"></i> Projects</a></li>
-          <li><a href="/" onClick={e => { e.preventDefault(); onNavigate('home', 'blog'); }}><i className="fas fa-pen-nib"></i> Blog</a></li>
-          <li><a href="/about" onClick={e => { e.preventDefault(); onNavigate('about'); }}><i className="fas fa-user"></i> About</a></li>
-          <li><a href="/experience" onClick={e => { e.preventDefault(); onNavigate('experience'); }}><i className="fas fa-briefcase"></i> Experience</a></li>
-          <li><a href="/" onClick={e => { e.preventDefault(); onNavigate('home', 'contact'); }}><i className="fas fa-envelope"></i> Contact</a></li>
+          <li><a href="/" onClick={(e) => { e.preventDefault(); onNavigate('home'); }}><i className="fas fa-home"></i> Home</a></li>
+          <li><a href="/" onClick={(e) => { e.preventDefault(); onNavigate('home', 'projects'); }}><i className="fas fa-folder-open"></i> Projects</a></li>
+          <li><a href="/" onClick={(e) => { e.preventDefault(); onNavigate('home', 'blog'); }}><i className="fas fa-pen-nib"></i> Blog</a></li>
+          <li><a href="/about" onClick={(e) => { e.preventDefault(); onNavigate('about'); }}><i className="fas fa-user"></i> About</a></li>
+          <li><a href="/experience" onClick={(e) => { e.preventDefault(); onNavigate('experience'); }}><i className="fas fa-briefcase"></i> Experience</a></li>
+          <li><a href="/" onClick={(e) => { e.preventDefault(); onNavigate('home', 'contact'); }}><i className="fas fa-envelope"></i> Contact</a></li>
         </ul>
       </div>
 
@@ -105,19 +154,21 @@ export default function BlogDetailPage({ slug, onNavigate }) {
         <div className="blog-sb-section-title"><i className="fas fa-share-alt"></i> Share Article</div>
         <div className="blog-sb-share-btns">
           <button type="button" className="blog-sb-share-btn" onClick={handleShareCopy}>
-            <i className={copiedLink ? "fas fa-check" : "fas fa-link"}></i>
-            {copiedLink ? "Copied!" : "Copy Link"}
+            <i className={copiedLink ? 'fas fa-check' : 'fas fa-link'}></i>
+            {copiedLink ? 'Copied!' : 'Copy Link'}
           </button>
           <a
             href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(window.location.href)}`}
-            target="_blank" rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
             className="blog-sb-share-btn"
           >
             <i className="fab fa-twitter"></i> Twitter
           </a>
           <a
             href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
-            target="_blank" rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
             className="blog-sb-share-btn"
           >
             <i className="fab fa-linkedin-in"></i> LinkedIn
@@ -145,16 +196,16 @@ export default function BlogDetailPage({ slug, onNavigate }) {
 
           <div className="blog-article-author-row">
             <div className="blog-author-info">
-              <img src={article.author.avatar} alt={article.author.name} className="blog-author-avatar" />
+              <img src={article.author?.avatar || '/static/images/hero.webp'} alt={article.author?.name || 'Author'} className="blog-author-avatar" />
               <div>
-                <span className="blog-author-name">{article.author.name}</span>
-                <span className="blog-author-role">{article.author.role}</span>
+                <span className="blog-author-name">{article.author?.name || 'Roshan Damor'}</span>
+                <span className="blog-author-role">{article.author?.role || 'Software Engineer'}</span>
               </div>
             </div>
             <div className="blog-share-actions">
               <button type="button" className="doc-ctrl-btn" onClick={handleShareCopy} title="Copy link">
-                <i className={copiedLink ? "fas fa-check" : "fas fa-link"}></i>
-                {copiedLink ? "Copied!" : "Share"}
+                <i className={copiedLink ? 'fas fa-check' : 'fas fa-link'}></i>
+                {copiedLink ? 'Copied!' : 'Share'}
               </button>
               <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="doc-ctrl-btn"><i className="fab fa-twitter"></i></a>
               <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="doc-ctrl-btn"><i className="fab fa-linkedin-in"></i></a>
@@ -184,44 +235,46 @@ export default function BlogDetailPage({ slug, onNavigate }) {
 
             {/* Article sections */}
             <div className="blog-body-prose">
-              {article.sections.map(sec => (
-                <section key={sec.id} id={sec.id} className="blog-article-section">
-                  <h2 className="blog-section-title">{sec.heading}</h2>
-                  <div className="blog-section-content">
-                    {sec.content.split('\n\n').map((paragraph, pIdx) => {
-                      if (paragraph.startsWith('>')) {
+              {article.sections && Array.isArray(article.sections) ? (
+                article.sections.map((sec) => (
+                  <section key={sec.id} id={sec.id} className="blog-article-section">
+                    <h2 className="blog-section-title">{sec.heading}</h2>
+                    <div className="blog-section-content">
+                      {sec.content && sec.content.split('\n\n').map((paragraph, pIdx) => {
+                        if (paragraph.startsWith('>')) {
+                          return (
+                            <blockquote key={pIdx} className="blog-blockquote">
+                              {paragraph.replace(/^>\s*/, '')}
+                            </blockquote>
+                          );
+                        }
+                        if (paragraph.startsWith('-')) {
+                          return (
+                            <ul key={pIdx} className="blog-prose-list">
+                              {paragraph.split('\n').map((item, iIdx) => (
+                                <li key={iIdx} dangerouslySetInnerHTML={{ __html: item.replace(/^-\s*/, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>') }} />
+                              ))}
+                            </ul>
+                          );
+                        }
                         return (
-                          <blockquote key={pIdx} className="blog-blockquote">
-                            {paragraph.replace(/^>\s*/, '')}
-                          </blockquote>
+                          <p key={pIdx} dangerouslySetInnerHTML={{ __html: paragraph.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>') }} />
                         );
-                      }
-                      if (paragraph.startsWith('-')) {
-                        return (
-                          <ul key={pIdx} className="blog-prose-list">
-                            {paragraph.split('\n').map((item, iIdx) => (
-                              <li key={iIdx} dangerouslySetInnerHTML={{ __html: item.replace(/^-\s*/, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>') }} />
-                            ))}
-                          </ul>
-                        );
-                      }
-                      return (
-                        <p key={pIdx} dangerouslySetInnerHTML={{ __html: paragraph.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>') }} />
-                      );
-                    })}
-                  </div>
-                  {sec.codeSnippet && (
-                    <div style={{ margin: '24px 0' }}>
-                      <CodeBlockShiki
-                        code={sec.codeSnippet.code}
-                        language={sec.codeSnippet.language}
-                        filename={sec.codeSnippet.filename}
-                        description={sec.codeSnippet.description}
-                      />
+                      })}
                     </div>
-                  )}
-                </section>
-              ))}
+                    {sec.codeSnippet && (
+                      <div style={{ margin: '24px 0' }}>
+                        <CodeBlockShiki
+                          code={sec.codeSnippet.code}
+                          language={sec.codeSnippet.language}
+                          filename={sec.codeSnippet.filename}
+                          description={sec.codeSnippet.description}
+                        />
+                      </div>
+                    )}
+                  </section>
+                ))
+              ) : null}
             </div>
 
             {/* Key Takeaways */}
@@ -244,12 +297,12 @@ export default function BlogDetailPage({ slug, onNavigate }) {
 
             {/* Author signature card */}
             <div className="blog-author-card">
-              <img src={article.author.avatar} alt={article.author.name} className="author-card-avatar" />
+              <img src={article.author?.avatar || '/static/images/hero.webp'} alt={article.author?.name || 'Author'} className="author-card-avatar" />
               <div className="author-card-details">
-                <div className="author-card-title">Written by {article.author.name}</div>
-                <p className="author-card-bio">{article.author.bio}</p>
+                <div className="author-card-title">Written by {article.author?.name || 'Roshan Damor'}</div>
+                <p className="author-card-bio">{article.author?.bio || 'Full-stack software engineer focused on distributed backend architectures.'}</p>
                 <div className="author-card-actions">
-                  <a href="#about" onClick={e => { e.preventDefault(); onNavigate('about'); }} className="btn btn-secondary btn-sm">
+                  <a href="#about" onClick={(e) => { e.preventDefault(); onNavigate('about'); }} className="btn btn-secondary btn-sm">
                     <i className="fas fa-user"></i> Full Profile
                   </a>
                   <a href="https://github.com/logicbyroshan" target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm">
@@ -267,19 +320,19 @@ export default function BlogDetailPage({ slug, onNavigate }) {
               <div className="blog-related-wrap">
                 <div className="blog-related-heading">
                   <span>Continue Reading</span>
-                  <a href="/" onClick={e => { e.preventDefault(); onNavigate('home', 'blog'); }}>
+                  <a href="/" onClick={(e) => { e.preventDefault(); onNavigate('home', 'blog'); }}>
                     View All <i className="fas fa-arrow-right"></i>
                   </a>
                 </div>
                 <div className="blog-related-grid">
-                  {relatedArticles.slice(0, 2).map(rel => (
+                  {relatedArticles.slice(0, 2).map((rel) => (
                     <div
                       key={rel.slug}
                       className="blog-related-card"
                       onClick={() => onNavigate('blog-detail', rel.slug)}
                       role="button"
                       tabIndex="0"
-                      onKeyDown={e => e.key === 'Enter' && onNavigate('blog-detail', rel.slug)}
+                      onKeyDown={(e) => e.key === 'Enter' && onNavigate('blog-detail', rel.slug)}
                     >
                       <div className="blog-related-img-wrap">
                         <img src={rel.image} alt={rel.title} />

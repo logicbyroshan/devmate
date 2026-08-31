@@ -327,18 +327,41 @@ def api_auth_login(request):
 @permission_classes([AllowAny])
 def api_banners_list(request):
     """
-    Returns list of active portfolio banners and hero visuals.
+    Returns list of active portfolio banners and hero visuals from UserProfile.
     GET /api/v1/banners/
     """
+    profile = PortfolioQueryService.get_user_profile()
+    hero_img = profile.hero_image.url if (profile and profile.hero_image) else (profile.profile_image.url if (profile and profile.profile_image) else "/static/images/hero.webp")
+    title = f"{profile.full_name} - {profile.title}" if profile else "Software Engineer & AI Developer"
+
     return Response({
         "status": "ok",
         "banners": [
             {
-                "id": 1,
-                "title": "Roshan Damor - Software Engineer & AI Developer",
-                "image_url": "/static/images/hero.webp",
-                "alt_text": "Roshan Damor Hero Visual",
+                "id": profile.id if profile else 1,
+                "title": title,
+                "badge": profile.hero_badge if (profile and profile.hero_badge) else "Hello, I am",
+                "description": profile.hero_description if (profile and profile.hero_description) else (profile.bio if profile else ""),
+                "image_url": hero_img,
+                "alt_text": f"{profile.full_name if profile else 'Hero'} Visual",
                 "is_active": True,
+                "stats": [
+                    {
+                        "value": profile.hero_stat_1_value if profile else "1,000+",
+                        "label": profile.hero_stat_1_label if profile else "Production Users",
+                        "icon": profile.hero_stat_1_icon if profile else "fas fa-users",
+                    },
+                    {
+                        "value": profile.hero_stat_2_value if profile else "136K+",
+                        "label": profile.hero_stat_2_label if profile else "ID Cards Processed",
+                        "icon": profile.hero_stat_2_icon if profile else "fas fa-id-card",
+                    },
+                    {
+                        "value": profile.hero_stat_3_value if profile else "86K+",
+                        "label": profile.hero_stat_3_label if profile else "Cards Downloaded",
+                        "icon": profile.hero_stat_3_icon if profile else "fas fa-cloud-download-alt",
+                    },
+                ] if profile else [],
             }
         ],
         "count": 1
@@ -492,5 +515,106 @@ def project_view(request, slug):
         return Response({"success": True, "views": views_count})
     return Response(
         {"success": False, "message": "Project not found"},
+        status=status.HTTP_404_NOT_FOUND,
+    )
+
+
+# In-memory structured articles store / schema reference
+BLOG_DATABASE = {
+    "understanding-microservices-architecture": {
+        "slug": "understanding-microservices-architecture",
+        "title": "Understanding Microservices Architecture: A Developer's Guide",
+        "subtitle": "A practical, engineering-first guide to designing decoupled, fault-tolerant distributed systems without falling into common microservice anti-patterns.",
+        "category": "Architecture & Distributed Systems",
+        "date": "November 15, 2024",
+        "readTime": "7 min read",
+        "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&h=675&fit=crop",
+        "tags": ["Microservices", "System Design", "Event-Driven", "Docker", "Distributed Systems"],
+        "author": {
+            "name": "Roshan Damor",
+            "role": "Software Engineer",
+            "avatar": "/static/images/hero.webp",
+            "bio": "Full-stack software engineer focused on distributed backend architectures, scalable database designs, and production AI workflows."
+        },
+        "tldr": "Microservices solve organizational scaling and independent deployment bottlenecks, but introduce network latency, eventual consistency, and distributed failure modes. Success requires strict service boundaries, asynchronous messaging, and robust observability.",
+        "toc": [
+            {"id": "monolith-vs-microservices", "title": "1. Monolith vs. Microservices: When to Split"},
+            {"id": "domain-driven-boundaries", "title": "2. Defining Service Boundaries with DDD"},
+            {"id": "inter-service-communication", "title": "3. Synchronous vs. Asynchronous Communication"},
+            {"id": "data-management-sagas", "title": "4. Database-per-Service & The Saga Pattern"},
+            {"id": "resilience-patterns", "title": "5. Resilience & Fault Tolerance Strategies"},
+            {"id": "key-takeaways", "title": "6. Key Takeaways & Checklist"}
+        ],
+        "sections": [
+            {
+                "id": "monolith-vs-microservices",
+                "heading": "1. Monolith vs. Microservices: When to Split",
+                "content": "Many engineering teams prematurely adopt microservices before understanding their inherent operational overhead. A well-architected modular monolith is often the fastest way to validate product-market fit.\n\nHowever, microservices become indispensable when you encounter:\n- **Independent Scaling Requirements**: Certain workloads (e.g., video transcoding, ID card batch generation) require elastic compute without scaling the entire monolith.\n- **Team Ownership Boundaries**: Multiple engineering squads need to deploy independently without blocking on monolithic CI/CD release trains.\n- **Heterogeneous Tech Stacks**: Specialized tasks benefit from tailored runtimes (e.g., Python for ML/image processing, Go/Node.js for high-throughput WebSocket gateways)."
+            },
+            {
+                "id": "domain-driven-boundaries",
+                "heading": "2. Defining Service Boundaries with Domain-Driven Design (DDD)",
+                "content": "The single biggest mistake in microservices is creating 'entity services' that turn every user action into a distributed chain of synchronous HTTP calls.\n\nInstead, define services around **Bounded Contexts**:\n- **Identity & Authentication**: Manages RBAC tokens, session invalidation, and tenant permissions.\n- **Order Fulfillment**: Encapsulates cart checkout, payment processing state machines, and inventory reservation.\n- **Notification Engine**: Decoupled asynchronous worker pool consuming events to dispatch SMS, Push, and Email alerts."
+            },
+            {
+                "id": "inter-service-communication",
+                "heading": "3. Synchronous vs. Asynchronous Communication",
+                "content": "Direct REST calls between microservices introduce cascading latency and tight runtime coupling. Modern distributed architectures employ a hybrid model:\n- **gRPC for Internal Synchronous RPCs**: Highly efficient binary serialization over HTTP/2.\n- **Message Brokers (Kafka / RabbitMQ / Redis Streams)**: Decouples the producer from consumers.",
+                "codeSnippet": {
+                    "language": "python",
+                    "filename": "events/publisher.py",
+                    "description": "Example asynchronous event publishing using Redis Streams in Python:",
+                    "code": "import json\nimport redis\nfrom datetime import datetime\n\nclass DomainEventPublisher:\n    def __init__(self, redis_client: redis.Redis):\n        self.client = redis_client\n\n    def publish(self, stream_name: str, event_type: str, payload: dict) -> str:\n        event = {\n            'event_id': str(payload.get('id')),\n            'event_type': event_type,\n            'payload': json.dumps(payload),\n            'timestamp': datetime.utcnow().isoformat(),\n        }\n        return self.client.xadd(stream_name, event)\n"
+                }
+            }
+        ]
+    }
+}
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def api_blogs_list(request):
+    """
+    Returns list of published blog articles with summary metadata.
+    GET /api/v1/blogs/
+    """
+    articles_list = [
+        {
+            "slug": a["slug"],
+            "title": a["title"],
+            "subtitle": a["subtitle"],
+            "category": a["category"],
+            "date": a["date"],
+            "readTime": a["readTime"],
+            "image": a["image"],
+            "tags": a["tags"],
+            "author": a["author"],
+            "tldr": a["tldr"],
+        }
+        for a in BLOG_DATABASE.values()
+    ]
+    return Response({"success": True, "count": len(articles_list), "results": articles_list})
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def api_blog_detail(request, slug):
+    """
+    Returns full technical blog article with TOC, sections, and code snippets.
+    GET /api/v1/blogs/{slug}/
+    """
+    clean_slug = str(slug).lower().strip()
+    article = BLOG_DATABASE.get(clean_slug)
+    if article:
+        return Response({"success": True, "data": article})
+
+    # Return default featured article if slug matches partial
+    for key, art in BLOG_DATABASE.items():
+        if clean_slug in key or key in clean_slug:
+            return Response({"success": True, "data": art})
+
+    return Response(
+        {"success": False, "message": f"Blog article '{slug}' not found"},
         status=status.HTTP_404_NOT_FOUND,
     )
