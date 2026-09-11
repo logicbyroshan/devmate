@@ -34,4 +34,8 @@ urlpatterns = [
     # Interaction Endpoints
     path('projects/<slug:slug>/like/', api_views.project_like, name='api-project-like'),
     path('projects/<slug:slug>/view/', api_views.project_view, name='api-project-view'),
+
+    # Blog Endpoints
+    path('blogs/', api_views.api_blogs_list, name='api-blogs-list'),
+    path('blogs/<slug:slug>/', api_views.api_blog_detail, name='api-blog-detail'),
 ]

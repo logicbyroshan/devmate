@@ -1,131 +1,177 @@
-import React, { useState, useEffect } from 'react';
-import { STATIC_PROJECTS, PROJECT_DOCUMENTATION } from '../api/hydratePortfolio';
-import { ALL_PROJECT_DOCS } from '../api/projectDocData';
-import MermaidDiagram from '../components/doc/MermaidDiagram';
-import CodeBlockShiki from '../components/doc/CodeBlockShiki';
-import KaTeXFormula from '../components/doc/KaTeXFormula';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { fetchProjectBySlug, fetchProjects, likeProject, viewProject } from '../api/portfolioApi';
+import { safeUrl, resolveStatusDisplay } from '../api/hydratePortfolio';
 import InteractiveArchitecture from '../components/doc/InteractiveArchitecture';
 import ComplexDiagramD2 from '../components/doc/ComplexDiagramD2';
 import ImageLightbox from '../components/doc/ImageLightbox';
 import VideoShowcase from '../components/doc/VideoShowcase';
 
-const PROJECT_GALLERIES = {
-  cardflow: [
-    {
-      src: '/static/images/cardflow-banner.webp',
-      title: 'CardFlow Enterprise Production Dashboard',
-      caption: 'Full-stack production dashboard managing 136K+ ID card records and multi-school workflows.'
-    },
-    {
-      src: '/static/images/screenshot_documentation.png',
-      title: 'Automated Processing Engine',
-      caption: 'High-throughput batch image processing, face alignment, and dynamic ID template composition.'
-    },
-    {
-      src: '/static/images/screenshot_projects.png',
-      title: 'Multi-Tenant RBAC & Analytics',
-      caption: 'Role-based access control, real-time activity tracking, and cross-platform synchronization.'
-    }
-  ],
-  vidyamaxx: [
-    {
-      src: '/static/images/vidyamaxx-banner.webp',
-      title: 'AI-First School Management Dashboard',
-      caption: 'Integrated academic ecosystem connecting administrators, educators, students, and parents.'
-    },
-    {
-      src: '/static/images/screenshot_rexi_ai.png',
-      title: 'Intelligent Academic Analytics',
-      caption: 'Predictive performance modeling, automated timetable scheduling, and progress tracking.'
-    },
-    {
-      src: '/static/images/screenshot_hero.png',
-      title: 'Unified Communication Hub',
-      caption: 'Multi-channel messaging, real-time announcements, and institutional report generation.'
-    }
-  ],
-  printnexx: [
-    {
-      src: '/static/images/screenshot_documentation.png',
-      title: 'Internal Automation Engine',
-      caption: 'High-speed image pre-processing, face alignment, and dynamic ID template compositor.'
-    },
-    {
-      src: '/static/images/cardflow-banner.webp',
-      title: 'Batch Finishing Pipeline',
-      caption: 'Automated print-ready output rendering and multi-format asset export.'
-    }
-  ],
-  eazetrip: [
-    {
-      src: '/static/images/ecom.webp',
-      title: 'Tour Agency Operations & Booking',
-      caption: 'Customer booking management, interactive tour itineraries, and automated payment receipts.'
-    },
-    {
-      src: '/static/images/faqside.webp',
-      title: 'Itinerary Planner & Package Customizer',
-      caption: 'Dynamic travel package creation and real-time scheduling dashboard.'
-    }
-  ],
-  taskflixx: [
-    {
-      src: '/static/images/task.webp',
-      title: 'AI Task Management Workspace',
-      caption: 'Context-aware task prioritization, workflow pipelines, and daily productivity insights.'
-    },
-    {
-      src: '/static/images/hero.webp',
-      title: 'Productivity Analytics',
-      caption: 'Sprint tracking, team velocity estimation, and task automation.'
-    }
-  ],
-  prepsarthi: [
-    {
-      src: '/static/images/screenshot_documentation.png',
-      title: 'AI Study & Prep Engine',
-      caption: 'Adaptive practice tests, spaced repetition flashcards, and concept mastery tracking.'
-    },
-    {
-      src: '/static/images/vidyamaxx-banner.webp',
-      title: 'Interactive Learning Workspace',
-      caption: 'Intelligent concept summarization and instant mock test evaluation.'
-    }
-  ]
-};
-
 export default function ProjectDetailPage({ slug, onNavigate }) {
+  const [project, setProject] = useState(null);
+  const [allProjects, setAllProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [likes, setLikes] = useState(0);
+  const [views, setViews] = useState(0);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
 
-  // Normalize slug and find project
-  const cleanSlug = String(slug || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-  
-  const currentIndex = STATIC_PROJECTS.findIndex(p => {
-    const pSlug = (p.project_name || p.title || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-    return pSlug === cleanSlug || cleanSlug.includes(pSlug) || pSlug.includes(cleanSlug);
-  });
+  const cleanSlug = useMemo(() => {
+    return String(slug || '').toLowerCase().replace(/[^a-z0-9-]/g, '');
+  }, [slug]);
 
-  const projectIndex = currentIndex >= 0 ? currentIndex : 0;
-  const project = STATIC_PROJECTS[projectIndex] || STATIC_PROJECTS[0];
+  // Load project detail and all projects list
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    setError(null);
+    setActiveSlide(0);
 
-  const prevProject = STATIC_PROJECTS[(projectIndex - 1 + STATIC_PROJECTS.length) % STATIC_PROJECTS.length];
-  const nextProject = STATIC_PROJECTS[(projectIndex + 1) % STATIC_PROJECTS.length];
+    async function loadData() {
+      try {
+        const [projectsList, directProject] = await Promise.allSettled([
+          fetchProjects(),
+          fetchProjectBySlug(cleanSlug),
+        ]);
 
-  const projectName = project?.project_name || project?.title || 'CardFlow';
-  const categoryName = project?.category?.name || 'Enterprise SaaS';
-  const projectKey = (projectName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (!isMounted) return;
 
-  const docData = ALL_PROJECT_DOCS[projectKey] || ALL_PROJECT_DOCS.cardflow;
-  const rawHtmlDoc = PROJECT_DOCUMENTATION[projectName] || PROJECT_DOCUMENTATION[project?.title] || project?.documentation || '';
-  const gallery = PROJECT_GALLERIES[projectKey] || PROJECT_GALLERIES.cardflow;
+        const loadedProjects = projectsList.status === 'fulfilled' && Array.isArray(projectsList.value)
+          ? projectsList.value
+          : [];
+        setAllProjects(loadedProjects);
+
+        let targetProject = null;
+        if (directProject.status === 'fulfilled' && directProject.value && !directProject.value.detail) {
+          targetProject = directProject.value;
+        } else if (loadedProjects.length > 0) {
+          // Find matching project by slug or name
+          targetProject = loadedProjects.find((p) => {
+            const pSlug = (p.slug || p.project_name || p.title || '').toLowerCase().replace(/[^a-z0-9-]/g, '');
+            return pSlug === cleanSlug || pSlug.includes(cleanSlug) || cleanSlug.includes(pSlug);
+          }) || loadedProjects[0];
+        }
+
+        if (targetProject) {
+          setProject(targetProject);
+          setLikes(targetProject.likes || 0);
+          setViews(targetProject.views || 0);
+          document.title = `${targetProject.project_name || targetProject.title} Technical Documentation | Roshan Damor`;
+
+          // Track view counter via API
+          const projectSlugToTrack = targetProject.slug || cleanSlug;
+          viewProject(projectSlugToTrack).then((res) => {
+            if (res && typeof res.views === 'number' && isMounted) {
+              setViews(res.views);
+            }
+          }).catch(() => {
+            // Ignore interaction tracking errors
+          });
+        } else {
+          setError('Project not found');
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || 'Failed to load project');
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [cleanSlug]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
-    document.title = `${projectName} Technical Documentation & Case Study | Roshan Damor`;
-    setActiveSlide(0);
-  }, [projectName]);
+  }, [cleanSlug]);
 
-  const getSlugOf = (p) => (p.project_name || p.title || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const handleLike = useCallback(async () => {
+    if (hasLiked || isLiking || !project) return;
+    setIsLiking(true);
+
+    try {
+      const projectSlugToLike = project.slug || cleanSlug;
+      const res = await likeProject(projectSlugToLike);
+      if (res && res.success) {
+        setLikes(res.likes || likes + 1);
+        setHasLiked(true);
+      } else {
+        setLikes((prev) => prev + 1);
+        setHasLiked(true);
+      }
+    } catch {
+      setLikes((prev) => prev + 1);
+      setHasLiked(true);
+    } finally {
+      setIsLiking(false);
+    }
+  }, [hasLiked, isLiking, project, cleanSlug, likes]);
+
+  const projectName = project?.project_name || project?.title || 'Project Case Study';
+  const categoryName = project?.category?.name || 'Software Engineering';
+  const projectKey = (project?.slug || projectName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const statusInfo = resolveStatusDisplay(project?.status);
+
+  // Normalize tech list
+  const techList = useMemo(() => {
+    if (!project) return [];
+    if (Array.isArray(project.technologies_list) && project.technologies_list.length > 0) {
+      return project.technologies_list;
+    }
+    if (typeof project.technologies === 'string') {
+      return project.technologies.split(',').map((t) => t.trim()).filter(Boolean);
+    }
+    return [];
+  }, [project]);
+
+  // Gallery items from dynamic screenshots or fallback
+  const gallery = useMemo(() => {
+    if (project?.screenshots && Array.isArray(project.screenshots) && project.screenshots.length > 0) {
+      return project.screenshots.map((s, idx) => ({
+        src: s.image,
+        title: s.caption || `${projectName} - Screenshot ${idx + 1}`,
+        caption: s.caption || `High-resolution preview of ${projectName} system interfaces.`,
+      }));
+    }
+
+    if (project?.thumbnail) {
+      return [
+        {
+          src: project.thumbnail,
+          title: `${projectName} Overview`,
+          caption: project.description || `${projectName} production architecture and interface.`,
+        },
+      ];
+    }
+
+    return [
+      {
+        src: '/static/images/hero.webp',
+        title: `${projectName} Architectural Overview`,
+        caption: project?.description || `${projectName} system architecture.`,
+      },
+    ];
+  }, [project, projectName]);
+
+  // Prev / Next Project
+  const { prevProject, nextProject } = useMemo(() => {
+    if (!allProjects.length) return { prevProject: null, nextProject: null };
+    const currentIndex = allProjects.findIndex((p) => (p.slug || p.title) === (project?.slug || project?.title));
+    const safeIdx = currentIndex >= 0 ? currentIndex : 0;
+    const prev = allProjects[(safeIdx - 1 + allProjects.length) % allProjects.length];
+    const next = allProjects[(safeIdx + 1) % allProjects.length];
+    return { prevProject: prev, nextProject: next };
+  }, [allProjects, project]);
+
+  const getSlugOf = (p) => p?.slug || (p?.project_name || p?.title || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 
   const nextSlide = () => {
     setActiveSlide((prev) => (prev + 1) % gallery.length);
@@ -134,6 +180,43 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
   const prevSlide = () => {
     setActiveSlide((prev) => (prev - 1 + gallery.length) % gallery.length);
   };
+
+  if (loading) {
+    return (
+      <div className="page-container">
+        <div className="page-wrapper" style={{ padding: '80px 20px', textAlign: 'center' }}>
+          <div style={{ display: 'inline-block', fontSize: '32px', color: '#a78bfa', marginBottom: '16px' }}>
+            <i className="fas fa-spinner fa-spin"></i>
+          </div>
+          <h2 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '20px' }}>Loading project architecture...</h2>
+          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>Fetching dynamic telemetry, case study docs, and screenshots from API</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !project) {
+    return (
+      <div className="page-container">
+        <div className="page-wrapper" style={{ padding: '80px 20px', textAlign: 'center' }}>
+          <div style={{ display: 'inline-block', fontSize: '48px', color: '#f87171', marginBottom: '16px' }}>
+            <i className="fas fa-exclamation-triangle"></i>
+          </div>
+          <h2 style={{ color: '#fff', fontSize: '24px', marginBottom: '12px' }}>Project Not Found</h2>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '15px', maxWidth: '480px', margin: '0 auto 28px' }}>
+            The requested project could not be found or has been moved. Explore other projects from the catalog.
+          </p>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => onNavigate('home', 'projects')}
+          >
+            <i className="fas fa-arrow-left" style={{ marginRight: '8px' }}></i> Return to Projects
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="page-container">
@@ -147,7 +230,7 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
             {projectName} <span className="text-gradient">Technical Documentation</span>
           </h1>
           <p className="page-subtitle">
-            {docData.tagline || project?.description}
+            {project.description}
           </p>
         </header>
 
@@ -157,8 +240,8 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
           <div className="project-screenshot-slider">
             <div className="screenshot-slide-stage">
               <img
-                src={gallery[activeSlide].src}
-                alt={gallery[activeSlide].title}
+                src={gallery[activeSlide]?.src || '/static/images/hero.webp'}
+                alt={gallery[activeSlide]?.title || projectName}
                 className="screenshot-slide-img"
               />
               <div className="screenshot-slide-overlay">
@@ -166,8 +249,8 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
                   <span className="screenshot-slide-badge">
                     <i className="fas fa-image"></i> Screenshot {activeSlide + 1} of {gallery.length}
                   </span>
-                  <h3 className="screenshot-slide-title">{gallery[activeSlide].title}</h3>
-                  <p className="screenshot-slide-caption">{gallery[activeSlide].caption}</p>
+                  <h3 className="screenshot-slide-title">{gallery[activeSlide]?.title}</h3>
+                  <p className="screenshot-slide-caption">{gallery[activeSlide]?.caption}</p>
                 </div>
               </div>
             </div>
@@ -191,7 +274,7 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
                 >
                   <i className="fas fa-chevron-right"></i>
                 </button>
-                
+
                 {/* Dots / Indicators */}
                 <div className="screenshot-dots-row">
                   {gallery.map((_, idx) => (
@@ -208,18 +291,46 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
             )}
           </div>
 
-          {/* Meta Row with Status, Links & Stats */}
+          {/* Meta Row with Status, Links & Interaction Telemetry */}
           <div className="project-detail-header-info">
             <div className="project-detail-meta-row">
-              <div>
-                <span className={`project-status-badge ${docData.statusClass || 'status-prod'}`} style={{ fontSize: '14px', padding: '6px 14px' }}>
-                  {docData.status || project?.status || '🟢 Production'}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                <span className={`project-status-badge ${statusInfo.cls}`} style={{ fontSize: '14px', padding: '6px 14px' }}>
+                  {statusInfo.text}
                 </span>
+
+                {/* Telemetry Stats: Views & Likes */}
+                <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                  <i className="fas fa-eye" style={{ color: '#38bdf8' }}></i> {views} Views
+                </span>
+                <button
+                  type="button"
+                  onClick={handleLike}
+                  disabled={hasLiked || isLiking}
+                  style={{
+                    background: hasLiked ? 'rgba(244, 63, 94, 0.2)' : 'rgba(255, 255, 255, 0.08)',
+                    border: hasLiked ? '1px solid #f43f5e' : '1px solid rgba(255, 255, 255, 0.15)',
+                    color: hasLiked ? '#fb7185' : '#fff',
+                    borderRadius: '20px',
+                    padding: '4px 12px',
+                    fontSize: '13px',
+                    cursor: hasLiked ? 'default' : 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    transition: 'all 0.2s ease',
+                  }}
+                  title={hasLiked ? 'Liked!' : 'Like this project'}
+                >
+                  <i className={`fas fa-heart ${hasLiked ? 'text-rose-500' : ''}`} style={{ color: hasLiked ? '#f43f5e' : '#fda4af' }}></i>
+                  <span>{likes}</span>
+                </button>
               </div>
+
               <div className="project-detail-links">
-                {docData.githubUrl && (
+                {project.github_url && (
                   <a
-                    href={docData.githubUrl}
+                    href={safeUrl(project.github_url)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="cs-link-pill secondary"
@@ -227,9 +338,9 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
                     <i className="fab fa-github"></i> GitHub Repo
                   </a>
                 )}
-                {docData.liveUrl && (
+                {project.live_url && (
                   <a
-                    href={docData.liveUrl}
+                    href={safeUrl(project.live_url)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="cs-link-pill primary"
@@ -237,33 +348,33 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
                     <i className="fas fa-globe"></i> Live Application
                   </a>
                 )}
+                {project.demo_url && (
+                  <a
+                    href={safeUrl(project.demo_url)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cs-link-pill secondary"
+                  >
+                    <i className="fas fa-play"></i> Demo
+                  </a>
+                )}
               </div>
             </div>
 
             {/* Tech Stack List */}
-            <div className="project-detail-tech-stack">
-              {(project?.technologies_list || []).map((t, idx) => (
-                <span key={idx} className="project-tech-badge" style={{ fontSize: '13px', padding: '6px 14px' }}>
-                  {t}
-                </span>
-              ))}
-            </div>
-
-            {/* Key Metrics Grid */}
-            {docData.stats && docData.stats.length > 0 && (
-              <div className="doc-stats-grid" style={{ marginTop: '20px' }}>
-                {docData.stats.map((s, idx) => (
-                  <div key={idx} className="doc-stat-box">
-                    <span className="doc-stat-val">{s.value}</span>
-                    <span className="doc-stat-lbl">{s.label}</span>
-                  </div>
+            {techList.length > 0 && (
+              <div className="project-detail-tech-stack">
+                {techList.map((t, idx) => (
+                  <span key={idx} className="project-tech-badge" style={{ fontSize: '13px', padding: '6px 14px' }}>
+                    {t}
+                  </span>
                 ))}
               </div>
             )}
           </div>
 
           {/* ══════════════════════════════════════════════════════════════
-             UNIFIED SINGLE-DOCUMENTATION FLOW (ALL SECTIONS RENDERED)
+             DYNAMIC DOCUMENTATION FLOW
              ══════════════════════════════════════════════════════════════ */}
 
           {/* 1. Executive Overview & Problem Context */}
@@ -274,14 +385,12 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
               </span>
               <h2 className="doc-section-title">Context, Problem Statement &amp; Architecture Strategy</h2>
             </div>
-            
-            {docData.overviewHtml ? (
-              <div dangerouslySetInnerHTML={{ __html: docData.overviewHtml }} />
-            ) : rawHtmlDoc ? (
-              <div className="case-study-injected" dangerouslySetInnerHTML={{ __html: rawHtmlDoc }} />
+
+            {project.documentation ? (
+              <div className="case-study-injected" dangerouslySetInnerHTML={{ __html: project.documentation }} />
             ) : (
               <p style={{ color: 'rgba(255,255,255,0.78)', fontSize: '15px', lineHeight: '1.65' }}>
-                {project?.description}
+                {project.description}
               </p>
             )}
           </section>
@@ -298,91 +407,23 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
             <ComplexDiagramD2 scenarioKey={projectKey} />
           </section>
 
-          {/* 3. Engineering Flowcharts & Relational Schema (Mermaid) */}
-          <section id="doc-diagrams" className="doc-page-section">
-            <div className="doc-section-heading-wrap">
-              <span className="doc-badge-pill">
-                <i className="fas fa-project-diagram"></i> Section 3: Engineering Diagrams
-              </span>
-              <h2 className="doc-section-title">Lifecycle State Machine &amp; Database Entity Relationships</h2>
-            </div>
-            
-            {docData.flowchart && (
-              <MermaidDiagram 
-                chart={docData.flowchart}
-                diagramType="Flowchart"
-                title={`${projectName} End-to-End Processing & Workflow Pipeline`}
-                subtitle="Visualizes data ingestion, validation state gates, background queues, and cloud storage sinks."
-              />
-            )}
-
-            {docData.erd && (
-              <MermaidDiagram 
-                chart={docData.erd}
-                diagramType="ERD"
-                title={`${projectName} Multi-Tenant Relational Entity Model`}
-                subtitle="Entity relationships illustrating foreign key constraints, ownership hierarchies, and audit logging trails."
-              />
-            )}
-          </section>
-
-          {/* 4. Production Code Implementation (Shiki) */}
-          <section id="doc-code" className="doc-page-section">
-            <div className="doc-section-heading-wrap">
-              <span className="doc-badge-pill">
-                <i className="fas fa-code"></i> Section 4: Production Implementation
-              </span>
-              <h2 className="doc-section-title">Core Algorithms, Serializers &amp; Partition Strategies</h2>
-            </div>
-
-            {docData.codeSamples && docData.codeSamples.map((sample, idx) => (
-              <CodeBlockShiki 
-                key={idx}
-                code={sample.code}
-                language={sample.language}
-                filename={sample.filename}
-                description={sample.description}
-              />
-            ))}
-          </section>
-
-          {/* 5. Mathematical Models & Performance Complexity (KaTeX) */}
-          <section id="doc-math" className="doc-page-section">
-            <div className="doc-section-heading-wrap">
-              <span className="doc-badge-pill">
-                <i className="fas fa-square-root-alt"></i> Section 5: Mathematical Models
-              </span>
-              <h2 className="doc-section-title">Throughput Capacity, Latency Budgets &amp; Algorithm Analysis</h2>
-            </div>
-
-            {docData.formulas && docData.formulas.map((item, idx) => (
-              <KaTeXFormula 
-                key={idx}
-                formula={item.formula}
-                title={item.title}
-                description={item.description}
-                variables={item.variables}
-              />
-            ))}
-          </section>
-
-          {/* 6. Media Gallery Lightbox & Video Showcase */}
+          {/* 3. Media Gallery Lightbox & Video Showcase */}
           <section id="doc-media" className="doc-page-section">
             <div className="doc-section-heading-wrap">
               <span className="doc-badge-pill">
-                <i className="fas fa-photo-video"></i> Section 6: Media &amp; Live Walkthrough
+                <i className="fas fa-photo-video"></i> Section 3: Media &amp; Live Walkthrough
               </span>
               <h2 className="doc-section-title">Interactive Video Walkthrough &amp; High-Resolution Gallery</h2>
             </div>
 
-            <VideoShowcase 
+            <VideoShowcase
               posterSrc={gallery[0]?.src}
               title={`${projectName} Production Walkthrough & Interactive Demo`}
               duration="03:45"
               resolution="1080p 60fps"
             />
 
-            <ImageLightbox 
+            <ImageLightbox
               images={gallery}
               title={`${projectName} High-Resolution Screenshot Suite`}
             />
@@ -390,37 +431,39 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
         </div>
 
         {/* Project Discovery Navigator (Prev / Next) */}
-        <div className="project-pagination-grid" style={{ marginTop: '40px' }}>
-          <a
-            href={`/projects/${getSlugOf(prevProject)}`}
-            className="project-nav-card prev"
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigate('project-detail', getSlugOf(prevProject));
-            }}
-          >
-            <i className="fas fa-arrow-left" style={{ color: '#a78bfa', fontSize: '18px' }}></i>
-            <div>
-              <div className="project-nav-card-sub">Previous Project</div>
-              <div className="project-nav-card-title">{prevProject.project_name || prevProject.title}</div>
-            </div>
-          </a>
+        {prevProject && nextProject && (
+          <div className="project-pagination-grid" style={{ marginTop: '40px' }}>
+            <a
+              href={`/projects/${getSlugOf(prevProject)}`}
+              className="project-nav-card prev"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('project-detail', getSlugOf(prevProject));
+              }}
+            >
+              <i className="fas fa-arrow-left" style={{ color: '#a78bfa', fontSize: '18px' }}></i>
+              <div>
+                <div className="project-nav-card-sub">Previous Project</div>
+                <div className="project-nav-card-title">{prevProject.project_name || prevProject.title}</div>
+              </div>
+            </a>
 
-          <a
-            href={`/projects/${getSlugOf(nextProject)}`}
-            className="project-nav-card next"
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigate('project-detail', getSlugOf(nextProject));
-            }}
-          >
-            <div>
-              <div className="project-nav-card-sub">Next Project</div>
-              <div className="project-nav-card-title">{nextProject.project_name || nextProject.title}</div>
-            </div>
-            <i className="fas fa-arrow-right" style={{ color: '#38bdf8', fontSize: '18px' }}></i>
-          </a>
-        </div>
+            <a
+              href={`/projects/${getSlugOf(nextProject)}`}
+              className="project-nav-card next"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('project-detail', getSlugOf(nextProject));
+              }}
+            >
+              <div>
+                <div className="project-nav-card-sub">Next Project</div>
+                <div className="project-nav-card-title">{nextProject.project_name || nextProject.title}</div>
+              </div>
+              <i className="fas fa-arrow-right" style={{ color: '#38bdf8', fontSize: '18px' }}></i>
+            </a>
+          </div>
+        )}
 
         {/* Return Button */}
         <div style={{ textAlign: 'center', marginTop: '36px', marginBottom: '60px' }}>

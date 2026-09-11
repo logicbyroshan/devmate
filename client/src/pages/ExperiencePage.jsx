@@ -1,9 +1,60 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { fetchExperiences } from '../api/portfolioApi';
+import { safeUrl } from '../api/hydratePortfolio';
+
+function formatExperienceDuration(startDate, endDate, currentlyWorking) {
+  if (!startDate) return 'Timeline not specified';
+
+  const start = new Date(startDate);
+  const startLabel = Number.isNaN(start.getTime())
+    ? String(startDate)
+    : start.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+  if (currentlyWorking) {
+    return `${startLabel} – Present`;
+  }
+
+  if (!endDate) {
+    return startLabel;
+  }
+
+  const end = new Date(endDate);
+  const endLabel = Number.isNaN(end.getTime())
+    ? String(endDate)
+    : end.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+  return `${startLabel} – ${endLabel}`;
+}
 
 export default function ExperiencePage({ onNavigate }) {
+  const [experiences, setExperiences] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
     document.title = 'Professional Experience & Engineering Roadmap | Roshan Damor';
+
+    let isMounted = true;
+    async function loadData() {
+      try {
+        const data = await fetchExperiences();
+        if (!isMounted) return;
+        if (Array.isArray(data)) {
+          setExperiences(data);
+        }
+      } catch (err) {
+        if (isMounted) setError(err.message || 'Failed to load experience records');
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -22,106 +73,95 @@ export default function ExperiencePage({ onNavigate }) {
           </p>
         </header>
 
-        {/* Experience Deep Dive 1: Adarsh ID Cards */}
-        <article className="exp-deep-card">
-          <div className="exp-card-header">
-            <div>
-              <h2 className="exp-role-title">Software Engineer</h2>
-              <div className="exp-company-name">
-                <i className="fas fa-building"></i> Adarsh ID Cards
-              </div>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <div style={{ fontSize: '32px', color: '#a78bfa', marginBottom: '16px' }}>
+              <i className="fas fa-spinner fa-spin"></i>
             </div>
-            <span className="exp-duration-badge">
-              <i className="far fa-calendar-alt"></i> Dec 2025 – Present · Full-time
-            </span>
+            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '15px' }}>Loading professional work history...</p>
           </div>
-
-          <p style={{ fontSize: '16px', lineHeight: '1.7', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '24px' }}>
-            Spearheading end-to-end software engineering and system architecture for <strong>CardFlow</strong>, an enterprise SaaS platform for high-throughput identity card issuance, batch image rendering, and live printing workflow operations across schools, colleges, and corporations.
-          </p>
-
-          {/* Pillars of Engineering Grid */}
-          <div className="exp-pillars-grid">
-            <div className="exp-pillar-card">
-              <h4><i className="fas fa-microchip"></i> High-Throughput Processing</h4>
-              <p>Designed asynchronous image and PDF generation pipelines using Celery &amp; Redis, capable of processing hundreds of high-res student cards concurrently without HTTP timeouts.</p>
-            </div>
-            <div className="exp-pillar-card">
-              <h4><i className="fas fa-database"></i> Database &amp; Query Optimization</h4>
-              <p>Structured relational schemas in PostgreSQL with selective indexing and connection pooling, delivering sub-50ms query latencies across 136,000+ generated records.</p>
-            </div>
-            <div className="exp-pillar-card">
-              <h4><i className="fas fa-shield-alt"></i> Enterprise RBAC &amp; Security</h4>
-              <p>Built granular Role-Based Access Control allowing multi-tenant school administrators, design operators, and billing managers isolated, audited data access.</p>
-            </div>
-            <div className="exp-pillar-card">
-              <h4><i className="fas fa-desktop"></i> Cross-Platform Desktop Client</h4>
-              <p>Engineered an Electron desktop companion application for local direct-to-card printer hardware integration and offline batch caching.</p>
-            </div>
+        ) : error ? (
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: '#f87171' }}>
+            <i className="fas fa-exclamation-triangle" style={{ fontSize: '32px', marginBottom: '12px' }}></i>
+            <p>{error}</p>
           </div>
-
-          {/* Key Scale Numbers */}
-          <div className="cs-metrics-grid" style={{ margin: '28px 0 20px' }}>
-            <div className="cs-metric-card">
-              <div className="cs-metric-num">1,000+</div>
-              <div className="cs-metric-label">Active Users</div>
-            </div>
-            <div className="cs-metric-card">
-              <div className="cs-metric-num">136k+</div>
-              <div className="cs-metric-label">Cards Processed</div>
-            </div>
-            <div className="cs-metric-card">
-              <div className="cs-metric-num">86k+</div>
-              <div className="cs-metric-label">Batch Downloads</div>
-            </div>
-            <div className="cs-metric-card">
-              <div className="cs-metric-num">99.9%</div>
-              <div className="cs-metric-label">System Uptime</div>
-            </div>
+        ) : experiences.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: 'rgba(255,255,255,0.6)' }}>
+            <p>No active work experiences recorded yet.</p>
           </div>
+        ) : (
+          experiences.map((exp, index) => {
+            const durationLabel = exp.duration || formatExperienceDuration(exp.start_date, exp.end_date, exp.currently_working);
+            const companyName = exp.company_name || 'Organization';
+            const position = exp.position || 'Engineering Role';
+            const location = exp.location || '';
+            const employmentType = exp.employment_type ? exp.employment_type.replace('-', ' ') : 'Full-time';
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '20px' }}>
-            {['Python', 'Django', 'React', 'PostgreSQL', 'Redis', 'Celery', 'REST APIs', 'Electron', 'Docker', 'Linux'].map((t, i) => (
-              <span key={i} className="project-tech-badge">{t}</span>
-            ))}
-          </div>
-        </article>
+            return (
+              <article key={exp.id || index} className="exp-deep-card">
+                <div className="exp-card-header">
+                  <div>
+                    <h2 className="exp-role-title">{position}</h2>
+                    <div className="exp-company-name">
+                      <i className="fas fa-building"></i>{' '}
+                      {exp.company_website ? (
+                        <a
+                          href={safeUrl(exp.company_website)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: 'inherit', textDecoration: 'none' }}
+                        >
+                          {companyName} <i className="fas fa-external-link-alt" style={{ fontSize: '11px', marginLeft: '4px' }}></i>
+                        </a>
+                      ) : (
+                        companyName
+                      )}
+                      {location && <span style={{ opacity: 0.7, marginLeft: '8px', fontSize: '13px' }}>· {location}</span>}
+                    </div>
+                  </div>
+                  <span className="exp-duration-badge">
+                    <i className="far fa-calendar-alt"></i> {durationLabel} · {employmentType}
+                  </span>
+                </div>
 
-        {/* Experience Deep Dive 2: Miracle Organisation */}
-        <article className="exp-deep-card">
-          <div className="exp-card-header">
-            <div>
-              <h2 className="exp-role-title">Graphic Designer Intern</h2>
-              <div className="exp-company-name">
-                <i className="fas fa-palette"></i> Miracle Organisation
-              </div>
-            </div>
-            <span className="exp-duration-badge">
-              <i className="far fa-calendar-alt"></i> Apr 2025 – May 2025 · 1 Month
-            </span>
-          </div>
+                {exp.short_description && (
+                  <p style={{ fontSize: '16px', lineHeight: '1.7', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '20px' }}>
+                    {exp.short_description}
+                  </p>
+                )}
 
-          <p style={{ fontSize: '16px', lineHeight: '1.7', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '20px' }}>
-            Crafted digital brand assets, corporate identity collateral, marketing campaign graphics, and print media layouts. Focused on typography hierarchy, color psychology, and precision vector design for public engagement initiatives.
-          </p>
+                {exp.detailed_description && (
+                  <div
+                    className="case-study-injected"
+                    style={{ fontSize: '15px', lineHeight: '1.7', color: 'rgba(255, 255, 255, 0.85)', marginBottom: '20px' }}
+                    dangerouslySetInnerHTML={{ __html: exp.detailed_description }}
+                  />
+                )}
 
-          <div className="exp-pillars-grid">
-            <div className="exp-pillar-card">
-              <h4><i className="fas fa-vector-square"></i> Brand Identity</h4>
-              <p>Developed unified brand guidelines, vector logo assets, and social media creative kits for promotional campaigns.</p>
-            </div>
-            <div className="exp-pillar-card">
-              <h4><i className="fas fa-print"></i> Print &amp; Digital Media</h4>
-              <p>Prepared high-resolution print layouts with strict CMYK bleed configurations and web-optimized UI banners.</p>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '20px' }}>
-            {['Figma', 'Adobe Photoshop', 'Adobe Illustrator', 'UI/UX Design', 'Visual Hierarchy', 'Typography'].map((t, i) => (
-              <span key={i} className="project-tech-badge">{t}</span>
-            ))}
-          </div>
-        </article>
+                {/* Associated Workplace/Experience Images */}
+                {exp.images && Array.isArray(exp.images) && exp.images.length > 0 && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginTop: '16px', marginBottom: '16px' }}>
+                    {exp.images.map((imgItem, imgIdx) => (
+                      <div key={imgIdx} style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                        <img
+                          src={safeUrl(imgItem.image)}
+                          alt={imgItem.caption || `${position} at ${companyName}`}
+                          style={{ width: '100%', height: '140px', objectFit: 'cover' }}
+                          loading="lazy"
+                        />
+                        {imgItem.caption && (
+                          <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', padding: '6px 8px', background: 'rgba(0,0,0,0.4)' }}>
+                            {imgItem.caption}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </article>
+            );
+          })
+        )}
 
         {/* Back to Home CTA */}
         <div style={{ textAlign: 'center', marginTop: '50px' }}>

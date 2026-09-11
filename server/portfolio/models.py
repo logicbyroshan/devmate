@@ -254,8 +254,22 @@ class UserProfile(models.Model):
     title = models.CharField(max_length=200, help_text="Professional title")
     bio = models.TextField(blank=True, help_text="About me description")
 
-    # Profile Image
+    # Profile & Hero Images
     profile_image = models.ImageField(upload_to="profile/", blank=True, null=True)
+    hero_image = models.ImageField(upload_to="hero/", blank=True, null=True, help_text="Custom hero visual image")
+
+    # Hero Customization & Highlights
+    hero_badge = models.CharField(max_length=100, default="Hello, I am", blank=True, help_text="Hero top badge text")
+    hero_description = models.TextField(blank=True, help_text="Hero section description pitch")
+    hero_stat_1_value = models.CharField(max_length=50, default="1,000+", blank=True)
+    hero_stat_1_label = models.CharField(max_length=100, default="Production Users", blank=True)
+    hero_stat_1_icon = models.CharField(max_length=50, default="fas fa-users", blank=True)
+    hero_stat_2_value = models.CharField(max_length=50, default="136K+", blank=True)
+    hero_stat_2_label = models.CharField(max_length=100, default="ID Cards Processed", blank=True)
+    hero_stat_2_icon = models.CharField(max_length=50, default="fas fa-id-card", blank=True)
+    hero_stat_3_value = models.CharField(max_length=50, default="86K+", blank=True)
+    hero_stat_3_label = models.CharField(max_length=100, default="Cards Downloaded", blank=True)
+    hero_stat_3_icon = models.CharField(max_length=50, default="fas fa-cloud-download-alt", blank=True)
 
     # Social Links
     github = models.URLField(blank=True)

@@ -1,6 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { fetchProfile, fetchSummary } from '../api/portfolioApi';
+import { safeUrl } from '../api/hydratePortfolio';
 
 export default function RexiModal() {
+  const [profile, setProfile] = useState(null);
+  const [summary, setSummary] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadProfile() {
+      try {
+        const [profRes, sumRes] = await Promise.allSettled([
+          fetchProfile(),
+          fetchSummary(),
+        ]);
+        if (!isMounted) return;
+        if (profRes.status === 'fulfilled' && profRes.value && !profRes.value.detail) {
+          setProfile(profRes.value);
+        }
+        if (sumRes.status === 'fulfilled' && sumRes.value) {
+          setSummary(sumRes.value);
+        }
+      } catch {
+        // Ignore fallback
+      }
+    }
+    loadProfile();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const fullName = profile?.full_name || 'Roshan Damor';
+  const roleTitle = profile?.title || 'Software Engineer · Full Stack AI';
+  const email = profile?.email || 'mail@logicbyroshan.in';
+  const location = profile?.location || 'India';
+  const yearsExp = summary?.years_of_experience ? `${summary.years_of_experience}+ Years` : '3+ Years';
+  const resumeUrl = profile?.resume ? safeUrl(profile.resume) : null;
+  const videoResumeUrl = profile?.video_resume ? safeUrl(profile.video_resume) : 'https://www.youtube.com/@logicbyroshan';
+
   return (
     <>
       {/* ── Resume Modal ────────────────────────────────── */}
@@ -14,7 +52,7 @@ export default function RexiModal() {
               </div>
               <div>
                 <h2 className="modal-title modal-title-compact">Resume</h2>
-                <p className="modal-subtitle" style={{ margin: 0, fontSize: '12px' }}>Roshan Damor &mdash; Software Engineer</p>
+                <p className="modal-subtitle" style={{ margin: 0, fontSize: '12px' }}>{fullName} &mdash; {roleTitle}</p>
               </div>
             </div>
             <div className="modal-header-right">
@@ -27,29 +65,35 @@ export default function RexiModal() {
           <div className="modal-resume-preview" style={{ marginTop: '4px' }}>
             <div className="resume-row">
               <span className="resume-label">Name</span>
-              <span className="resume-value">Roshan Damor</span>
+              <span className="resume-value">{fullName}</span>
             </div>
             <div className="resume-row">
               <span className="resume-label">Role</span>
-              <span className="resume-value">Software Engineer &middot; AI Full Stack Developer</span>
+              <span className="resume-value">{roleTitle}</span>
             </div>
             <div className="resume-row">
-              <span className="resume-label">Tech</span>
-              <span className="resume-value">React &middot; Django &middot; Python &middot; PostgreSQL &middot; Node.js &middot; Docker</span>
+              <span className="resume-label">Core Tech</span>
+              <span className="resume-value">Python &middot; Django &middot; React &middot; PostgreSQL &middot; Redis &middot; Celery</span>
             </div>
             <div className="resume-row">
-              <span className="resume-label">DSA</span>
-              <span className="resume-value">1300+ Problems Solved</span>
+              <span className="resume-label">Experience</span>
+              <span className="resume-value">{yearsExp} Engineering Work</span>
             </div>
             <div className="resume-row">
               <span className="resume-label">Location</span>
-              <span className="resume-value">India</span>
+              <span className="resume-value">{location}</span>
             </div>
           </div>
           <div className="modal-actions">
-            <a href="mailto:mail@logicbyroshan.in" className="btn btn-primary modal-btn">
-              <i className="fas fa-download"></i> Request PDF
-            </a>
+            {resumeUrl ? (
+              <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary modal-btn">
+                <i className="fas fa-download"></i> Download PDF
+              </a>
+            ) : (
+              <a href={`mailto:${email}`} className="btn btn-primary modal-btn">
+                <i className="fas fa-download"></i> Request PDF
+              </a>
+            )}
             <a href="/about" className="btn btn-secondary modal-btn" data-route="about">
               <i className="fas fa-eye"></i> Full Profile
             </a>
@@ -86,15 +130,15 @@ export default function RexiModal() {
           </div>
           <div className="modal-actions">
             <a
-              href="https://www.youtube.com/@logicbyroshan"
+              href={videoResumeUrl}
               className="btn btn-primary modal-btn"
               target="_blank"
               rel="noopener noreferrer"
             >
               <i className="fab fa-youtube"></i> Watch on YouTube
             </a>
-            <a href="mailto:mail@logicbyroshan.in" className="btn btn-secondary modal-btn">
-              <i className="fas fa-download"></i> Request Video
+            <a href={`mailto:${email}`} className="btn btn-secondary modal-btn">
+              <i className="fas fa-paper-plane"></i> Contact Me
             </a>
           </div>
         </div>

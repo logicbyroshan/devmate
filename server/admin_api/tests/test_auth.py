@@ -61,8 +61,3 @@ class AdminAuthTests(TestCase):
         response = self.client.get("/api/v1/admin/auth/me/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["user"]["username"], "staff_admin")
-
-    def test_admin_docs_endpoint_accessible(self):
-        response = self.client.get("/api/v1/admin/docs/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("DevMate", response.content.decode("utf-8"))

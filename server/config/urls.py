@@ -25,7 +25,6 @@ urlpatterns = [
     path('api/admin/', include('admin_api.urls')),     # Alias
     path('api/v1/', include('portfolio.api_urls')),    # Versioned API v1
     path('api/', include('portfolio.api_urls')),       # Canonical API alias
-    path('', include('portfolio.urls')),               # Admin / Management interface
 ]
 
 # Serve media files in development

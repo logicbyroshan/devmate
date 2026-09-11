@@ -10,6 +10,8 @@ from .profile_views import (
     admin_profile_detail,
     admin_profile_upload_image,
     admin_profile_delete_image,
+    admin_profile_upload_hero_image,
+    admin_profile_delete_hero_image,
     admin_profile_upload_document,
     admin_profile_delete_document,
 )

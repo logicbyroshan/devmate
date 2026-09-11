@@ -48,6 +48,18 @@ class PortfolioQueryService:
             "title",
             "bio",
             "profile_image",
+            "hero_image",
+            "hero_badge",
+            "hero_description",
+            "hero_stat_1_value",
+            "hero_stat_1_label",
+            "hero_stat_1_icon",
+            "hero_stat_2_value",
+            "hero_stat_2_label",
+            "hero_stat_2_icon",
+            "hero_stat_3_value",
+            "hero_stat_3_label",
+            "hero_stat_3_icon",
             "github",
             "linkedin",
             "twitter",
@@ -55,6 +67,8 @@ class PortfolioQueryService:
             "youtube",
             "website",
             "video_resume",
+            "resume",
+            "cover_letter",
             "meta_title",
             "meta_description",
             "meta_keywords",
@@ -350,20 +364,17 @@ class PortfolioQueryService:
     @classmethod
     def get_bootstrap_payload(cls) -> Dict[str, Any]:
         """
-        Unified bootstrap payload for instant frontend hydration.
-        Returns profile, featured projects, top skills, and recent experience.
+        Unified bootstrap payload for instant, 100% dynamic frontend hydration.
+        Returns profile, active projects, all categorized active skills, and active experiences.
         """
         profile = cls.get_user_profile()
-        featured_projects = list(cls.get_projects_queryset(is_featured=True)[:6])
-        if not featured_projects:
-            featured_projects = list(cls.get_projects_queryset()[:6])
-
-        top_skills = list(cls.get_skills_queryset()[:10])
-        recent_experience = list(cls.get_experiences_queryset()[:6])
+        active_projects = list(cls.get_projects_queryset()[:20])
+        all_skills = list(cls.get_skills_queryset())
+        all_experience = list(cls.get_experiences_queryset()[:20])
 
         return {
             "profile": profile,
-            "projects": featured_projects,
-            "skills": top_skills,
-            "experience": recent_experience,
+            "projects": active_projects,
+            "skills": all_skills,
+            "experience": all_experience,
         }
