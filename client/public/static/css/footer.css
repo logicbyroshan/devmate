@@ -174,9 +174,7 @@
 
 /* ── Divider ───────────────────────────── */
 .footer-divider {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(124, 58, 237, 0.4) 30%, rgba(167, 139, 250, 0.3) 50%, rgba(124, 58, 237, 0.4) 70%, transparent 100%);
+    display: none;
 }
 
 /* ── Bottom bar ────────────────────────── */
@@ -184,7 +182,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 22px 0 28px;
+    padding: 24px 0 0;
     flex-wrap: wrap;
     gap: 10px;
 }
@@ -222,16 +220,15 @@
 .footer-big-text-wrapper {
     width: 100%;
     max-width: var(--layout-max-width);
-    margin: 25px auto 0;
-    padding: 20px var(--layout-gutter-desktop) 0;
-    overflow: hidden;
+    margin: 48px auto 0;
+    padding: 0 var(--layout-gutter-desktop) 36px;
+    overflow: visible;
     display: flex;
     justify-content: center;
     align-items: center;
     user-select: none;
     pointer-events: none;
     position: relative;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .footer-big-text {
@@ -263,7 +260,7 @@
     width: 100%;
     text-align: center;
     font-size: clamp(3rem, 10.5vw, 11.5rem);
-    line-height: 0.84;
+    line-height: 0.88;
     white-space: nowrap;
 }
 
