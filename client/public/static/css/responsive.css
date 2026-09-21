@@ -132,6 +132,7 @@
 
     .logo-image {
         height: 40px;
+        width: 40px;
     }
 
     .btn-nav,
@@ -344,7 +345,8 @@
     }
 
     .logo-image {
-        height: 34px;
+        height: 36px;
+        width: 36px;
     }
 
     .hero-section,
