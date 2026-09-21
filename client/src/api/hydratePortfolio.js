@@ -192,6 +192,107 @@ function getCategoryIcon(categoryName, rawIcon) {
   return 'fas fa-code';
 }
 
+function getSkillIcon(skillName = '', rawIcon = '') {
+  if (rawIcon && rawIcon !== 'fas fa-code' && rawIcon !== 'fa-code') {
+    return normalizeIconClass(rawIcon);
+  }
+
+  const s = String(skillName || '').trim().toLowerCase();
+
+  const iconMap = {
+    'python': 'fab fa-python',
+    'java': 'fab fa-java',
+    'c/c++': 'fas fa-code',
+    'c++': 'fas fa-code',
+    'c': 'fas fa-code',
+    'javascript': 'fab fa-js',
+    'js': 'fab fa-js',
+    'typescript': 'fab fa-js',
+    'ts': 'fab fa-js',
+    'django': 'fas fa-cubes',
+    'fastapi': 'fas fa-bolt',
+    'flask': 'fas fa-flask',
+    'node.js': 'fab fa-node-js',
+    'nodejs': 'fab fa-node-js',
+    'node': 'fab fa-node-js',
+    'rest apis': 'fas fa-network-wired',
+    'rest api': 'fas fa-network-wired',
+    'rest': 'fas fa-network-wired',
+    'graphql': 'fas fa-diagram-project',
+    'system design': 'fas fa-sitemap',
+    'git': 'fab fa-git-alt',
+    'github': 'fab fa-github',
+
+    // AI & Data
+    'llms': 'fas fa-brain',
+    'llm': 'fas fa-brain',
+    'rag': 'fas fa-database',
+    'ai agents': 'fas fa-robot',
+    'ai agent': 'fas fa-robot',
+    'ai workflows': 'fas fa-diagram-project',
+    'ai': 'fas fa-robot',
+    'pytorch': 'fas fa-fire',
+    'tensorflow': 'fas fa-microchip',
+    'scikit-learn': 'fas fa-chart-line',
+    'numpy': 'fas fa-calculator',
+    'pandas': 'fas fa-table',
+    'ml': 'fas fa-network-wired',
+    'machine learning': 'fas fa-brain',
+    'deep learning': 'fas fa-brain',
+    'nlp': 'fas fa-comments',
+    'opencv': 'fas fa-eye',
+
+    // Application Dev
+    'react': 'fab fa-react',
+    'react.js': 'fab fa-react',
+    'reactjs': 'fab fa-react',
+    'vue': 'fab fa-vuejs',
+    'vue.js': 'fab fa-vuejs',
+    'vuejs': 'fab fa-vuejs',
+    'next.js': 'fab fa-react',
+    'nextjs': 'fab fa-react',
+    'html/css': 'fab fa-html5',
+    'html': 'fab fa-html5',
+    'css': 'fab fa-css3-alt',
+    'tailwind': 'fas fa-wind',
+    'tailwind css': 'fas fa-wind',
+    'postgresql': 'fas fa-database',
+    'postgres': 'fas fa-database',
+    'mysql': 'fas fa-server',
+    'mongodb': 'fas fa-leaf',
+    'redis': 'fas fa-memory',
+    'sqlite': 'fas fa-database',
+    'react native': 'fab fa-react',
+    'electron': 'fas fa-atom',
+
+    // Infrastructure & Systems
+    'docker': 'fab fa-docker',
+    'nginx': 'fas fa-server',
+    'gunicorn': 'fas fa-gears',
+    'linux': 'fab fa-linux',
+    'celery': 'fas fa-clock',
+    'github actions': 'fab fa-github',
+    'ci/cd': 'fas fa-arrows-rotate',
+    'deployment': 'fas fa-cloud-arrow-up',
+    'background jobs': 'fas fa-tasks',
+    'aws': 'fab fa-aws',
+    'kubernetes': 'fas fa-dharmachakra',
+    'cloud': 'fas fa-cloud'
+  };
+
+  if (iconMap[s]) {
+    return iconMap[s];
+  }
+
+  for (const [key, icon] of Object.entries(iconMap)) {
+    if (s.includes(key)) {
+      return icon;
+    }
+  }
+
+  return 'fas fa-code';
+}
+
 function updateProfile(profile) {
   if (!profile) return;
 
@@ -295,7 +396,7 @@ function updateProfile(profile) {
 }
 
 function updateSkills(skills = []) {
-  const container = document.querySelector('.skills-grid');
+  const container = document.querySelector('.tech-grid') || document.querySelector('.skills-grid');
   if (!container) return;
 
   const validSkills = Array.isArray(skills) ? skills.filter(Boolean) : [];
@@ -318,8 +419,16 @@ function updateSkills(skills = []) {
   container.innerHTML = Object.entries(grouped)
     .map(([categoryName, group]) => {
       const iconClass = getCategoryIcon(categoryName, group.icon);
-      const listItems = group.items
-        .map((s) => `<li>${escapeHtml(s.name)}</li>`)
+      const skillCards = group.items
+        .map((s) => {
+          const sIcon = getSkillIcon(s.name, s.icon);
+          return `
+            <div class="skill-mini-card">
+              <i class="${sIcon} skill-icon"></i>
+              <span class="skill-name">${escapeHtml(s.name)}</span>
+            </div>
+          `;
+        })
         .join('');
 
       return `
@@ -328,7 +437,7 @@ function updateSkills(skills = []) {
             <i class="${iconClass}"></i>
           </div>
           <h3 class="tech-card-title">${escapeHtml(categoryName)}</h3>
-          <ul class="skills-list">${listItems}</ul>
+          <div class="skills-chips-grid">${skillCards}</div>
         </div>
       `;
     })
@@ -483,4 +592,4 @@ export function hydratePortfolioDom(data) {
   updateExperience(data.experience || []);
 }
 
-export { updateProjects, updateSkills, updateExperience, updateProfile, getCategoryIcon, resolveStatusDisplay };
+export { updateProjects, updateSkills, updateExperience, updateProfile, getCategoryIcon, getSkillIcon, resolveStatusDisplay };
