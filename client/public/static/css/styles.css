@@ -157,14 +157,26 @@ body {
 }
 
 /* ========================================
-   Navigation
+/* ========================================
+   Navigation (Floating Glassmorphic Navbar)
    ======================================== */
 .navbar {
-    padding: 20px 0;
-    position: relative;
+    position: sticky;
+    top: 16px;
     z-index: 1000;
-    width: 100%;
-    background: transparent;
+    width: calc(100% - 48px);
+    max-width: var(--layout-max-width);
+    margin: 16px auto 0;
+    padding: 10px 24px;
+    background: linear-gradient(135deg, rgba(16, 20, 48, 0.72) 0%, rgba(6, 9, 26, 0.82) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.55),
+                0 0 20px -2px rgba(124, 58, 237, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Suppress container glow blobs inside navbar */
@@ -182,10 +194,10 @@ body {
 }
 
 .navbar .nav-container {
-    max-width: var(--layout-max-width);
+    max-width: 100%;
     width: 100%;
     margin: 0 auto;
-    padding: 0 var(--layout-gutter-desktop);
+    padding: 0;
 }
 
 .nav-container {
@@ -193,12 +205,15 @@ body {
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: 20px;
+    width: 100%;
 }
 
 .nav-container-mobile {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
+    width: 100%;
+    padding: 0;
 }
 
 /* Center the logo */
@@ -363,8 +378,8 @@ body {
 }
 
 .logo-image {
-    height: 48px;
-    width: 48px;
+    height: 42px;
+    width: 42px;
     object-fit: contain;
     max-width: 100%;
     display: block;
@@ -386,13 +401,15 @@ body {
 }
 
 .btn-nav {
-    padding: 14px 28px !important;
-    font-size: 15px !important;
+    padding: 10px 22px !important;
+    font-size: 14px !important;
+    border-radius: 12px !important;
 }
 
 .nav-actions .btn-primary {
-    padding: 14px 28px;
-    font-size: 15px;
+    padding: 10px 22px;
+    font-size: 14px;
+    border-radius: 12px;
 }
 
 /* ========================================
@@ -709,9 +726,9 @@ body {
    ======================================== */
 .hero-section {
     position: relative;
-    padding-top: 80px;
-    padding-bottom: 80px;
-    min-height: 90vh;
+    padding-top: 48px;
+    padding-bottom: 72px;
+    min-height: calc(90vh - 80px);
     display: flex;
     align-items: center;
     overflow: hidden;
@@ -719,31 +736,31 @@ body {
 
 .hero-ambient-glow {
     position: absolute;
-    top: -50px;
-    left: -50px;
-    width: 320px;
-    height: 320px;
-    background: radial-gradient(circle at 35% 35%, 
-        rgba(168, 85, 247, 0.35) 0%, 
-        rgba(124, 58, 237, 0.18) 40%, 
-        rgba(56, 189, 248, 0.08) 65%, 
+    top: -80px;
+    left: -60px;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle at 40% 40%, 
+        rgba(168, 85, 247, 0.32) 0%, 
+        rgba(124, 58, 237, 0.16) 45%, 
+        rgba(56, 189, 248, 0.05) 70%, 
         transparent 80%);
     border-radius: 50%;
-    filter: blur(40px);
+    filter: blur(55px);
     pointer-events: none;
     z-index: 0;
-    animation: ambientCornerGlow 5s ease-in-out infinite;
+    animation: ambientCornerGlow 6s ease-in-out infinite;
     will-change: opacity, transform;
 }
 
 @keyframes ambientCornerGlow {
     0%, 100% {
-        opacity: 0.35;
-        transform: scale(0.92);
+        opacity: 0.38;
+        transform: scale(0.95);
     }
     50% {
-        opacity: 0.75;
-        transform: scale(1.12);
+        opacity: 0.72;
+        transform: scale(1.08);
     }
 }
 
