@@ -123,8 +123,8 @@
         width: calc(100% - 32px);
         max-width: 580px;
         margin: 12px auto 0;
-        padding: 8px 18px;
-        border-radius: 20px;
+        padding: 12px;
+        border-radius: 10px;
     }
 
     .nav-menu {
@@ -349,8 +349,8 @@
         top: 10px;
         width: calc(100% - 24px);
         margin: 10px auto 0;
-        padding: 8px 14px;
-        border-radius: 16px;
+        padding: 10px;
+        border-radius: 10px;
     }
 
     .logo-image {
