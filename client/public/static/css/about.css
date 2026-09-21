@@ -56,26 +56,29 @@
 
 .about-bg-text {
     position: absolute;
-    bottom: -4%;
+    bottom: -6%;
     left: 50%;
     transform: translate(-50%, 0);
     font-family: 'Orbitron', sans-serif;
-    font-size: 80px;
     font-weight: 900;
     color: rgba(255, 255, 255, 0.035);
     z-index: 0;
     pointer-events: none;
     white-space: nowrap;
-    letter-spacing: 6px;
+    letter-spacing: 8px;
     text-transform: uppercase;
     display: flex;
-    gap: 20px;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    gap: 0;
+    line-height: 0.86;
+    text-align: center;
 }
 
 .about-bg-word {
-    display: inline-block;
+    display: block;
+    font-size: 88px;
 }
 
 .about-img-3 img {
@@ -372,10 +375,8 @@
         height: 95px;
     }
     
-    .about-bg-text {
-        font-size: 64px;
-        gap: 16px;
-        letter-spacing: 4px;
+    .about-bg-word {
+        font-size: 70px;
     }
 }
 
@@ -466,10 +467,8 @@
         height: 5px;
     }
     
-    .about-bg-text {
-        font-size: 46px;
-        gap: 12px;
-        letter-spacing: 3px;
+    .about-bg-word {
+        font-size: 50px;
     }
     
     .about-description {
@@ -575,10 +574,8 @@
         height: 4px;
     }
     
-    .about-bg-text {
-        font-size: 32px;
-        gap: 8px;
-        letter-spacing: 2px;
+    .about-bg-word {
+        font-size: 36px;
     }
     
     .about-description {
@@ -659,10 +656,8 @@
         height: 45px;
     }
     
-    .about-bg-text {
-        font-size: 26px;
-        gap: 6px;
-        letter-spacing: 1.5px;
+    .about-bg-word {
+        font-size: 30px;
     }
     
     .about-description {

@@ -222,8 +222,8 @@
 .footer-big-text-wrapper {
     width: 100%;
     max-width: var(--layout-max-width);
-    margin: 20px auto 0;
-    padding: 18px var(--layout-gutter-desktop) 0;
+    margin: 25px auto 0;
+    padding: 20px var(--layout-gutter-desktop) 0;
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -237,20 +237,21 @@
 .footer-big-text {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 16px;
+    gap: 0;
     font-family: var(--font-heading), 'Orbitron', 'Outfit', sans-serif;
     font-weight: 900;
-    line-height: 0.85;
     text-transform: uppercase;
-    letter-spacing: clamp(1px, 0.4vw, 5px);
+    letter-spacing: clamp(2px, 0.6vw, 12px);
+    text-align: center;
     background: linear-gradient(
         180deg,
         rgba(255, 255, 255, 0.22) 0%,
-        rgba(167, 139, 250, 0.15) 38%,
-        rgba(56, 189, 248, 0.05) 75%,
-        rgba(255, 255, 255, 0.01) 100%
+        rgba(167, 139, 250, 0.14) 40%,
+        rgba(56, 189, 248, 0.04) 75%,
+        rgba(255, 255, 255, 0.005) 100%
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -258,22 +259,12 @@
 }
 
 .footer-big-text .watermark-word {
-    font-size: clamp(2.4rem, 6.2vw, 5.8rem);
-    display: inline-block;
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: clamp(3rem, 10.5vw, 11.5rem);
+    line-height: 0.84;
     white-space: nowrap;
-}
-
-@media (max-width: 640px) {
-    .footer-big-text {
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .footer-big-text .watermark-word {
-        font-size: clamp(2.4rem, 11.5vw, 4.2rem);
-    }
 }
 
 /* ========================================
