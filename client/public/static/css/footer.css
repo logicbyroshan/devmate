@@ -3,7 +3,7 @@
    ======================================== */
 .site-footer {
     position: relative;
-    background: linear-gradient(180deg, rgba(7, 10, 41, 0) 0%, rgba(7, 10, 41, 0.98) 12%, #040616 100%);
+    background: linear-gradient(180deg, rgba(4, 6, 22, 0) 0%, rgba(4, 6, 22, 0.95) 15%, #040616 100%);
     padding: 80px 0 0;
     margin-top: 0;
     overflow: hidden;
@@ -221,27 +221,30 @@
 /* ── Full-Width Subtle Transparent Gradient Watermark ── */
 .footer-big-text-wrapper {
     width: 100%;
+    max-width: var(--layout-max-width);
+    margin: 20px auto 0;
+    padding: 18px var(--layout-gutter-desktop) 0;
     overflow: hidden;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
-    margin-top: 18px;
-    padding: 10px 0 0;
+    align-items: center;
     user-select: none;
     pointer-events: none;
     position: relative;
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .footer-big-text {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
     font-family: var(--font-heading), 'Orbitron', 'Outfit', sans-serif;
-    font-size: clamp(2.5rem, 9.8vw, 12.5rem);
     font-weight: 900;
-    line-height: 0.82;
+    line-height: 0.85;
     text-transform: uppercase;
-    letter-spacing: clamp(1px, 0.45vw, 8px);
-    text-align: center;
-    white-space: nowrap;
+    letter-spacing: clamp(1px, 0.4vw, 5px);
     background: linear-gradient(
         180deg,
         rgba(255, 255, 255, 0.22) 0%,
@@ -252,9 +255,25 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: -0.04em;
-    display: block;
-    width: 100%;
+}
+
+.footer-big-text .watermark-word {
+    font-size: clamp(2.4rem, 6.2vw, 5.8rem);
+    display: inline-block;
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .footer-big-text {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .footer-big-text .watermark-word {
+        font-size: clamp(2.4rem, 11.5vw, 4.2rem);
+    }
 }
 
 /* ========================================

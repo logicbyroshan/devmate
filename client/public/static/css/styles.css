@@ -2,9 +2,9 @@
    CSS Variables & Reset
    ======================================== */
 :root {
-    --dark-bg: #04061a;
-    --dark-bg-2: #060924;
-    --dark-bg-3: #080d32;
+    --dark-bg: #040616;
+    --dark-bg-2: #05081e;
+    --dark-bg-3: #070a24;
     --primary-gradient: linear-gradient(94deg, #5c27fe, #dec7ff 100%, #ffffff);
     --connect-gradient: linear-gradient(85deg, #5c27fe, #ffffff 100%, #dec7ff);
     --secondary-gradient: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.1));
@@ -12,10 +12,10 @@
     --text-secondary: #b3b3b3;
     --font-heading: 'Aclonica', sans-serif;
     --font-body: 'Outfit', sans-serif;
-    --bg-color: #04061a;
+    --bg-color: #040616;
     --card-gradient-start: rgba(30, 40, 100, 1);
     --card-gradient-end: rgba(10, 18, 55, 0);
-    --scrollbar-bg: #04061a;
+    --scrollbar-bg: #040616;
     --scrollbar-track-border: rgba(124, 58, 237, 0.2);
     --radius-sm: 10px;
     --radius-md: 12px;
@@ -88,9 +88,9 @@ body {
     font-family: var(--font-body);
     background-color: var(--bg-color);
     background-image:
-        radial-gradient(circle at 12% 14%, rgba(124, 58, 237, 0.22) 0%, rgba(124, 58, 237, 0) 44%),
-        radial-gradient(circle at 78% 20%, rgba(56, 189, 248, 0.18) 0%, rgba(56, 189, 248, 0) 48%),
-        linear-gradient(rgba(4, 6, 26, 0.45), rgba(4, 6, 26, 0.45)),
+        radial-gradient(circle at 12% 14%, rgba(124, 58, 237, 0.14) 0%, rgba(124, 58, 237, 0) 44%),
+        radial-gradient(circle at 78% 20%, rgba(56, 189, 248, 0.10) 0%, rgba(56, 189, 248, 0) 48%),
+        linear-gradient(rgba(4, 6, 22, 0.90), rgba(4, 6, 22, 0.96)),
         url('../images/mybgimg.webp');
     background-position: top left, top right, top center, top center;
     background-size: 140% 140%, 120% 120%, 100% 100%, cover;

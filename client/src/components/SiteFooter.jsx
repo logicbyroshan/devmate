@@ -120,7 +120,10 @@ export default function SiteFooter({ onNavigate }) {
 
       {/* Large Full-Width Subtle Transparent Gradient Watermark */}
       <div className="footer-big-text-wrapper" aria-hidden="true">
-        <span className="footer-big-text">SOFTWARE ENGINEER</span>
+        <div className="footer-big-text">
+          <span className="watermark-word">SOFTWARE</span>
+          <span className="watermark-word">ENGINEER</span>
+        </div>
       </div>
     </footer>
   );
