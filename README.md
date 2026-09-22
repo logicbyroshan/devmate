@@ -33,11 +33,16 @@
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ System Architecture & Decoupled Model
+
+`DevMate` is engineered with a **fully decoupled headless architecture**:
+1. **Public Portfolio SPA (`client/`)**: A lightning-fast, reactive client built with React 18 & Vite 5. It consumes public REST APIs (`/api/bootstrap/`, `/api/projects/`, `/api/skills/`, etc.) and automatically displays beautiful dark-mode glassmorphic empty states when no items are published yet.
+2. **Dedicated Admin CMS (`DevAdmin`)**: The central administrative control plane and database manager where projects, skills, metrics, and content are managed.
+3. **Standalone Reference API (`server/`)**: An enterprise Django REST service providing public & staff endpoints. In production, `DevMate` can point directly to the separate `DevAdmin` API by setting `VITE_API_BASE_URL=https://api.devadmin.yourdomain.com/api`, operating with zero backend dependencies.
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│              Client Browser (Portfolio)                │
+│             DevMate Client Browser (SPA)               │
 │            React 18 + Vite 5 + Vanilla CSS             │
 └──────────────────────────┬─────────────────────────────┘
                            │
@@ -45,16 +50,16 @@
              /api/bootstrap/, /api/projects/, /api/blogs/
                            ▼
 ┌────────────────────────────────────────────────────────┐
-│             Headless Backend (Django REST)             │
-│        Gunicorn + Nginx + CORS + Rate Throttling       │
+│         DevAdmin Backend (Central API & DB)            │
+│       Django REST + PostgreSQL + Redis + Auth          │
 └──────────────────────────┬─────────────────────────────┘
                            ▲
              HTTP / REST API (Staff JWT Protected)
              /api/v1/admin/* (CRUD & Media Uploads)
                            │
 ┌──────────────────────────┴─────────────────────────────┐
-│          Separate Admin Dashboard Application          │
-│            (Vue / React / Next.js / Angular)           │
+│           DevAdmin Dashboard Application               │
+│              (Staff Content Management)                │
 └────────────────────────────────────────────────────────┘
 ```
 

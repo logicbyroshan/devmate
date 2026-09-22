@@ -4,7 +4,8 @@ This folder hosts the Django backend that serves:
 - **Modular Service Layer (`portfolio/services/`)**: High-performance business logic, query selectors, Rexi AI chat engine, contact message & spam protection, and atomic interaction counters.
 - **REST API (`/api/v1/` & `/api/`)**: Versioned Django REST Framework APIs for client frontend hydration, project interactions, contact submissions, and AI assistant queries.
 - **Staff Admin / Management Panel**: Template-based dashboard with responsive CRUD interfaces.
-- **VPS Deployment Guide**: See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for full native Linux VPS deployment instructions (Nginx, Gunicorn, PostgreSQL, SSL).
+- **VPS Deployment Guide**: See [DEPLOYMENT.md](../DEPLOYMENT.md) for full native Linux VPS deployment instructions (Nginx, Gunicorn, PostgreSQL, SSL).
+- **API Reference**: See [API.md](../API.md) and [ADMIN_API.md](../ADMIN_API.md).
 
 ---
 
