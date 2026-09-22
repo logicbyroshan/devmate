@@ -86,8 +86,23 @@ export default function ExperiencePage({ onNavigate }) {
             <p>{error}</p>
           </div>
         ) : experiences.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px 20px', color: 'rgba(255,255,255,0.6)' }}>
-            <p>No active work experiences recorded yet.</p>
+          <div className="empty-state-card" style={{ maxWidth: '640px', margin: '40px auto' }}>
+            <div className="empty-state-glow"></div>
+            <div className="empty-state-icon-wrapper">
+              <i className="fas fa-briefcase"></i>
+            </div>
+            <div className="empty-state-badge">
+              <span className="badge-dot"></span>
+              Career Roadmap
+            </div>
+            <h3 className="empty-state-title">Career Timeline Updating</h3>
+            <p className="empty-state-desc">
+              Professional engineering roles, system architectures, and technical leadership milestones are currently being synchronized from DevAdmin.
+            </p>
+            <div className="empty-state-status-pill">
+              <i className="fas fa-satellite-dish" style={{ color: '#38bdf8' }}></i>
+              <span>Connected to DevAdmin API</span>
+            </div>
           </div>
         ) : (
           experiences.map((exp, index) => {
