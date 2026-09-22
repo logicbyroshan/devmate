@@ -10,13 +10,17 @@ DevMate/
 ├── SECURITY.md                  # Security policies, disclosure process, and hardening
 ├── STRUCTURE.md                 # Project architecture and directory structure map
 ├── ABOUT.md                     # Mission statement, engineering highlights & tech stack
-├── DEPLOYMENT.md                # Production static hosting and deployment guide (Vercel, Netlify, Nginx)
+├── DEPLOYMENT.md                # Production Docker & Nginx deployment guide
+│
+├── Dockerfile                   # Multi-stage production container build (Node 20 -> Nginx Alpine)
+├── docker-compose.yml           # Production Docker Compose definition for devmate-frontend
+├── nginx.conf                   # Lightweight container Nginx configuration with SPA routing & Gzip
 │
 ├── package.json                 # NPM dependencies (Vite, React, Vitest, ESLint, Lenis, KaTeX, Mermaid)
 ├── package-lock.json            # Deterministic lockfile
-├── vite.config.js               # Vite build config with path aliases and proxy support
+├── vite.config.js               # Vite build config with path aliases and dev proxy support
 ├── index.html                   # Main entrypoint, SEO meta, JSON-LD schemas, Google Fonts
-├── .env.example                 # Local development environment template
+├── .env.example                 # Local development environment template (/api proxy)
 ├── .env.production.example      # Production environment template (points to DevAdmin API)
 │
 ├── public/                      # Static assets served directly
@@ -49,4 +53,3 @@ DevMate/
         ├── BlogDetailPage.jsx   # Full-width technical article reader with dynamic API loading & TOC
         └── ExperiencePage.jsx   # Engineering career history and workplace photo galleries
 ```
-

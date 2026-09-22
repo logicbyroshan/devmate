@@ -2,9 +2,20 @@ const TIME_API = typeof window !== 'undefined' ? window : globalThis;
 const CACHE_KEY = 'portfolio-bootstrap-cache-v1';
 
 function resolveApiBaseUrl() {
-  const configured = (import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/$/, '');
+  let configured = (import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/$/, '');
   if (configured) {
+    // If DevAdmin domain is provided without /api prefix, normalize to include /api
+    if (
+      configured === 'https://devadmin-api.logicbyroshan.in' ||
+      configured === 'http://devadmin-api.logicbyroshan.in'
+    ) {
+      configured = `${configured}/api`;
+    }
     return configured;
+  }
+  // Production fallback uses official DevAdmin API endpoint
+  if (import.meta.env.PROD) {
+    return 'https://devadmin-api.logicbyroshan.in/api';
   }
   return '/api';
 }

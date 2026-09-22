@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+// Vite build & dev-server configuration
+// Note: Proxies below are active ONLY during local development (npm run dev)
+// and preview (npm run preview). Production builds compile to static assets served by Nginx.
 export default defineConfig({
   plugins: [react()],
   server: {

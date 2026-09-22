@@ -1,0 +1,19 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: https://devadmin-api.logicbyroshan.in/api
+        VITE_API_TIMEOUT_MS: 7000
+        VITE_API_RETRY_ATTEMPTS: 1
+        VITE_PORTFOLIO_CACHE_TTL_MS: 300000
+    container_name: devmate-frontend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3080:80"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

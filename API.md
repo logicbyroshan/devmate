@@ -61,7 +61,7 @@ flowchart LR
 | Environment | Base URL (Public API) | Staff Admin API Base URL | Interactive Docs |
 | :--- | :--- | :--- | :--- |
 | **Local Development** | `http://127.0.0.1:8000/api/` | `http://127.0.0.1:8000/api/v1/admin/` | `http://127.0.0.1:8000/api/v1/admin/docs/` |
-| **Production** | `https://logicbyroshan.in/api/` | `https://logicbyroshan.in/api/v1/admin/` | `https://logicbyroshan.in/api/v1/admin/docs/` |
+| **Production** | `https://devadmin-api.logicbyroshan.in/api/` | `https://devadmin-api.logicbyroshan.in/api/v1/admin/` | `https://devadmin-api.logicbyroshan.in/api/v1/admin/docs/` |
 
 ---
 
