@@ -73,7 +73,7 @@
 
 ## 📡 REST API & Admin Integration
 
-- **Public API Documentation**: [API.md](API.md) / [api.md](api.md)
+- **Public API Documentation**: [API.md](API.md)
 - **Staff Admin API Reference**: [ADMIN_API.md](ADMIN_API.md)
 - **Setup & Installation Guide**: [SETUP.md](SETUP.md)
 - **Architecture & Structure Map**: [STRUCTURE.md](STRUCTURE.md)
