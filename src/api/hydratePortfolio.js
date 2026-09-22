@@ -325,37 +325,83 @@ function updateProfile(profile) {
     heroImage.src = safeUrl(targetHeroImg, '/static/images/hero.webp');
   }
 
-  // Hero Stats Cards
-  const statItems = document.querySelectorAll('.hero-stats .stat-item');
-  if (statItems.length >= 3) {
-    const statsData = [
-      {
+  // Dynamic Quick Portfolio Highlights Card
+  const nftCard = document.querySelector('.nft-card');
+  const heroStatsContainer = document.querySelector('.hero-stats');
+
+  if (profile.hero_highlights_visible === false) {
+    if (nftCard) nftCard.style.display = 'none';
+  } else if (nftCard) {
+    nftCard.style.display = '';
+    const nftCardTitle = nftCard.querySelector('.nft-card-title');
+    if (nftCardTitle && profile.hero_highlights_title) {
+      nftCardTitle.textContent = profile.hero_highlights_title;
+    }
+  }
+
+  // Extract Dynamic Stats (supports 1, 2, or up to 3 custom stats)
+  let statsList = [];
+  if (Array.isArray(profile.hero_stats) && profile.hero_stats.length > 0) {
+    statsList = profile.hero_stats.filter((s) => s && (s.value || s.label));
+  } else {
+    if (profile.hero_stat_1_value || profile.hero_stat_1_label) {
+      statsList.push({
         value: profile.hero_stat_1_value || '1,000+',
         label: profile.hero_stat_1_label || 'Production Users',
         icon: profile.hero_stat_1_icon || 'fas fa-users',
-      },
-      {
+      });
+    }
+    if (profile.hero_stat_2_value || profile.hero_stat_2_label) {
+      statsList.push({
         value: profile.hero_stat_2_value || '136K+',
         label: profile.hero_stat_2_label || 'ID Cards Processed',
         icon: profile.hero_stat_2_icon || 'fas fa-id-card',
-      },
-      {
+      });
+    }
+    if (profile.hero_stat_3_value || profile.hero_stat_3_label) {
+      statsList.push({
         value: profile.hero_stat_3_value || '86K+',
         label: profile.hero_stat_3_label || 'Cards Downloaded',
         icon: profile.hero_stat_3_icon || 'fas fa-cloud-download-alt',
-      },
+      });
+    }
+  }
+
+  // Cap at 3 stats
+  statsList = statsList.slice(0, 3);
+
+  if (statsList.length === 0) {
+    statsList = [
+      { value: '1,000+', label: 'Production Users', icon: 'fas fa-users' },
+      { value: '136K+', label: 'ID Cards Processed', icon: 'fas fa-id-card' },
+      { value: '86K+', label: 'Cards Downloaded', icon: 'fas fa-cloud-download-alt' },
     ];
+  }
 
-    statItems.forEach((item, idx) => {
-      if (statsData[idx]) {
-        const numSpan = item.querySelector('.stat-number span');
-        const iconEl = item.querySelector('.stat-icon');
-        const labelEl = item.querySelector('.stat-label');
+  if (heroStatsContainer) {
+    heroStatsContainer.innerHTML = '';
+    statsList.forEach((stat) => {
+      const itemEl = document.createElement('div');
+      itemEl.className = 'stat-item';
 
-        if (numSpan) numSpan.textContent = statsData[idx].value;
-        if (iconEl && statsData[idx].icon) iconEl.className = `${statsData[idx].icon} stat-icon`;
-        if (labelEl) labelEl.textContent = statsData[idx].label;
-      }
+      const numDiv = document.createElement('div');
+      numDiv.className = 'stat-number';
+
+      const iconEl = document.createElement('i');
+      iconEl.className = `${stat.icon || 'fas fa-chart-line'} stat-icon`;
+      numDiv.appendChild(iconEl);
+
+      const spanEl = document.createElement('span');
+      spanEl.textContent = stat.value || '';
+      numDiv.appendChild(spanEl);
+
+      const labelDiv = document.createElement('div');
+      labelDiv.className = 'stat-label';
+      labelDiv.textContent = stat.label || '';
+
+      itemEl.appendChild(numDiv);
+      itemEl.appendChild(labelDiv);
+      heroStatsContainer.appendChild(itemEl);
     });
   }
 
