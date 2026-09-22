@@ -317,10 +317,12 @@ function updateProfile(profile) {
 
   const heroImage = document.querySelector('.hero-image');
   if (heroImage) {
-    const targetHeroImg = profile.hero_image || profile.profile_image;
-    if (targetHeroImg) {
-      heroImage.src = safeUrl(targetHeroImg);
-    }
+    const targetHeroImg = profile.hero_image || profile.profile_image || '/static/images/hero.webp';
+    heroImage.onerror = () => {
+      heroImage.onerror = null;
+      heroImage.src = '/static/images/hero.webp';
+    };
+    heroImage.src = safeUrl(targetHeroImg, '/static/images/hero.webp');
   }
 
   // Hero Stats Cards
