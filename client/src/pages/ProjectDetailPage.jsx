@@ -7,6 +7,7 @@ import MermaidDiagram from '../components/doc/MermaidDiagram';
 import KaTeXFormula from '../components/doc/KaTeXFormula';
 import ImageLightbox from '../components/doc/ImageLightbox';
 import VideoShowcase from '../components/doc/VideoShowcase';
+import '../../public/static/css/doc-engine.css';
 
 const PROJECT_MERMAID_SCHEMAS = {
   cardflow: {

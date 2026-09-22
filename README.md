@@ -101,4 +101,4 @@ npm run build   # Production bundle compilation
 
 ## 📄 License
 
-This repository is licensed under the [MIT License](LICENSE).
+Copyright (c) 2026 Roshan Damor. All rights reserved. Proprietary & Confidential — see [LICENSE](LICENSE).

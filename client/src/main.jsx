@@ -16,8 +16,6 @@ import '../public/static/css/contact.css';
 import '../public/static/css/footer.css';
 import '../public/static/css/modal.css';
 import '../public/static/css/pages.css';
-import '../public/static/css/doc-engine.css';
-import 'katex/dist/katex.min.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ReactLenis root options={{ lerp: 0.06, wheelMultiplier: 1.2 }}>

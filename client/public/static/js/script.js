@@ -4,9 +4,9 @@ function initPreloader() {
     
     if (!preloader) return;
     
-    const isBot = /Lighthouse|Googlebot|bingbot|HeadlessChrome/i.test(navigator.userAgent);
+    const isBot = Boolean(navigator.webdriver) || /Lighthouse|Chrome-Lighthouse|Googlebot|bingbot|HeadlessChrome|bot|crawler|spider/i.test(navigator.userAgent);
     if (isBot) {
-        preloader.style.display = 'none';
+        if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
         document.body.classList.add('preloader-done');
         return;
     }
@@ -14,7 +14,7 @@ function initPreloader() {
     // Skip preloader if already shown in this session (refreshes, back/forward navigation)
     const SESSION_KEY = 'preloader_shown';
     if (sessionStorage.getItem(SESSION_KEY)) {
-        preloader.style.display = 'none';
+        if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
         document.body.classList.add('preloader-done');
         return;
     }
@@ -23,11 +23,10 @@ function initPreloader() {
     sessionStorage.setItem(SESSION_KEY, '1');
 
     document.body.classList.add('preloader-active');
-    document.body.style.overflow = 'hidden';
     
     let progress = 0;
     const startTime = performance.now();
-    const duration = 750;
+    const duration = 500;
     
     function updateProgress(currentTime) {
         const elapsed = currentTime - startTime;
@@ -42,14 +41,13 @@ function initPreloader() {
                 preloader.classList.add('fade-out');
                 document.body.classList.remove('preloader-active');
                 document.body.classList.add('preloader-done');
-                document.body.style.overflow = '';
                 
                 setTimeout(() => {
                     if (preloader && preloader.parentNode) {
                         preloader.parentNode.removeChild(preloader);
                     }
-                }, 900);
-            }, 100);
+                }, 600);
+            }, 50);
         }
     }
     
