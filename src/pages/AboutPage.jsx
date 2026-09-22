@@ -196,19 +196,31 @@ export default function AboutPage({ onNavigate }) {
                   <i className="fas fa-spinner fa-spin" style={{ fontSize: '24px', color: '#38bdf8' }}></i>
                 </div>
               ) : groupedSkills.length === 0 ? (
-                <div className="empty-state-card" style={{ padding: '36px 20px', maxWidth: '100%' }}>
+                <div className="empty-state-card" style={{ padding: '48px 24px', maxWidth: '100%' }}>
+                  <div className="empty-state-grid-pattern"></div>
                   <div className="empty-state-glow"></div>
-                  <div className="empty-state-icon-wrapper" style={{ width: '56px', height: '56px', fontSize: '22px' }}>
-                    <i className="fas fa-layer-group"></i>
+                  <div className="empty-state-orbit">
+                    <div className="empty-state-orbit-ring"></div>
+                    <div className="empty-state-icon-box">
+                      <i className="fas fa-layer-group"></i>
+                    </div>
                   </div>
                   <div className="empty-state-badge">
                     <span className="badge-dot"></span>
-                    Skill Matrix
+                    Live Skill Matrix
                   </div>
-                  <h4 className="empty-state-title" style={{ fontSize: '18px' }}>Technical Skills Updating</h4>
-                  <p className="empty-state-desc" style={{ fontSize: '13px', marginBottom: '14px' }}>
-                    Skill proficiencies and categorized frameworks are currently being synchronized from DevAdmin.
+                  <h4 className="empty-state-title" style={{ fontSize: '20px' }}>Technical Proficiencies Updating</h4>
+                  <p className="empty-state-desc" style={{ fontSize: '14px', marginBottom: '18px' }}>
+                    Skill proficiencies, taxonomy domains, and framework ecosystems are actively synchronizing from DevAdmin.
                   </p>
+                  <div className="empty-state-telemetry">
+                    <div className="telemetry-beacon">
+                      <span className="telemetry-beacon-dot"></span>
+                      <span className="telemetry-beacon-pulse"></span>
+                    </div>
+                    <span>DevAdmin API Linked</span>
+                    <span className="telemetry-tag">Sync Active</span>
+                  </div>
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>

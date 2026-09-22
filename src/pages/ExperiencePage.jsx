@@ -86,22 +86,30 @@ export default function ExperiencePage({ onNavigate }) {
             <p>{error}</p>
           </div>
         ) : experiences.length === 0 ? (
-          <div className="empty-state-card" style={{ maxWidth: '640px', margin: '40px auto' }}>
+          <div className="empty-state-card" style={{ maxWidth: '680px', margin: '40px auto' }}>
+            <div className="empty-state-grid-pattern"></div>
             <div className="empty-state-glow"></div>
-            <div className="empty-state-icon-wrapper">
-              <i className="fas fa-briefcase"></i>
+            <div className="empty-state-orbit">
+              <div className="empty-state-orbit-ring"></div>
+              <div className="empty-state-icon-box">
+                <i className="fas fa-compass"></i>
+              </div>
             </div>
             <div className="empty-state-badge">
               <span className="badge-dot"></span>
               Career Roadmap
             </div>
-            <h3 className="empty-state-title">Career Timeline Updating</h3>
+            <h3 className="empty-state-title">Career Timeline Synchronizing</h3>
             <p className="empty-state-desc">
               Professional engineering roles, system architectures, and technical leadership milestones are currently being synchronized from DevAdmin.
             </p>
-            <div className="empty-state-status-pill">
-              <i className="fas fa-satellite-dish" style={{ color: '#38bdf8' }}></i>
-              <span>Connected to DevAdmin API</span>
+            <div className="empty-state-telemetry">
+              <div className="telemetry-beacon">
+                <span className="telemetry-beacon-dot"></span>
+                <span className="telemetry-beacon-pulse"></span>
+              </div>
+              <span>Career Roadmap Online</span>
+              <span class="telemetry-tag">Awaiting Published Roles</span>
             </div>
           </div>
         ) : (

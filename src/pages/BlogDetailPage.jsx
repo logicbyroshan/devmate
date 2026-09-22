@@ -183,10 +183,14 @@ export default function BlogDetailPage({ slug, onNavigate }) {
     return (
       <div className="page-container">
         <div className="page-wrapper" style={{ padding: '40px 20px' }}>
-          <div className="empty-state-card" style={{ maxWidth: '640px', margin: '40px auto' }}>
+          <div className="empty-state-card" style={{ maxWidth: '680px', margin: '40px auto' }}>
+            <div className="empty-state-grid-pattern"></div>
             <div className="empty-state-glow"></div>
-            <div className="empty-state-icon-wrapper">
-              <i className="fas fa-book-open"></i>
+            <div className="empty-state-orbit">
+              <div className="empty-state-orbit-ring"></div>
+              <div className="empty-state-icon-box">
+                <i className="fas fa-newspaper"></i>
+              </div>
             </div>
             <div className="empty-state-badge">
               <span className="badge-dot"></span>
@@ -196,13 +200,24 @@ export default function BlogDetailPage({ slug, onNavigate }) {
             <p className="empty-state-desc">
               The requested technical article is currently not available or has not been published yet in DevAdmin.
             </p>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => onNavigate('home', 'blog')}
-            >
-              <i className="fas fa-arrow-left" style={{ marginRight: '8px' }}></i> Return to Home
-            </button>
+            <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => onNavigate('home', 'blog')}
+                style={{ padding: '12px 28px' }}
+              >
+                <i className="fas fa-arrow-left" style={{ marginRight: '8px' }}></i> Return to Articles
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => onNavigate('home')}
+                style={{ padding: '12px 24px' }}
+              >
+                <i className="fas fa-home" style={{ marginRight: '8px' }}></i> Portfolio Home
+              </button>
+            </div>
           </div>
         </div>
       </div>

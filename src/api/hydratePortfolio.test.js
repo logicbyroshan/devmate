@@ -118,7 +118,8 @@ describe('Dynamic Empty State Rendering', () => {
     const { updateExperience } = await import('./hydratePortfolio');
     updateExperience([]);
     expect(mockTimeline.innerHTML).toContain('empty-state-card');
-    expect(mockTimeline.innerHTML).toContain('Career Timeline Updating');
+    expect(mockTimeline.innerHTML).toContain('Career Timeline Synchronizing');
+    expect(mockTimeline.innerHTML).toContain('empty-state-orbit');
   });
 });
 
