@@ -387,14 +387,20 @@ export async function viewProject(slug) {
   }
 }
 
-/**
- * Submit public contact message to DevAdmin API.
- */
-export async function submitContactMessage(payload) {
+export async function submitContactMessage(payload = {}) {
+  const normalized = {
+    name: payload.name || payload.full_name || '',
+    full_name: payload.full_name || payload.name || '',
+    email: payload.email || '',
+    subject: payload.subject || 'New Contact Message',
+    message: payload.message || '',
+    is_urgent: Boolean(payload.is_urgent || payload.isUrgent),
+  };
+
   try {
     return await requestJson('/contact/', {
       method: 'POST',
-      body: payload,
+      body: normalized,
     });
   } catch {
     return {

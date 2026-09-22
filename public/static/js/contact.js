@@ -55,6 +55,7 @@ function initContactSection() {
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
+                        name: formData.full_name,
                         full_name: formData.full_name,
                         email: formData.email,
                         message: formData.message,
