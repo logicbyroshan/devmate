@@ -403,21 +403,29 @@ function updateSkills(skills = []) {
   if (!validSkills.length) {
     container.innerHTML = `
       <div class="empty-state-card">
+        <div class="empty-state-grid-pattern"></div>
         <div class="empty-state-glow"></div>
-        <div class="empty-state-icon-wrapper">
-          <i class="fas fa-layer-group"></i>
+        <div class="empty-state-orbit">
+          <div class="empty-state-orbit-ring"></div>
+          <div class="empty-state-icon-box">
+            <i class="fas fa-layer-group"></i>
+          </div>
         </div>
         <div class="empty-state-badge">
           <span class="badge-dot"></span>
-          Skill Matrix
+          Live Skill Matrix
         </div>
         <h3 class="empty-state-title">Technical Proficiencies Updating</h3>
         <p class="empty-state-desc">
-          Core technical competencies, language proficiencies, and engineering tools are being synchronized live from DevAdmin.
+          Core technical competencies, framework proficiencies, and system tools are being synchronized live from the DevAdmin engine.
         </p>
-        <div class="empty-state-status-pill">
-          <i class="fas fa-satellite-dish" style="color: #38bdf8;"></i>
-          <span>Connected to DevAdmin API</span>
+        <div class="empty-state-telemetry">
+          <div class="telemetry-beacon">
+            <span class="telemetry-beacon-dot"></span>
+            <span class="telemetry-beacon-pulse"></span>
+          </div>
+          <span>DevAdmin API Linked</span>
+          <span class="telemetry-tag">Realtime Stream Active</span>
         </div>
       </div>
     `;
@@ -507,9 +515,13 @@ function updateProjects(projects = []) {
   if (!validProjects.length) {
     slider.innerHTML = `
       <div class="empty-state-card" style="margin: 0 auto; width: 100%;">
+        <div class="empty-state-grid-pattern"></div>
         <div class="empty-state-glow"></div>
-        <div class="empty-state-icon-wrapper">
-          <i class="fas fa-folder-open"></i>
+        <div class="empty-state-orbit">
+          <div class="empty-state-orbit-ring"></div>
+          <div class="empty-state-icon-box">
+            <i class="fas fa-cubes"></i>
+          </div>
         </div>
         <div class="empty-state-badge">
           <span class="badge-dot"></span>
@@ -517,11 +529,15 @@ function updateProjects(projects = []) {
         </div>
         <h3 class="empty-state-title">Projects Under Active Curation</h3>
         <p class="empty-state-desc">
-          Engineering case studies, system architecture models, and live production deployments are being curated. Published projects from DevAdmin will appear here automatically.
+          Production case studies, system architecture models, and live telemetry benchmarks are being curated. Published projects from DevAdmin will stream here automatically.
         </p>
-        <div class="empty-state-status-pill">
-          <i class="fas fa-code-branch" style="color: #a78bfa;"></i>
+        <div class="empty-state-telemetry">
+          <div class="telemetry-beacon">
+            <span class="telemetry-beacon-dot"></span>
+            <span class="telemetry-beacon-pulse"></span>
+          </div>
           <span>Awaiting Published Projects</span>
+          <span class="telemetry-tag">Catalog Engine Standby</span>
         </div>
       </div>
     `;
@@ -593,21 +609,29 @@ function updateExperience(experience = []) {
   if (!items.length) {
     timeline.innerHTML = `
       <div class="empty-state-card" style="margin: 0 auto; width: 100%;">
+        <div class="empty-state-grid-pattern"></div>
         <div class="empty-state-glow"></div>
-        <div class="empty-state-icon-wrapper">
-          <i class="fas fa-briefcase"></i>
+        <div class="empty-state-orbit">
+          <div class="empty-state-orbit-ring"></div>
+          <div class="empty-state-icon-box">
+            <i class="fas fa-compass"></i>
+          </div>
         </div>
         <div class="empty-state-badge">
           <span class="badge-dot"></span>
           Career Roadmap
         </div>
-        <h3 class="empty-state-title">Career Timeline Updating</h3>
+        <h3 class="empty-state-title">Career Timeline Synchronizing</h3>
         <p class="empty-state-desc">
-          Professional engineering positions, software milestones, and organizational impact metrics are being updated in DevAdmin.
+          Professional software roles, distributed architecture milestones, and organizational impact metrics are being updated in DevAdmin.
         </p>
-        <div class="empty-state-status-pill">
-          <i class="fas fa-road" style="color: #38bdf8;"></i>
-          <span>Connected to DevAdmin API</span>
+        <div class="empty-state-telemetry">
+          <div class="telemetry-beacon">
+            <span class="telemetry-beacon-dot"></span>
+            <span class="telemetry-beacon-pulse"></span>
+          </div>
+          <span>Career Roadmap Online</span>
+          <span class="telemetry-tag">Syncing Milestones</span>
         </div>
       </div>
     `;

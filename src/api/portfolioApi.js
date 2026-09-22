@@ -11,6 +11,14 @@ function resolveApiBaseUrl() {
 
 const API_BASE_URL = resolveApiBaseUrl();
 
+if (typeof window !== 'undefined') {
+  window.__PORTFOLIO_API_BASE__ = API_BASE_URL;
+  window.PORTFOLIO_CONFIG = {
+    ...(window.PORTFOLIO_CONFIG || {}),
+    API_BASE_URL,
+  };
+}
+
 function parsePositiveInt(value, fallback) {
   const parsed = Number.parseInt(String(value ?? ''), 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;

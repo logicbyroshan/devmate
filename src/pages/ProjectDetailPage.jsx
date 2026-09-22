@@ -379,10 +379,14 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
     return (
       <div className="page-container">
         <div className="page-wrapper" style={{ padding: '40px 20px' }}>
-          <div className="empty-state-card" style={{ maxWidth: '640px', margin: '40px auto' }}>
+          <div className="empty-state-card" style={{ maxWidth: '680px', margin: '40px auto' }}>
+            <div className="empty-state-grid-pattern"></div>
             <div className="empty-state-glow"></div>
-            <div className="empty-state-icon-wrapper">
-              <i className="fas fa-folder-open"></i>
+            <div className="empty-state-orbit">
+              <div className="empty-state-orbit-ring"></div>
+              <div className="empty-state-icon-box">
+                <i className="fas fa-cubes"></i>
+              </div>
             </div>
             <div className="empty-state-badge">
               <span className="badge-dot"></span>
@@ -392,13 +396,22 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
             <p className="empty-state-desc">
               The requested project documentation could not be found or has not been published yet in DevAdmin.
             </p>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
               <button
                 type="button"
                 className="btn btn-primary"
                 onClick={() => onNavigate('home', 'projects')}
+                style={{ padding: '12px 28px' }}
               >
                 <i className="fas fa-arrow-left" style={{ marginRight: '8px' }}></i> Return to Projects
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => onNavigate('home')}
+                style={{ padding: '12px 24px' }}
+              >
+                <i className="fas fa-home" style={{ marginRight: '8px' }}></i> Portfolio Home
               </button>
             </div>
           </div>
