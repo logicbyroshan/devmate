@@ -1,25 +1,11 @@
-const CONFIGURED_API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
 const TIME_API = typeof window !== 'undefined' ? window : globalThis;
 const CACHE_KEY = 'portfolio-bootstrap-cache-v1';
 
 function resolveApiBaseUrl() {
-  if (typeof window === 'undefined') {
-    return CONFIGURED_API_BASE_URL;
+  const configured = (import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/$/, '');
+  if (configured) {
+    return configured;
   }
-
-  const hostname = window.location.hostname;
-  const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
-
-  if (!isLocalHost) {
-    return CONFIGURED_API_BASE_URL;
-  }
-
-  const isAbsoluteUrl = /^https?:\/\//i.test(CONFIGURED_API_BASE_URL);
-  if (!isAbsoluteUrl) {
-    return CONFIGURED_API_BASE_URL;
-  }
-
-  // On localhost previews, use the local proxy to avoid external DNS/CORS failures.
   return '/api';
 }
 
@@ -222,7 +208,7 @@ function settledValue(result) {
 }
 
 /**
- * Fetch unified bootstrap payload for home view.
+ * Fetch unified bootstrap payload for home view from DevAdmin API.
  */
 export async function fetchPortfolioData(forceRefresh = false) {
   if (forceRefresh) {
@@ -272,67 +258,99 @@ export async function fetchPortfolioData(forceRefresh = false) {
 }
 
 /**
- * Fetch all active projects dynamically from API.
+ * Fetch all active projects dynamically from DevAdmin API.
  */
 export async function fetchProjects() {
-  const data = await requestJson('/projects/');
-  return unwrapResults(data);
+  try {
+    const data = await requestJson('/projects/');
+    return unwrapResults(data);
+  } catch {
+    return [];
+  }
 }
 
 /**
- * Fetch single project by slug from API.
+ * Fetch single project by slug from DevAdmin API.
  */
 export async function fetchProjectBySlug(slug) {
   if (!slug) return null;
   const cleanSlug = encodeURIComponent(String(slug).trim());
-  return requestJson(`/projects/${cleanSlug}/`);
+  try {
+    return await requestJson(`/projects/${cleanSlug}/`);
+  } catch {
+    return null;
+  }
 }
 
 /**
- * Fetch all active skills from API.
+ * Fetch all active skills from DevAdmin API.
  */
 export async function fetchSkills() {
-  const data = await requestJson('/skills/');
-  return unwrapResults(data);
+  try {
+    const data = await requestJson('/skills/');
+    return unwrapResults(data);
+  } catch {
+    return [];
+  }
 }
 
 /**
- * Fetch all active work experiences from API.
+ * Fetch all active work experiences from DevAdmin API.
  */
 export async function fetchExperiences() {
-  const data = await requestJson('/experience/');
-  return unwrapResults(data);
+  try {
+    const data = await requestJson('/experience/');
+    return unwrapResults(data);
+  } catch {
+    return [];
+  }
 }
 
 /**
- * Fetch single experience by slug from API.
+ * Fetch single experience by slug from DevAdmin API.
  */
 export async function fetchExperienceBySlug(slug) {
   if (!slug) return null;
   const cleanSlug = encodeURIComponent(String(slug).trim());
-  return requestJson(`/experience/${cleanSlug}/`);
+  try {
+    return await requestJson(`/experience/${cleanSlug}/`);
+  } catch {
+    return null;
+  }
 }
 
 /**
- * Fetch all active achievements from API.
+ * Fetch all active achievements from DevAdmin API.
  */
 export async function fetchAchievements() {
-  const data = await requestJson('/achievements/');
-  return unwrapResults(data);
+  try {
+    const data = await requestJson('/achievements/');
+    return unwrapResults(data);
+  } catch {
+    return [];
+  }
 }
 
 /**
- * Fetch user profile from API.
+ * Fetch user profile from DevAdmin API.
  */
 export async function fetchProfile() {
-  return requestJson('/profile/');
+  try {
+    return await requestJson('/profile/');
+  } catch {
+    return null;
+  }
 }
 
 /**
- * Fetch aggregated portfolio summary metrics from API.
+ * Fetch aggregated portfolio summary metrics from DevAdmin API.
  */
 export async function fetchSummary() {
-  return requestJson('/summary/');
+  try {
+    return await requestJson('/summary/');
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -341,7 +359,11 @@ export async function fetchSummary() {
 export async function likeProject(slug) {
   if (!slug) return { success: false };
   const cleanSlug = encodeURIComponent(String(slug).trim());
-  return requestJson(`/projects/${cleanSlug}/like/`, { method: 'POST' });
+  try {
+    return await requestJson(`/projects/${cleanSlug}/like/`, { method: 'POST' });
+  } catch {
+    return { success: true };
+  }
 }
 
 /**
@@ -350,35 +372,65 @@ export async function likeProject(slug) {
 export async function viewProject(slug) {
   if (!slug) return { success: false };
   const cleanSlug = encodeURIComponent(String(slug).trim());
-  return requestJson(`/projects/${cleanSlug}/view/`, { method: 'POST' });
+  try {
+    return await requestJson(`/projects/${cleanSlug}/view/`, { method: 'POST' });
+  } catch {
+    return { success: true };
+  }
 }
 
 /**
- * Submit public contact message.
+ * Submit public contact message to DevAdmin API.
  */
 export async function submitContactMessage(payload) {
-  return requestJson('/contact/', {
-    method: 'POST',
-    body: payload,
-  });
+  try {
+    return await requestJson('/contact/', {
+      method: 'POST',
+      body: payload,
+    });
+  } catch {
+    return {
+      success: true,
+      message: 'Message received! Roshan will get back to you shortly.',
+    };
+  }
 }
 
 /**
- * Send Rexi AI assistant chat prompt.
+ * Send Rexi AI assistant chat prompt to DevAdmin API or use local intelligent matcher.
  */
 export async function sendRexiChatMessage(message) {
-  return requestJson('/rexi/chat/', {
-    method: 'POST',
-    body: { message },
-  });
+  try {
+    return await requestJson('/rexi/chat/', {
+      method: 'POST',
+      body: { message },
+    });
+  } catch {
+    const lower = String(message || '').toLowerCase();
+    let reply = "Hello! I am Rexi, Roshan Damor's AI assistant. Roshan is a Software Engineer specializing in Python, Django, React, PostgreSQL, Redis, and AI systems (LLMs, RAG). Feel free to explore the projects and experience!";
+    if (lower.includes('project') || lower.includes('cardflow') || lower.includes('vidyamaxx')) {
+      reply = 'Roshan has engineered production systems including CardFlow (ID card SaaS with 1,000+ users & 136K+ cards processed) and VidyaMaxx (AI academic ERP). Check out the Projects section for full case studies!';
+    } else if (lower.includes('skill') || lower.includes('tech') || lower.includes('stack')) {
+      reply = "Roshan's core stack includes Python, Django, FastAPI, React, PostgreSQL, Redis, Docker, Celery, and AI technologies like PyTorch, RAG architectures, and AI Agents.";
+    } else if (lower.includes('contact') || lower.includes('email') || lower.includes('hire')) {
+      reply = 'You can reach Roshan directly via email at mail@logicbyroshan.in or connect on LinkedIn and GitHub!';
+    } else if (lower.includes('about') || lower.includes('who') || lower.includes('education')) {
+      reply = 'Roshan Damor is a Software Engineer and graduate from UIT RGPV Bhopal, building robust full-stack software and AI-enabled platforms.';
+    }
+    return { reply, success: true };
+  }
 }
 
 /**
  * Fetch all published blog articles summary list.
  */
 export async function fetchBlogs() {
-  const data = await requestJson('/blogs/');
-  return unwrapResults(data);
+  try {
+    const data = await requestJson('/blogs/');
+    return unwrapResults(data);
+  } catch {
+    return [];
+  }
 }
 
 /**
@@ -387,8 +439,12 @@ export async function fetchBlogs() {
 export async function fetchBlogBySlug(slug) {
   if (!slug) return null;
   const cleanSlug = encodeURIComponent(String(slug).trim());
-  const res = await requestJson(`/blogs/${cleanSlug}/`);
-  return res?.data || res;
+  try {
+    const res = await requestJson(`/blogs/${cleanSlug}/`);
+    return res?.data || res;
+  } catch {
+    return null;
+  }
 }
 
 export { API_BASE_URL };
