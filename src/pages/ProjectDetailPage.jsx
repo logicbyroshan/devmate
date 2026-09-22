@@ -7,6 +7,7 @@ import MermaidDiagram from '../components/doc/MermaidDiagram';
 import KaTeXFormula from '../components/doc/KaTeXFormula';
 import ImageLightbox from '../components/doc/ImageLightbox';
 import VideoShowcase from '../components/doc/VideoShowcase';
+import RichDocRenderer from '../components/doc/RichDocRenderer';
 import '../../public/static/css/doc-engine.css';
 
 const PROJECT_MERMAID_SCHEMAS = {
@@ -588,13 +589,7 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
               <h2 className="doc-section-title">Context, Problem Statement &amp; Architecture Strategy</h2>
             </div>
 
-            {project.documentation ? (
-              <div className="case-study-injected" dangerouslySetInnerHTML={{ __html: project.documentation }} />
-            ) : (
-              <p style={{ color: 'rgba(255,255,255,0.78)', fontSize: '15px', lineHeight: '1.65' }}>
-                {project.description}
-              </p>
-            )}
+            <RichDocRenderer content={project.documentation || project.description} />
           </section>
 
           {/* 2. Interactive System Architecture Topology (React Flow, D2, Mermaid ERD & KaTeX) */}
