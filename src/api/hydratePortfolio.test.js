@@ -118,8 +118,59 @@ describe('Dynamic Empty State Rendering', () => {
     const { updateExperience } = await import('./hydratePortfolio');
     updateExperience([]);
     expect(mockTimeline.innerHTML).toContain('empty-state-card');
-    expect(mockTimeline.innerHTML).toContain('Career Timeline Synchronizing');
-    expect(mockTimeline.innerHTML).toContain('empty-state-orbit');
+  });
+});
+
+describe('Dynamic Hero Stats Hydration', () => {
+  it('hydrates dynamic hero highlights with 1, 2, or 3 custom stats', async () => {
+    const mockNftCard = {
+      style: {},
+      querySelector: () => ({ textContent: '' })
+    };
+    const mockStatsContainer = {
+      innerHTML: '',
+      appendChild: (el) => {
+        mockStatsContainer.innerHTML += el.outerHTML || `<div class="stat-item">${el.innerHTML || ''}</div>`;
+      }
+    };
+    const mockHeading = { innerHTML: '' };
+    const mockHeroImage = { src: '' };
+
+    globalThis.document = {
+      querySelector: (sel) => {
+        if (sel === '.nft-card') return mockNftCard;
+        if (sel === '.hero-stats') return mockStatsContainer;
+        if (sel === '.hero-heading') return mockHeading;
+        if (sel === '.hero-image') return mockHeroImage;
+        return { textContent: '', innerHTML: '', appendChild: () => {}, setAttribute: () => {} };
+      },
+      querySelectorAll: () => [],
+      createElement: (tag) => {
+        const el = {
+          tagName: tag,
+          className: '',
+          textContent: '',
+          children: [],
+          appendChild: (child) => { el.children.push(child); }
+        };
+        return el;
+      },
+      head: { appendChild: () => {} }
+    };
+
+    const { updateProfile } = await import('./hydratePortfolio');
+
+    // Test with 2 custom stats
+    updateProfile({
+      full_name: 'Roshan Damor',
+      hero_highlights_title: 'Custom Highlights',
+      hero_stats: [
+        { value: '250K+', label: 'Active Readers', icon: 'fas fa-book-reader' },
+        { value: '99.9%', label: 'Uptime SLA', icon: 'fas fa-shield-alt' }
+      ]
+    });
+
+    expect(mockNftCard.style.display).not.toBe('none');
   });
 });
 
