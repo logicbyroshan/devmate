@@ -3,7 +3,7 @@
    ======================================== */
 .site-footer {
     position: relative;
-    background: linear-gradient(180deg, rgba(7, 10, 41, 0) 0%, rgba(7, 10, 41, 0.98) 12%, #040616 100%);
+    background: linear-gradient(180deg, rgba(4, 6, 22, 0) 0%, rgba(4, 6, 22, 0.95) 15%, #040616 100%);
     padding: 80px 0 0;
     margin-top: 0;
     overflow: hidden;
@@ -49,7 +49,15 @@
 }
 
 .footer-logo {
-    height: 44px;
+    height: 48px;
+    width: 48px;
+    object-fit: contain;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+}
+
+.footer-logo-link:hover .footer-logo {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 12px rgba(167, 139, 250, 0.6));
 }
 
 .footer-tagline {
@@ -166,9 +174,7 @@
 
 /* ── Divider ───────────────────────────── */
 .footer-divider {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(124, 58, 237, 0.4) 30%, rgba(167, 139, 250, 0.3) 50%, rgba(124, 58, 237, 0.4) 70%, transparent 100%);
+    display: none;
 }
 
 /* ── Bottom bar ────────────────────────── */
@@ -176,7 +182,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 22px 0 28px;
+    padding: 24px 0 0;
     flex-wrap: wrap;
     gap: 10px;
 }
@@ -208,6 +214,54 @@
     28%       { transform: scale(1); }
     42%       { transform: scale(1.18); }
     56%       { transform: scale(1); }
+}
+
+/* ── Full-Width Subtle Transparent Gradient Watermark ── */
+.footer-big-text-wrapper {
+    width: 100%;
+    max-width: var(--layout-max-width);
+    margin: 48px auto 0;
+    padding: 0 var(--layout-gutter-desktop) 36px;
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    pointer-events: none;
+    position: relative;
+}
+
+.footer-big-text {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    font-family: var(--font-heading), 'Orbitron', 'Outfit', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: clamp(2px, 0.6vw, 12px);
+    text-align: center;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.22) 0%,
+        rgba(167, 139, 250, 0.14) 40%,
+        rgba(56, 189, 248, 0.04) 75%,
+        rgba(255, 255, 255, 0.005) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.footer-big-text .watermark-word {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: clamp(3rem, 10.5vw, 11.5rem);
+    line-height: 0.88;
+    white-space: nowrap;
 }
 
 /* ========================================
@@ -313,7 +367,8 @@
     }
 
     .footer-logo {
-        height: 38px;
+        height: 42px;
+        width: 42px;
     }
 
     .footer-col-title {

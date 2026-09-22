@@ -28,8 +28,8 @@ export default function SiteFooter({ onNavigate }) {
                 src="/static/images/logo.webp" 
                 alt="Roshan Damor" 
                 className="logo-image footer-logo" 
-                width="151" 
-                height="38" 
+                width="48" 
+                height="48" 
                 loading="lazy" 
                 decoding="async" 
               />
@@ -116,6 +116,14 @@ export default function SiteFooter({ onNavigate }) {
           <p className="footer-made">Engineered with <i className="fas fa-heart footer-heart"></i> &amp; precision architecture</p>
         </div>
 
+      </div>
+
+      {/* Large Full-Width Subtle Transparent Gradient Watermark */}
+      <div className="footer-big-text-wrapper" aria-hidden="true">
+        <div className="footer-big-text">
+          <span className="watermark-word">SOFTWARE</span>
+          <span className="watermark-word">ENGINEER</span>
+        </div>
       </div>
     </footer>
   );

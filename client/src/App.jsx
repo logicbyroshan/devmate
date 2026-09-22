@@ -257,33 +257,35 @@ function App() {
         return;
       }
 
-      // 6. In-page section anchor links (#skills, #projects, #contact, etc.)
+      // 6. In-page section anchor links (#skills, #projects, #contact, #doc-overview, #monolith-vs-microservices, etc.)
       const anchorLink = e.target.closest('a[href^="#"]');
       if (anchorLink) {
         const hashTarget = anchorLink.getAttribute('href').replace('#', '');
         if (hashTarget && hashTarget !== '/' && !hashTarget.startsWith('/')) {
           e.preventDefault();
-          if (route.name !== 'home') {
-            navigate('home', hashTarget);
-          } else {
-            const el = document.getElementById(hashTarget);
-            if (el) {
-              if (lenis) {
-                lenis.scrollTo(el, { duration: 1.2 });
-              } else {
-                el.scrollIntoView({ behavior: 'smooth' });
-              }
+          const targetEl = document.getElementById(hashTarget);
+          if (targetEl) {
+            // Target element exists in current page - scroll directly
+            if (lenis) {
+              lenis.scrollTo(targetEl, { duration: 1.2 });
+            } else {
+              targetEl.scrollIntoView({ behavior: 'smooth' });
             }
+          } else if (route.name !== 'home') {
+            // Target not in current view - route to home section
+            navigate('home', hashTarget);
           }
           return;
         }
       }
 
-      // 7. Wire SFX click for React-page buttons (sounds.js only loads on home)
-      const sfxTarget = e.target.closest('.btn, .nav-link, .mobile-nav-link, .doc-ctrl-btn, .blog-sb-link, .blog-sb-share-btn');
-      if (sfxTarget && window._SoundEngine) {
-        window._SoundEngine.initAudio();
-        window._SoundEngine.playClick();
+      // 7. Wire SFX click for React-page buttons (sounds.js handles home view)
+      if (route.name !== 'home') {
+        const sfxTarget = e.target.closest('.btn, .nav-link, .mobile-nav-link, .doc-ctrl-btn, .blog-sb-link, .blog-sb-share-btn');
+        if (sfxTarget && window._SoundEngine) {
+          window._SoundEngine.initAudio();
+          window._SoundEngine.playClick();
+        }
       }
     };
 

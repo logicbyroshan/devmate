@@ -3,8 +3,187 @@ import { fetchProjectBySlug, fetchProjects, likeProject, viewProject } from '../
 import { safeUrl, resolveStatusDisplay } from '../api/hydratePortfolio';
 import InteractiveArchitecture from '../components/doc/InteractiveArchitecture';
 import ComplexDiagramD2 from '../components/doc/ComplexDiagramD2';
+import MermaidDiagram from '../components/doc/MermaidDiagram';
+import KaTeXFormula from '../components/doc/KaTeXFormula';
 import ImageLightbox from '../components/doc/ImageLightbox';
 import VideoShowcase from '../components/doc/VideoShowcase';
+
+const PROJECT_MERMAID_SCHEMAS = {
+  cardflow: {
+    type: 'ERD',
+    title: 'CardFlow Multi-Tenant Entity-Relationship Model',
+    subtitle: 'Strict relational schema with RBAC constraints, composite foreign keys, and audit logging tables.',
+    chart: `erDiagram
+      ORGANIZATION ||--o{ USER : contains
+      ORGANIZATION ||--o{ STUDENT_RECORD : owns
+      ORGANIZATION ||--o{ CARD_TEMPLATE : configures
+      STUDENT_RECORD ||--o{ BATCH_ITEM : processes
+      BATCH_EXPORT ||--|{ BATCH_ITEM : aggregates
+      USER ||--o{ AUDIT_LOG : triggers
+      STUDENT_RECORD ||--o{ AUDIT_LOG : tracks
+      
+      ORGANIZATION {
+        uuid id PK
+        string name
+        string tenant_code UK
+        string plan_tier
+        timestamp created_at
+      }
+      USER {
+        uuid id PK
+        uuid org_id FK
+        string email UK
+        string role
+        boolean is_active
+      }
+      STUDENT_RECORD {
+        uuid id PK
+        uuid org_id FK
+        string admission_no UK
+        string full_name
+        string photo_url
+        string workflow_state
+        timestamp updated_at
+      }
+      BATCH_EXPORT {
+        uuid id PK
+        uuid org_id FK
+        string format
+        string status
+        integer total_cards
+      }`,
+  },
+  vidyamaxx: {
+    type: 'Flowchart',
+    title: 'VidyaMaxx Academic & AI Pipeline Lifecycle',
+    subtitle: 'End-to-end data ingestion, genetic timetabling optimization, and contextual student performance RAG retrieval.',
+    chart: `flowchart TD
+      A[Student / Teacher Ingestion] --> B[Multi-Tenant Gateway]
+      B --> C{RBAC & Permission Check}
+      C -->|Authorized| D[Core Database & State Hub]
+      C -->|Unauthorized| E[403 Forbidden]
+      D --> F[Attendance & Biometric Stream]
+      D --> G[Grading & Assessment Logs]
+      D --> H[Genetic Timetable Optimizer]
+      F & G --> I[pgvector Semantic Embedding Store]
+      I --> J[Contextual RAG Retrieval Engine]
+      J --> K[Qwen AI Student Progress Insights]
+      H --> L[Optimized Class Schedule Output]`,
+  },
+  printnexx: {
+    type: 'Flowchart',
+    title: 'PrintNexx OpenCV High-DPI Image Transformation Pipeline',
+    subtitle: 'Automated facial landmark detection, histogram equalization, margin compensation, and parallel thermal compilation.',
+    chart: `flowchart LR
+      Raw[Raw Camera Input] --> Detect[Haar Cascade Face Locator]
+      Detect --> Align[Affine Rotation Normalizer]
+      Align --> Hist[Histogram Equalization & Tone Curves]
+      Hist --> Comp[3:4 Proportional Aspect Crop]
+      Comp --> Render[300-DPI Thermal Canvas Compositor]
+      Render --> Output[High-Res PDF Sheet Spooler]`,
+  },
+  eazetrip: {
+    type: 'Flowchart',
+    title: 'EazeTrip Real-Time Inventory & Distributed Lock Engine',
+    subtitle: 'High-concurrency seat reservation workflow with Redis distributed locks and idempotent payment webhooks.',
+    chart: `flowchart TD
+      UserReq[Booking Request] --> APIGateway[API Gateway]
+      APIGateway --> LockCheck{Redis Seat Lock Check}
+      LockCheck -->|Acquired| HoldState[10-Minute Cart Hold Active]
+      LockCheck -->|Conflict| LockWait[Return Concurrency Error]
+      HoldState --> PayHook[Payment Gateway Webhook]
+      PayHook --> ACIDCommit[PostgreSQL ACID Ticket Commit]
+      ACIDCommit --> PDFGen[Automated Itinerary PDF Generator]
+      PDFGen --> UserSuccess[User Confirmed Voucher]`,
+  },
+  taskflixx: {
+    type: 'Flowchart',
+    title: 'TaskFlixx Kanban State Machine & AI Urgency Pipeline',
+    subtitle: 'Asynchronous task lifecycle transitions guarded by urgency estimators and periodic notification workers.',
+    chart: `flowchart LR
+      TaskCreated[Task Created] --> AIClassify[LLM Urgency Classifier]
+      AIClassify --> StatePending[State: Pending]
+      StatePending --> StateProg[State: In Progress]
+      StateProg --> StateReview[State: AI Review & Verification]
+      StateReview --> StateDone[State: Completed & Archived]
+      StateProg --> AlertWorker[Celery Beat Reminder Dispatcher]`,
+  },
+  prepsarthi: {
+    type: 'Flowchart',
+    title: 'PrepSarthi Adaptive RAG & Spaced Repetition Workflow',
+    subtitle: 'Vector similarity search against syllabus knowledge base and SM-2 adaptive interval scheduling.',
+    chart: `flowchart TD
+      StudentQuery[User Practice Topic] --> VectorSearch[Qdrant Semantic Similarity Search]
+      VectorSearch --> KnowledgeContext[Syllabus Context Extraction]
+      KnowledgeContext --> LLMGen[Dynamic Synthetic Question Generator]
+      LLMGen --> StudentEval[Student Answer Evaluation]
+      StudentEval --> SM2Algorithm[SuperMemo SM-2 Interval Calculation]
+      SM2Algorithm --> AdaptiveQueue[Next Review Schedule Updated]`,
+  },
+};
+
+const PROJECT_KATEX_MODELS = {
+  cardflow: {
+    title: 'High-Throughput Parallel Batch Generation Model',
+    description: 'Mathematical formulation of asynchronous worker throughput and P99 latency bounds across Celery worker pools:',
+    formula: '\\Phi_{\\text{throughput}} = \\frac{N_{\\text{cards}} \\times W_{\\text{concurrency}}}{T_{\\text{render}} + T_{\\text{io}}} \\ge 120 \\text{ cards/sec}, \\quad L_{p99} \\le 18\\text{ms}',
+    variables: [
+      { symbol: '\\Phi', meaning: 'Aggregate System Throughput', value: '120+ cards/sec' },
+      { symbol: 'W_{\\text{concurrency}}', meaning: 'Active Celery Worker Pool', value: '16 workers' },
+      { symbol: 'L_{p99}', meaning: '99th Percentile API Response Latency', value: '< 18ms' },
+    ],
+  },
+  vidyamaxx: {
+    title: 'Genetic Timetable Multi-Constraint Optimization Function',
+    description: 'Fitness objective function balancing teacher schedules, room capacity, and subject distribution penalties:',
+    formula: 'F(T) = \\sum_{i=1}^{M} w_i \\cdot C_i(T) - \\lambda \\sum_{j=1}^{K} P_j(T), \\quad \\text{subject to } P_{\\text{hard}}(T) = 0',
+    variables: [
+      { symbol: 'F(T)', meaning: 'Overall Schedule Fitness Score', value: 'Maximize' },
+      { symbol: 'C_i(T)', meaning: 'Soft Constraint Satisfaction Factor', value: '0.0 to 1.0' },
+      { symbol: 'P_{\\text{hard}}', meaning: 'Hard Constraint Violations (Teacher / Room clash)', value: '0 (Strict)' },
+    ],
+  },
+  printnexx: {
+    title: 'High-Resolution 300-DPI Affine Coordinate Normalization',
+    description: 'Transformation matrix aligning facial landmarks to standardized thermal card printable boundaries:',
+    formula: '\\begin{bmatrix} x\' \\\\ y\' \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} s \\cos\\theta & -s \\sin\\theta & t_x \\\\ s \\sin\\theta & s \\cos\\theta & t_y \\\\ 0 & 0 & 1 \\end{bmatrix} \\begin{bmatrix} x \\\\ y \\\\ 1 \\end{bmatrix}',
+    variables: [
+      { symbol: 's', meaning: 'Isotropic Scale Factor', value: 'Aspect-Preserving' },
+      { symbol: '\\theta', meaning: 'Facial Tilt Angle Correction', value: '[-45°, +45°]' },
+      { symbol: '(t_x, t_y)', meaning: 'Center Translation Offset', value: 'Print Margin' },
+    ],
+  },
+  eazetrip: {
+    title: 'Token Bucket Rate Limiting & Concurrency Burst Formulation',
+    description: 'Guarantees sub-millisecond API rate enforcement with burst protection for real-time booking checkouts:',
+    formula: '\\beta(t) = \\min\\left(B, \\; \\beta(t_0) + r \\cdot (t - t_0)\\right) - 1, \\quad \\text{where } \\beta(t) \\ge 0',
+    variables: [
+      { symbol: 'B', meaning: 'Bucket Capacity Burst Limit', value: '100 requests' },
+      { symbol: 'r', meaning: 'Refill Rate', value: '25 req/sec' },
+      { symbol: '\\beta(t)', meaning: 'Available Token Balance', value: 'Redis Counter' },
+    ],
+  },
+  taskflixx: {
+    title: 'Dynamic Multi-Attribute Task Priority Scoring Metric',
+    description: 'Algorithmic urgency evaluation weighting deadline proximity, business impact, and execution complexity:',
+    formula: 'P(\\tau) = w_u \\cdot \\frac{1}{\\Delta t_{\\text{deadline}} + \\epsilon} + w_i \\cdot I(\\tau) - w_c \\cdot C(\\tau)',
+    variables: [
+      { symbol: 'P(\\tau)', meaning: 'Calculated Task Priority Score', value: 'Dynamic Rank' },
+      { symbol: '\\Delta t', meaning: 'Time Remaining to Due Date', value: 'Hours' },
+      { symbol: 'I(\\tau)', meaning: 'Projected Business Impact', value: '[1, 10]' },
+    ],
+  },
+  prepsarthi: {
+    title: 'SuperMemo SM-2 Spaced Repetition Memory Retention Model',
+    description: 'Predictive interval formula scheduling optimal quiz review dates based on recall accuracy ratings:',
+    formula: 'I(n) = \\begin{cases} 1, & n = 1 \\\\ 6, & n = 2 \\\\ I(n-1) \\times EF, & n > 2 \\end{cases} \\quad EF\' = \\max\\left(1.3, \\; EF + 0.1 - (5 - q)(0.08 + (5 - q)0.02)\\right)',
+    variables: [
+      { symbol: 'I(n)', meaning: 'Repetition Interval in Days', value: 'Dynamic' },
+      { symbol: 'EF', meaning: 'Easiness Factor', value: 'Default 2.5' },
+      { symbol: 'q', meaning: 'Student Recall Quality Rating', value: '[0, 5]' },
+    ],
+  },
+};
 
 export default function ProjectDetailPage({ slug, onNavigate }) {
   const [project, setProject] = useState(null);
@@ -395,16 +574,36 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
             )}
           </section>
 
-          {/* 2. Interactive System Architecture Topology (React Flow & D2) */}
+          {/* 2. Interactive System Architecture Topology (React Flow, D2, Mermaid ERD & KaTeX) */}
           <section id="doc-architecture" className="doc-page-section">
             <div className="doc-section-heading-wrap">
               <span className="doc-badge-pill">
-                <i className="fas fa-network-wired"></i> Section 2: Interactive Architecture
+                <i className="fas fa-network-wired"></i> Section 2: Interactive Architecture &amp; Mathematical Telemetry
               </span>
-              <h2 className="doc-section-title">High-Availability Topology &amp; Security Rings</h2>
+              <h2 className="doc-section-title">High-Availability Topology, ERD Schemas &amp; Performance Models</h2>
             </div>
             <InteractiveArchitecture />
             <ComplexDiagramD2 scenarioKey={projectKey} />
+
+            {/* Dynamic Mermaid ERD / Sequence Pipeline */}
+            {PROJECT_MERMAID_SCHEMAS[projectKey] && (
+              <MermaidDiagram
+                chart={PROJECT_MERMAID_SCHEMAS[projectKey].chart}
+                title={PROJECT_MERMAID_SCHEMAS[projectKey].title}
+                subtitle={PROJECT_MERMAID_SCHEMAS[projectKey].subtitle}
+                diagramType={PROJECT_MERMAID_SCHEMAS[projectKey].type}
+              />
+            )}
+
+            {/* Dynamic KaTeX Performance / SLA Mathematical Formulation */}
+            {PROJECT_KATEX_MODELS[projectKey] && (
+              <KaTeXFormula
+                formula={PROJECT_KATEX_MODELS[projectKey].formula}
+                title={PROJECT_KATEX_MODELS[projectKey].title}
+                description={PROJECT_KATEX_MODELS[projectKey].description}
+                variables={PROJECT_KATEX_MODELS[projectKey].variables}
+              />
+            )}
           </section>
 
           {/* 3. Media Gallery Lightbox & Video Showcase */}

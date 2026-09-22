@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { safeUrl, getCategoryIcon, resolveStatusDisplay } from './hydratePortfolio';
+import { safeUrl, getCategoryIcon, getSkillIcon, resolveStatusDisplay } from './hydratePortfolio';
 
 describe('safeUrl', () => {
   it('allows http and https urls', () => {
@@ -46,6 +46,24 @@ describe('Dynamic Category Icon Resolution', () => {
   });
 });
 
+describe('Dynamic Skill Icon Resolution', () => {
+  it('maps popular programming languages and frameworks to proper icons', () => {
+    expect(getSkillIcon('Python')).toBe('fab fa-python');
+    expect(getSkillIcon('Java')).toBe('fab fa-java');
+    expect(getSkillIcon('React')).toBe('fab fa-react');
+    expect(getSkillIcon('Docker')).toBe('fab fa-docker');
+    expect(getSkillIcon('Django')).toBe('fas fa-cubes');
+    expect(getSkillIcon('LLMs')).toBe('fas fa-brain');
+    expect(getSkillIcon('FastAPI')).toBe('fas fa-bolt');
+    expect(getSkillIcon('PostgreSQL')).toBe('fas fa-database');
+  });
+
+  it('preserves custom icons when provided', () => {
+    expect(getSkillIcon('MySkill', 'fas fa-star')).toBe('fas fa-star');
+    expect(getSkillIcon('MySkill', 'fa-fire')).toBe('fas fa-fire');
+  });
+});
+
 describe('Dynamic Project Status Display', () => {
   it('resolves production status badges', () => {
     const prod = resolveStatusDisplay('active');
@@ -68,3 +86,4 @@ describe('Dynamic Project Status Display', () => {
     expect(oss.cls).toBe('status-oss');
   });
 });
+

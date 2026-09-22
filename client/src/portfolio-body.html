@@ -15,7 +15,7 @@
             <div class="preloader-spinner-wrapper">
                 <div class="preloader-spinner-ring outer-ring"></div>
                 <div class="preloader-spinner-ring inner-ring"></div>
-                <div class="preloader-core-dot"></div>
+                <img src="/static/images/logo.webp" alt="Roshan Damor" class="preloader-logo-badge" width="44" height="44" decoding="async">
             </div>
             <div class="preloader-info">
                 <div class="preloader-counter" id="preloaderCounter">0%</div>
@@ -39,7 +39,7 @@
                 <a href="/about" class="nav-link" data-route="about">About</a>
             </nav>
             <a href="/" class="brand">
-                <img src="/static/images/logo.webp" alt="Roshan Damor Logo" class="logo-image" width="135" height="34" decoding="async">
+                <img src="/static/images/logo.webp" alt="Roshan Damor Logo" class="logo-image" width="48" height="48" decoding="async">
             </a>
             <div class="nav-actions">
                 <button type="button" class="btn btn-secondary btn-nav" data-modal="modal-resume">Resume</button>
@@ -57,7 +57,7 @@
                 <span></span>
             </button>
             <a href="/" class="brand">
-                <img src="/static/images/logo.webp" alt="Roshan Damor Logo" class="logo-image" width="135" height="34" decoding="async">
+                <img src="/static/images/logo.webp" alt="Roshan Damor Logo" class="logo-image" width="44" height="44" decoding="async">
             </a>
             <button type="button" class="btn btn-primary mobile-resume-btn" data-modal="modal-resume" aria-label="Resume">
                 <i class="fas fa-file-alt"></i>
@@ -160,9 +160,12 @@
                     <img src="/static/images/about/about2.webp" alt="Developer Portrait 2" width="1024" height="1464" loading="lazy" decoding="async">
                 </div>
                 <div class="about-image-item about-img-3">
-                    <img src="/static/images/about/about3.webp" alt="Roshan Damor" width="6000" height="6000" loading="lazy" decoding="async">
+                    <img src="/static/images/about/MePhoto.png" alt="Roshan Damor" width="1122" height="1402" loading="lazy" decoding="async">
                 </div>
-                <div class="about-bg-text">DEVELOPER</div>
+                <div class="about-bg-text">
+                    <span class="about-bg-word">SOFTWARE</span>
+                    <span class="about-bg-word">ENGINEER</span>
+                </div>
                 <div class="about-image-item about-img-4">
                     <img src="/static/images/about/about4.webp" alt="Developer Portrait 4" width="1024" height="1024" loading="lazy" decoding="async">
                 </div>
@@ -204,19 +207,19 @@
                         <i class="fas fa-puzzle-piece"></i>
                     </div>
                     <h3 class="tech-card-title">Software Engineering</h3>
-                    <ul class="skills-list">
-                        <li>Python</li>
-                        <li>Java</li>
-                        <li>C/C++</li>
-                        <li>JavaScript</li>
-                        <li>Django</li>
-                        <li>FastAPI</li>
-                        <li>Flask</li>
-                        <li>Node.js</li>
-                        <li>REST APIs</li>
-                        <li>System Design</li>
-                        <li>Git</li>
-                    </ul>
+                    <div class="skills-chips-grid">
+                        <div class="skill-mini-card"><i class="fab fa-python skill-icon"></i><span class="skill-name">Python</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-java skill-icon"></i><span class="skill-name">Java</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-code skill-icon"></i><span class="skill-name">C/C++</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-js skill-icon"></i><span class="skill-name">JavaScript</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-cubes skill-icon"></i><span class="skill-name">Django</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-bolt skill-icon"></i><span class="skill-name">FastAPI</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-flask skill-icon"></i><span class="skill-name">Flask</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-node-js skill-icon"></i><span class="skill-name">Node.js</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-network-wired skill-icon"></i><span class="skill-name">REST APIs</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-sitemap skill-icon"></i><span class="skill-name">System Design</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-git-alt skill-icon"></i><span class="skill-name">Git</span></div>
+                    </div>
                 </div>
 
                 <!-- Card 2: AI & Data -->
@@ -225,18 +228,18 @@
                         <i class="fas fa-robot"></i>
                     </div>
                     <h3 class="tech-card-title">AI & Data</h3>
-                    <ul class="skills-list">
-                        <li>LLMs</li>
-                        <li>RAG</li>
-                        <li>AI Agents</li>
-                        <li>AI Workflows</li>
-                        <li>PyTorch</li>
-                        <li>TensorFlow</li>
-                        <li>Scikit-learn</li>
-                        <li>NumPy</li>
-                        <li>Pandas</li>
-                        <li>ML</li>
-                    </ul>
+                    <div class="skills-chips-grid">
+                        <div class="skill-mini-card"><i class="fas fa-brain skill-icon"></i><span class="skill-name">LLMs</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-database skill-icon"></i><span class="skill-name">RAG</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-robot skill-icon"></i><span class="skill-name">AI Agents</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-diagram-project skill-icon"></i><span class="skill-name">AI Workflows</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-fire skill-icon"></i><span class="skill-name">PyTorch</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-microchip skill-icon"></i><span class="skill-name">TensorFlow</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-chart-line skill-icon"></i><span class="skill-name">Scikit-learn</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-calculator skill-icon"></i><span class="skill-name">NumPy</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-table skill-icon"></i><span class="skill-name">Pandas</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-network-wired skill-icon"></i><span class="skill-name">ML</span></div>
+                    </div>
                 </div>
 
                 <!-- Card 3: Application Development -->
@@ -245,18 +248,18 @@
                         <i class="fas fa-globe"></i>
                     </div>
                     <h3 class="tech-card-title">Application Development</h3>
-                    <ul class="skills-list">
-                        <li>React</li>
-                        <li>Vue</li>
-                        <li>HTML/CSS</li>
-                        <li>Tailwind</li>
-                        <li>PostgreSQL</li>
-                        <li>MySQL</li>
-                        <li>MongoDB</li>
-                        <li>Redis</li>
-                        <li>React Native</li>
-                        <li>Electron</li>
-                    </ul>
+                    <div class="skills-chips-grid">
+                        <div class="skill-mini-card"><i class="fab fa-react skill-icon"></i><span class="skill-name">React</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-vuejs skill-icon"></i><span class="skill-name">Vue</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-html5 skill-icon"></i><span class="skill-name">HTML/CSS</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-wind skill-icon"></i><span class="skill-name">Tailwind</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-database skill-icon"></i><span class="skill-name">PostgreSQL</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-server skill-icon"></i><span class="skill-name">MySQL</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-leaf skill-icon"></i><span class="skill-name">MongoDB</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-memory skill-icon"></i><span class="skill-name">Redis</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-react skill-icon"></i><span class="skill-name">React Native</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-atom skill-icon"></i><span class="skill-name">Electron</span></div>
+                    </div>
                 </div>
 
                 <!-- Card 4: Infrastructure & Systems -->
@@ -265,18 +268,18 @@
                         <i class="fas fa-cloud"></i>
                     </div>
                     <h3 class="tech-card-title">Infrastructure & Systems</h3>
-                    <ul class="skills-list">
-                        <li>Docker</li>
-                        <li>Nginx</li>
-                        <li>Gunicorn</li>
-                        <li>Linux</li>
-                        <li>Celery</li>
-                        <li>Redis</li>
-                        <li>GitHub Actions</li>
-                        <li>CI/CD</li>
-                        <li>Deployment</li>
-                        <li>Background Jobs</li>
-                    </ul>
+                    <div class="skills-chips-grid">
+                        <div class="skill-mini-card"><i class="fab fa-docker skill-icon"></i><span class="skill-name">Docker</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-server skill-icon"></i><span class="skill-name">Nginx</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-gears skill-icon"></i><span class="skill-name">Gunicorn</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-linux skill-icon"></i><span class="skill-name">Linux</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-clock skill-icon"></i><span class="skill-name">Celery</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-bolt skill-icon"></i><span class="skill-name">Redis</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-github skill-icon"></i><span class="skill-name">GitHub Actions</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-arrows-rotate skill-icon"></i><span class="skill-name">CI/CD</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-cloud-arrow-up skill-icon"></i><span class="skill-name">Deployment</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-tasks skill-icon"></i><span class="skill-name">Background Jobs</span></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -291,7 +294,7 @@
 
             <div class="projects-slider">
                 <!-- Card 1: CardFlow -->
-                <div class="project-card active" data-index="0" data-modal="modal-project">
+                <div class="project-card active" data-index="0" data-project-slug="cardflow">
                     <div class="project-doc-content" style="display:none;">
                         <div class="case-study-container">
                             <!-- 1. Hero & Scale Metrics -->
@@ -474,7 +477,7 @@ Production Operations ◄── Cross-Platform Clients ◄── Background Proc
                             </div>
                             <div class="universal-thumb-buttons">
                                 <a href="/projects/cardflow" class="btn btn-primary project-btn project-page-link" data-project-slug="cardflow">Case Study</a>
-                                <a href="https://logicbyroshan.in/#projects" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Live Preview</a>
+                                <a href="https://cardflow.in" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Live Preview</a>
                                 <a href="https://github.com/logicbyroshan/cardfloww-idcard-management-saas.git" class="github-btn" target="_blank" rel="noopener noreferrer" aria-label="Open CardFlow repository"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
@@ -962,7 +965,7 @@ Production Operations ◄── Cross-Platform Clients ◄── Background Proc
                 <!-- Brand -->
                 <div class="footer-brand">
                     <a href="/" class="brand footer-logo-link">
-                        <img src="/static/images/logo.webp" alt="Roshan Damor" class="logo-image footer-logo" width="151" height="38" loading="lazy" decoding="async">
+                        <img src="/static/images/logo.webp" alt="Roshan Damor" class="logo-image footer-logo" width="48" height="48" loading="lazy" decoding="async">
                     </a>
                     <p class="footer-tagline">Crafting digital experiences<br>one line of code at a time.</p>
                     <div class="footer-socials">
@@ -1017,6 +1020,14 @@ Production Operations ◄── Cross-Platform Clients ◄── Background Proc
                 <p class="footer-made">Made with <i class="fas fa-heart footer-heart"></i> &amp; lots of coffee</p>
             </div>
 
+        </div>
+
+        <!-- Large Full-Width Subtle Transparent Gradient Watermark -->
+        <div class="footer-big-text-wrapper" aria-hidden="true">
+            <div class="footer-big-text">
+                <span class="watermark-word">SOFTWARE</span>
+                <span class="watermark-word">ENGINEER</span>
+            </div>
         </div>
     </footer>
 

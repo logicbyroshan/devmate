@@ -79,8 +79,8 @@ export default function AppNavbar({ currentRoute, onNavigate }) {
               src="/static/images/logo.webp"
               alt="Roshan Damor Logo"
               className="logo-image"
-              width="135"
-              height="34"
+              width="48"
+              height="48"
               decoding="async"
             />
           </a>
@@ -132,8 +132,8 @@ export default function AppNavbar({ currentRoute, onNavigate }) {
               src="/static/images/logo.webp"
               alt="Roshan Damor Logo"
               className="logo-image"
-              width="135"
-              height="34"
+              width="44"
+              height="44"
               decoding="async"
             />
           </a>

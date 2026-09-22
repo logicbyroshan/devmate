@@ -56,18 +56,29 @@
 
 .about-bg-text {
     position: absolute;
-    bottom: -4%;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, 0);
+    transform: translate(-50%, -50%);
     font-family: 'Orbitron', sans-serif;
-    font-size: 140px;
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.04);
     z-index: 0;
     pointer-events: none;
     white-space: nowrap;
-    letter-spacing: 8px;
+    letter-spacing: clamp(4px, 1vw, 12px);
     text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    line-height: 0.84;
+    text-align: center;
+}
+
+.about-bg-word {
+    display: block;
+    font-size: 165px;
 }
 
 .about-img-3 img {
@@ -364,8 +375,8 @@
         height: 95px;
     }
     
-    .about-bg-text {
-        font-size: 110px;
+    .about-bg-word {
+        font-size: 125px;
     }
 }
 
@@ -456,8 +467,8 @@
         height: 5px;
     }
     
-    .about-bg-text {
-        font-size: 85px;
+    .about-bg-word {
+        font-size: 92px;
     }
     
     .about-description {
@@ -563,8 +574,8 @@
         height: 4px;
     }
     
-    .about-bg-text {
-        font-size: 62px;
+    .about-bg-word {
+        font-size: 60px;
     }
     
     .about-description {
@@ -645,8 +656,8 @@
         height: 45px;
     }
     
-    .about-bg-text {
-        font-size: 52px;
+    .about-bg-word {
+        font-size: 46px;
     }
     
     .about-description {
