@@ -2,20 +2,18 @@
 
 <div align="center">
 
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Django](https://img.shields.io/badge/Django-5.0+-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
 [![React](https://img.shields.io/badge/React-18.3+-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-5.4+-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16+-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Redis](https://img.shields.io/badge/Redis-7.0+-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![JavaScript](https://img.shields.io/badge/ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![CSS3](https://img.shields.io/badge/CSS3-Vanilla%20Design%20System-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://www.w3.org/Style/CSS/)
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge)](#)
 
 <p align="center">
   <b>A production-grade, highly performant personal portfolio and engineering showcase.</b><br>
-  Built with a <b>Pure Headless Django REST API</b> backend, a <b>React + Vite</b> client, dynamic DOM hydration, interactive full-page case studies, a built-in AI Assistant (Rexi), custom Web Audio SFX engine, and complete responsive design.
+  Built as a <b>100% Standalone React 18 + Vite 5 Single Page Application</b> that dynamically consumes public REST APIs from <b>DevAdmin</b> (or renders resilient futuristic dark-mode empty states). Features dynamic DOM hydration, interactive full-page case studies, a built-in AI Assistant (Rexi), custom Web Audio SFX engine, and complete responsive design.
 </p>
 
-[🌐 Live Portfolio](https://logicbyroshan.in) • [🚀 Featured Projects](#-featured-projects) • [📡 API Reference](API.md) • [🛡️ Admin API Reference](ADMIN_API.md) • [🛠️ Setup Guide](SETUP.md)
+[🌐 Live Portfolio](https://logicbyroshan.in) • [🚀 Featured Projects](#-featured-projects) • [📡 DevAdmin API Contract](API.md) • [🛠️ Setup Guide](SETUP.md)
 
 </div>
 
@@ -23,42 +21,37 @@
 
 ## 🌟 Highlights & Key Engineering Features
 
-- ⚡ **Ultra-Fast Dynamic Hydration**: React SPA client bootstraps static HTML instantly, then seamlessly hydrates dynamic content, hero visual, and live highlight stats via `/api/bootstrap/` without layout shift.
-- 🪪 **100% Dynamic Engineering Case Studies**: Rich technical documentation loaded directly from the database with system topology diagrams, high-resolution screenshot lightbox galleries, and video demos.
+- ⚡ **Ultra-Fast Dynamic Hydration**: Instant static HTML bootstrapping with seamless dynamic hydration for profile, skills, case studies, and live telemetry from the `DevAdmin` API with zero layout shift (CLS = 0.000).
+- 🪪 **100% Dynamic Technical Case Studies**: In-depth technical documentation loaded directly from API endpoints with system topology diagrams, high-resolution screenshot lightbox galleries, and video demos.
 - 🐉 **Rexi AI Assistant**: Mascot & intelligent interactive assistant powered by Qwen AI with fallback intent matching for skills, experience, and tech inquiries.
+- 🌌 **Futuristic Glassmorphic Empty States**: If the backend API is disconnected, in draft mode, or returns empty arrays, every section and page renders a glowing, dark-mode glassmorphic empty state card.
 - 🔊 **Custom Web Audio Engine**: Procedural synthesizers for UI clicks, slide transitions, modal pops, and ambient background audio.
 - 📱 **100% Mobile Responsive**: Comprehensive CSS media queries optimized down to 320px screens with zero horizontal overflow, touch-friendly navigation, and adaptive modals.
-- 🛡️ **Production-Hardened Headless REST API**: Dedicated `admin_api` service with JWT authentication, role gating (`IsStaffUser`), file/MIME validation, XSS sanitization, and atomic database transactions to power your separate Admin Dashboard project.
-- 📖 **Comprehensive Markdown Documentation**: Complete API specifications and UI render contracts in [API.md](API.md) and [ADMIN_API.md](ADMIN_API.md).
+- 🏎️ **Peak Performance**: 100/100 Lighthouse ratings across Accessibility, Best Practices, and SEO.
 
 ---
 
-## 🏗️ System Architecture & Decoupled Model
-
-`DevMate` is engineered with a **fully decoupled headless architecture**:
-1. **Public Portfolio SPA (`client/`)**: A lightning-fast, reactive client built with React 18 & Vite 5. It consumes public REST APIs (`/api/bootstrap/`, `/api/projects/`, `/api/skills/`, etc.) and automatically displays beautiful dark-mode glassmorphic empty states when no items are published yet.
-2. **Dedicated Admin CMS (`DevAdmin`)**: The central administrative control plane and database manager where projects, skills, metrics, and content are managed.
-3. **Standalone Reference API (`server/`)**: An enterprise Django REST service providing public & staff endpoints. In production, `DevMate` can point directly to the separate `DevAdmin` API by setting `VITE_API_BASE_URL=https://api.devadmin.yourdomain.com/api`, operating with zero backend dependencies.
+## 🏗️ System Architecture
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│             DevMate Client Browser (SPA)               │
-│            React 18 + Vite 5 + Vanilla CSS             │
+│                   DevMate (This Repo)                  │
+│        Standalone React 18 + Vite 5 Client SPA         │
 └──────────────────────────┬─────────────────────────────┘
                            │
              HTTP / REST API (Public Endpoints)
              /api/bootstrap/, /api/projects/, /api/blogs/
                            ▼
 ┌────────────────────────────────────────────────────────┐
-│         DevAdmin Backend (Central API & DB)            │
-│       Django REST + PostgreSQL + Redis + Auth          │
+│             DevAdmin Project (Central API)             │
+│        Headless Django REST + PostgreSQL + Redis       │
 └──────────────────────────┬─────────────────────────────┘
                            ▲
              HTTP / REST API (Staff JWT Protected)
              /api/v1/admin/* (CRUD & Media Uploads)
                            │
 ┌──────────────────────────┴─────────────────────────────┐
-│           DevAdmin Dashboard Application               │
+│          DevAdmin Control Panel Application            │
 │              (Staff Content Management)                │
 └────────────────────────────────────────────────────────┘
 ```
@@ -76,28 +69,25 @@
 
 ---
 
-## 📡 REST API & Admin Integration
+## 🛠️ Quick Start & Local Development
 
-- **Public API Documentation**: [API.md](API.md)
-- **Staff Admin API Reference**: [ADMIN_API.md](ADMIN_API.md)
-- **Setup & Installation Guide**: [SETUP.md](SETUP.md)
-- **Architecture & Structure Map**: [STRUCTURE.md](STRUCTURE.md)
-- **Production Deployment**: [DEPLOYMENT.md](DEPLOYMENT.md)
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Configure environment (optional, defaults to /api)
+cp .env.example .env
+
+# 3. Start local development server
+npm run dev
+```
 
 ---
 
-## 🧪 Automated Testing
+## 🧪 Automated Testing & Verification
 
-### Backend Test Suite (Django):
 ```bash
-cd server
-python manage.py test
-```
-
-### Frontend Test Suite & Build Verification (React + Vite):
-```bash
-cd client
-npm test        # Vitest unit test suite
+npm test        # Vitest unit test suite (16 tests)
 npm run lint    # ESLint verification (0 warnings)
 npm run build   # Production bundle compilation
 ```
@@ -107,3 +97,4 @@ npm run build   # Production bundle compilation
 ## 📄 License
 
 Copyright (c) 2026 Roshan Damor. All rights reserved. Proprietary & Confidential — see [LICENSE](LICENSE).
+

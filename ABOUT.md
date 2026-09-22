@@ -12,19 +12,19 @@ Built by **Roshan Damor**, Software Engineer focused on high-throughput backend 
 
 ---
 
-## Technical Stack & Rationale
+## Technical Stack & Architecture Rationale
 
-### Backend
-- **Python 3.11+ / Django 5.2**: Mature, secure web framework providing ORM parameterized queries, session authentication, and database migrations.
-- **Django REST Framework (DRF)**: Serializers with query-lean computed fields and atomic viewsets.
-- **PostgreSQL**: Production relational storage with composite indexes (`(is_active, order)`), foreign keys, and connection pooling.
-- **Redis & Celery**: Background task dispatch and asynchronous pipelines for document generation.
+### Architecture: Decoupled Headless Model
+- **Frontend (`DevMate`)**: 100% Standalone Single Page Application built on React 18, Vite 5, and Lenis smooth scrolling. Consumes external REST endpoints from `DevAdmin` with automatic offline/empty state fallback resilience.
+- **Backend & CMS (`DevAdmin`)**: External Headless Django REST Framework + PostgreSQL backend providing central data administration, media uploads, and staff management APIs.
 
-### Frontend
-- **React 18 & Vite 5**: Ultra-fast hot module replacement, minimal asset bundles, and reactive page transitions.
-- **Vanilla CSS Design System**: Custom glassmorphism, responsive CSS grid, CSS custom properties, and micro-animations without bloated runtime frameworks.
-- **Lenis Smooth Scroll**: Inertial smooth scrolling for high-end digital aesthetics.
-- **Mermaid & KaTeX**: Rendering dynamic system diagrams and algorithmic complexity models in technical case studies.
+### Frontend Engineering Stack
+- **React 18 & Vite 5**: Sub-second hot module replacement, code splitting, optimized build chunks, and reactive routing.
+- **Vanilla CSS Design System**: Custom dark-mode glassmorphism, responsive CSS grid, CSS custom properties, and micro-animations with zero runtime UI bloat.
+- **Dynamic DOM Hydration Engine**: Zero-layout-shift (CLS = 0.000) dynamic DOM hydrator with instant HTML bootstrap and glowing empty state fallback cards.
+- **Interactive Documentation Engine**: Mermaid diagram renderer, Shiki syntax highlighter, KaTeX formula renderer, and screenshot lightboxes for technical case studies.
+- **Lenis Smooth Scroll**: Inertial smooth scrolling for high-end digital agency aesthetics.
+- **Web Audio Engine**: Procedural synthesizers for UI clicks, slide transitions, modal pops, and ambient background audio.
 
 ---
 

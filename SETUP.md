@@ -1,20 +1,19 @@
 # DevMate Portfolio — Complete Setup Guide
 
-This guide provides end-to-end instructions for running the DevMate Portfolio project locally on Windows, macOS, and Linux.
+This guide provides end-to-end instructions for running the DevMate Portfolio frontend locally on Windows, macOS, and Linux.
 
 ---
 
 ## Architecture Overview
 
-- **Backend (`server/`)**: Python 3.11+, Django 5.2, Django REST Framework, SQLite (Development) / PostgreSQL (Production). Functions as a pure Headless REST API and media storage backend.
-- **Frontend (`client/`)**: React 18, Vite 5, Lenis Smooth Scroll, KaTeX, Mermaid, Shiki, Vanilla CSS Design System.
-- **Admin Dashboard**: Managed via your separate Admin Portfolio project using the Staff Admin REST API (`/api/v1/admin/`).
+- **Frontend (`DevMate`)**: Pure Standalone React 18, Vite 5, Lenis Smooth Scroll, KaTeX, Mermaid, Shiki, and Vanilla CSS Design System.
+- **Backend (`DevAdmin`)**: External Headless Django REST API + PostgreSQL backend managing database records and staff CMS.
+- **Resilience**: Operates with full local UI fidelity and glowing empty states if DevAdmin API is offline or unconfigured.
 
 ---
 
 ## Prerequisites
 
-- **Python**: Version 3.11 or higher
 - **Node.js**: Version 18.x or 20.x (LTS recommended)
 - **Git**: Version 2.30+
 
@@ -29,105 +28,46 @@ cd devmate-portfolio
 
 ---
 
-## Step 2: Backend Setup (Django Headless API)
+## Step 2: Install Dependencies
 
-1. Navigate to the `server/` directory:
-   ```bash
-   cd server
-   ```
-
-2. Create and activate a Python virtual environment:
-   ```bash
-   # Windows (PowerShell)
-   python -m venv venv
-   .\venv\Scripts\Activate.ps1
-
-   # macOS / Linux
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
-
-3. Install backend dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. Create local environment file:
-   ```bash
-   # Copy sample development environment
-   cp .env.example .env
-   ```
-
-5. Apply database migrations:
-   ```bash
-   python manage.py migrate
-   ```
-
-6. Seed initial portfolio data & categories:
-   ```bash
-   python manage.py loaddata portfolio/fixtures/initial_data.json
-   ```
-
-7. (Optional) Create a superuser for staff REST API access:
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-8. Start the Django development server:
-   ```bash
-   python manage.py runserver 8000
-   ```
-   *Public API: `http://127.0.0.1:8000/api/`*
-   *Staff Admin API: `http://127.0.0.1:8000/api/v1/admin/`*
-
----
-
-## Step 3: Frontend Setup (React + Vite)
-
-1. Open a new terminal and navigate to the `client/` directory:
-   ```bash
-   cd client
-   ```
-
-2. Install frontend dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the Vite development server:
-   ```bash
-   npm run dev
-   ```
-   *Frontend will run at: `http://localhost:5173/`*
-   *The Vite proxy forwards `/api/*` and `/media/*` requests directly to Django on port 8000.*
-
----
-
-## Running Automated Test Suites
-
-### Backend Unit & Integration Tests:
 ```bash
-cd server
-python manage.py test
-```
-
-### Frontend Tests, Linting & Build Verification:
-```bash
-cd client
-npm test        # Runs Vitest unit suite
-npm run lint    # Runs ESLint checks
-npm run build   # Validates production Vite bundle
+npm install
 ```
 
 ---
 
-## Environment Variables Reference
+## Step 3: Environment Configuration (Optional)
+
+Copy the example environment file to configure your connection to the DevAdmin API:
+
+```bash
+cp .env.example .env
+```
 
 | Variable | Default (Dev) | Description |
 |---|---|---|
-| `DJANGO_SECRET_KEY` | `django-insecure-...` | Cryptographic secret key for hashing and JWT tokens |
-| `DJANGO_DEBUG` | `True` | Debug mode (Must be `False` in production) |
-| `DJANGO_ALLOWED_HOSTS` | `127.0.0.1,localhost` | Comma-separated list of valid Host headers |
-| `PORTFOLIO_API_KEY` | `(empty)` | Optional API key requirement for external consumers |
-| `CORS_ALLOWED_ORIGINS` | `http://localhost:5173...` | Allowed cross-origin domains |
-| `CSRF_TRUSTED_ORIGINS` | `http://localhost:5173...` | Trusted origins for state-modifying requests |
+| `VITE_API_BASE_URL` | `/api` | Base URL of DevAdmin REST API (e.g. `https://admin.logicbyroshan.in/api`) |
+| `VITE_API_TIMEOUT_MS` | `7000` | HTTP request timeout threshold in milliseconds |
+| `VITE_API_RETRY_ATTEMPTS` | `1` | Number of automatic retries on network/server errors |
+| `VITE_PORTFOLIO_CACHE_TTL_MS` | `300000` | Session cache TTL for aggregated bootstrap payload (5 minutes) |
+
+---
+
+## Step 4: Start Local Development Server
+
+```bash
+npm run dev
+```
+
+*Frontend will run at: `http://localhost:5173/`*
+
+---
+
+## Running Automated Test Suites & Verification
+
+```bash
+npm test        # Runs Vitest unit test suite (16 tests)
+npm run lint    # Runs ESLint checks (0 warnings)
+npm run build   # Validates and compiles production Vite bundle
+```
+
