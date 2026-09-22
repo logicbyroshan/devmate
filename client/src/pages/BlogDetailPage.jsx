@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { fetchBlogBySlug, fetchBlogs } from '../api/portfolioApi';
 import { BLOG_ARTICLES } from '../api/blogData';
 import CodeBlockShiki from '../components/doc/CodeBlockShiki';
+import '../../public/static/css/doc-engine.css';
 
 export default function BlogDetailPage({ slug, onNavigate }) {
   const [copiedLink, setCopiedLink] = useState(false);

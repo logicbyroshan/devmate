@@ -99,6 +99,8 @@ body {
     color: var(--text-color);
     line-height: 1.5;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     max-width: 100%;
     overflow-x: clip;
@@ -728,9 +730,6 @@ body {
     position: relative;
     padding-top: 48px;
     padding-bottom: 72px;
-    min-height: calc(90vh - 80px);
-    display: flex;
-    align-items: center;
     overflow: hidden;
 }
 
@@ -773,9 +772,10 @@ body {
 
 .hero-grid {
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-columns: minmax(0, 58%) minmax(0, 42%);
     gap: 40px;
     align-items: start;
+    width: 100%;
 }
 
 .hero-content {
@@ -875,6 +875,8 @@ body {
 .stat-number {
     font-family: var(--font-heading);
     font-size: 40px;
+    line-height: 1.1;
+    min-height: 44px;
     margin-bottom: 5px;
     display: flex;
     align-items: center;
@@ -908,6 +910,8 @@ body {
 
 .nft-card-body .stat-number {
     font-size: 32px; /* reduced from 40px */
+    line-height: 1.1;
+    min-height: 36px;
 }
 
 .nft-card-body .stat-icon {
@@ -928,26 +932,32 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-end;
     overflow: visible;
+    min-height: 580px;
+    width: 100%;
+    contain: layout paint;
 }
 
 .hero-image {
     max-width: 90%;
+    width: 480px;
     height: auto;
+    aspect-ratio: 960 / 951;
     filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.4)) brightness(0.98) contrast(1);
     animation: heroFaceExposure 5s ease-in-out infinite;
     position: relative;
     z-index: 2;
     margin-bottom: -60px;
-    will-change: transform, filter;
+    will-change: filter;
 }
 
 .hero-glow {
     position: absolute;
     width: 100%;
-    height: 100%;
+    max-width: 500px;
+    height: 500px;
     background: radial-gradient(circle, rgba(92, 39, 254, 0.16) 0%, rgba(7, 10, 41, 0) 65%);
     filter: blur(32px);
     z-index: 1;
@@ -956,15 +966,14 @@ body {
     transform: translate(-50%, -50%);
     opacity: 0.5;
     pointer-events: none;
+    contain: strict;
 }
 
 @keyframes heroFaceExposure {
     0%, 100% {
-        transform: translateY(0px);
         filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.4)) brightness(0.97) contrast(1);
     }
     50% {
-        transform: translateY(-8px);
         filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.45)) brightness(1.16) contrast(1.05);
     }
 }
@@ -987,9 +996,11 @@ body {
     border-radius: 20px;
     padding: 25px;
     width: 100%;
+    min-height: 140px;
     box-shadow: none;
     position: relative;
     z-index: 3;
+    contain: layout paint;
 }
 
 .nft-card-header {
@@ -1428,18 +1439,12 @@ body {
     50% { opacity: 1; transform: scale(1.2); }
 }
 
-/* Parallax Website Entrance Effect (GPU Accelerated) */
+/* Parallax Website Entrance Effect (CLS-Free) */
 body.preloader-active #main-content,
-body.preloader-active .navbar {
-    transform: translateY(16px);
-    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform;
-}
-
+body.preloader-active .navbar,
 body.preloader-done #main-content,
 body.preloader-done .navbar {
-    transform: translateY(0);
-    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: none;
 }
 
 /* -- Preloader skip: hide overlay instantly on refresh / return visits -- */

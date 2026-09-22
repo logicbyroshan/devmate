@@ -97,7 +97,7 @@ export default function AboutPage({ onNavigate }) {
             <div className="about-profile-card">
               <div className="about-avatar-wrap">
                 <img
-                  src={profile?.profile_image ? safeUrl(profile.profile_image) : '/static/images/about/MePhoto.png'}
+                  src={profile?.profile_image ? safeUrl(profile.profile_image) : '/static/images/about/MePhoto.webp'}
                   alt={fullName}
                   width="140"
                   height="140"

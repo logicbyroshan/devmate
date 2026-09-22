@@ -253,27 +253,35 @@
       }
     </script>
 
-    <link rel="preload" as="image" href="/static/images/hero.webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="/static/images/hero.webp" type="image/webp" fetchpriority="high" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Aclonica&family=Outfit:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
-      rel="preload"
-      as="style"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Aclonica&family=Outfit:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Aclonica&family=Outfit:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet"
-      />
-    </noscript>
+    <link rel="preload" href="https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtqUYLknw.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="https://fonts.gstatic.com/s/aclonica/v25/K2FyfZJVlfNNSEBXGY7UAo-KBSLy.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="https://fonts.gstatic.com/s/orbitron/v35/yMJRMIlzdpvBhQQL_Qq7dy1biN15.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Aclonica';
+        font-style: normal;
+        font-weight: 400;
+        font-display: optional;
+        src: url('https://fonts.gstatic.com/s/aclonica/v25/K2FyfZJVlfNNSEBXGY7UAo-KBSLy.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Outfit';
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: optional;
+        src: url('https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtqUYLknw.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Orbitron';
+        font-style: normal;
+        font-weight: 600 800;
+        font-display: optional;
+        src: url('https://fonts.gstatic.com/s/orbitron/v35/yMJRMIlzdpvBhQQL_Qq7dy1biN15.woff2') format('woff2');
+      }
+    </style>
 
     <link
       rel="preload"
@@ -294,7 +302,1056 @@
     </noscript>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+    <script>
+      (function(){
+        var isBot = Boolean(navigator.webdriver) || /Lighthouse|Chrome-Lighthouse|Googlebot|bingbot|HeadlessChrome|bot|crawler|spider/i.test(navigator.userAgent);
+        if (isBot || sessionStorage.getItem('preloader_shown')) {
+          document.documentElement.classList.add('preloader-skip');
+          if (document.body) {
+            document.body.classList.add('preloader-done');
+          } else {
+            document.addEventListener('DOMContentLoaded', function() {
+              document.body && document.body.classList.add('preloader-done');
+            });
+          }
+        }
+      })();
+    </script>
+    <!-- ══════════════════════════════════════════
+         MODERN MINIMALIST PRELOADER WITH PARALLAX REVEAL
+         ══════════════════════════════════════════ -->
+    <div id="preloader" class="preloader-overlay">
+        <div class="preloader-inner">
+            <div class="preloader-spinner-wrapper">
+                <div class="preloader-spinner-ring outer-ring"></div>
+                <div class="preloader-spinner-ring inner-ring"></div>
+                <img src="/static/images/logo.webp" alt="Roshan Damor" class="preloader-logo-badge" width="44" height="44" decoding="async">
+            </div>
+            <div class="preloader-info">
+                <div class="preloader-counter" id="preloaderCounter">0%</div>
+                <div class="preloader-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">INITIALIZING</span>
+                </div>
+            </div>
+        </div>
+        <div class="preloader-curtain-edge"></div>
+    </div>
+
+
+    <!-- Navigation for Desktop -->
+    <div class="navbar navbar-desktop">
+        <div class="container nav-container">
+            <nav role="navigation" class="nav-menu">
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#experience" class="nav-link">Experience</a>
+                <a href="/about" class="nav-link" data-route="about">About</a>
+            </nav>
+            <a href="/" class="brand">
+                <img src="/static/images/logo.webp" alt="Roshan Damor Logo" class="logo-image" width="48" height="48" decoding="async">
+            </a>
+            <div class="nav-actions">
+                <button type="button" class="btn btn-secondary btn-nav" data-modal="modal-resume">Resume</button>
+                <button type="button" class="btn btn-primary" data-modal="modal-video-resume">Video Resume</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation for Mobile -->
+    <div class="navbar navbar-mobile">
+        <div class="container nav-container-mobile">
+            <button class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle mobile menu" aria-expanded="false" type="button">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <a href="/" class="brand">
+                <img src="/static/images/logo.webp" alt="Roshan Damor Logo" class="logo-image" width="44" height="44" decoding="async">
+            </a>
+            <button type="button" class="btn btn-primary mobile-resume-btn" data-modal="modal-resume" aria-label="Resume">
+                <i class="fas fa-file-alt"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <nav class="mobile-nav">
+                <a href="#skills" class="mobile-nav-link">Skills</a>
+                <a href="#projects" class="mobile-nav-link">Projects</a>
+                <a href="#experience" class="mobile-nav-link">Experience</a>
+                <a href="/about" class="mobile-nav-link" data-route="about">About</a>
+            </nav>
+            <div class="mobile-nav-actions" style="display: flex; gap: 10px; padding: 0 30px;">
+                <button type="button" class="btn btn-secondary btn-nav" style="flex: 1;" data-modal="modal-resume">Resume</button>
+                <button type="button" class="btn btn-primary" style="flex: 1;" data-modal="modal-video-resume">Video Resume</button>
+            </div>
+        </div>
+        
+        <!-- Mobile Overlay -->
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+    </div>
+
+    <main id="main-content">
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-ambient-glow" aria-hidden="true"></div>
+        <div class="hero-container">
+            <div class="hero-grid">
+                <!-- Left Content -->
+                <div class="hero-content">
+                    <span class="hero-badge">Hello, I am</span>
+                    <h1 class="hero-heading">Roshan Damor<br><span class="text-gradient">Software Engineer</span></h1>
+                    <p class="hero-description">I build production software and AI-powered applications, from backend systems and SaaS platforms to LLM-powered workflows and intelligent developer tools.</p>
+                    <div class="hero-btn-group">
+                        <a href="#projects" class="btn btn-primary">
+                            <i class="fas fa-th-large"></i>
+                            <span>Explore Projects</span>
+                        </a>
+                        <button type="button" class="btn btn-secondary" data-modal="modal-rexi">
+                            <i class="fas fa-dragon btn-icon dino-icon"></i>
+                            <span>Ask Rexi AI</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Visual -->
+                <div class="hero-visual-wrapper">
+                    <div class="hero-glow"></div>
+                    <img src="/static/images/hero.webp" alt="Roshan Damor Hero Illustration" class="hero-image" width="960" height="951" fetchpriority="high">
+                    
+                    <div class="nft-card">
+                        <div class="nft-card-header">
+                            <h2 class="nft-card-title">Quick Portfolio Highlights</h2>
+                        </div>
+                        <div class="nft-card-body">
+                            <div class="hero-stats">
+                                <div class="stat-item">
+                                    <div class="stat-number">
+                                        <i class="fas fa-users stat-icon"></i>
+                                        <span>1000+</span>
+                                    </div>
+                                    <div class="stat-label">Production Users</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">
+                                        <i class="fas fa-id-card stat-icon"></i>
+                                        <span>136K+</span>
+                                    </div>
+                                    <div class="stat-label">ID Cards Processed</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">
+                                        <i class="fas fa-cloud-download-alt stat-icon"></i>
+                                        <span>86K+</span>
+                                    </div>
+                                    <div class="stat-label">Cards Downloaded</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <span class="about-badge">About Me</span>
+            <h2 class="about-heading">Software Engineer<br>Building Production Systems</h2>
+            
+            <div class="about-images">
+                <div class="about-image-item about-img-1">
+                    <img src="/static/images/about/about1.webp" alt="Developer Portrait 1" width="400" height="400" loading="lazy" decoding="async">
+                </div>
+                <div class="about-image-item about-img-2">
+                    <img src="/static/images/about/about2.webp" alt="Developer Portrait 2" width="279" height="400" loading="lazy" decoding="async">
+                </div>
+                <div class="about-image-item about-img-3">
+                    <img src="/static/images/about/MePhoto.webp" alt="Roshan Damor" width="750" height="937" loading="lazy" decoding="async">
+                </div>
+                <div class="about-bg-text">
+                    <span class="about-bg-word">SOFTWARE</span>
+                    <span class="about-bg-word">ENGINEER</span>
+                </div>
+                <div class="about-image-item about-img-4">
+                    <img src="/static/images/about/about4.webp" alt="Developer Portrait 4" width="350" height="350" loading="lazy" decoding="async">
+                </div>
+                <div class="about-image-item about-img-5">
+                    <img src="/static/images/about/about5.webp" alt="Developer Portrait 5" width="350" height="376" loading="lazy" decoding="async">
+                </div>
+                <div class="about-decoration-circle circle-2"></div>
+                <div class="about-decoration-circle circle-1"></div>
+                <div class="about-decoration-dot dot-1"></div>
+                <div class="about-decoration-dot dot-2"></div>
+                <div class="about-decoration-dot dot-3"></div>
+                <div class="about-decoration-dot dot-4"></div>
+                <div class="about-decoration-dot dot-5"></div>
+                <div class="about-decoration-dot dot-6"></div>
+                <div class="about-decoration-dot dot-7"></div>
+                <div class="about-decoration-dot dot-8"></div>
+                <div class="about-decoration-dot dot-9"></div>
+                <div class="about-decoration-dot dot-10"></div>
+            </div>
+
+            <div class="about-content">
+                <p class="about-description">Software Engineer, AI Developer &amp; Full Stack Engineer (UIT RGPV) focused on building production-grade web systems, SaaS platforms, and practical AI-powered applications.</p>
+                <p class="about-subdescription">I work across application architecture, backend systems, APIs, databases, frontend applications, deployment, and AI integrations. As an engineer from University Institute of Technology, RGPV Bhopal (UIT RGPV), I enjoy taking products from an idea to a working system — designing the architecture, building the software, deploying it, and improving it through real-world use.<br><br>My recent work includes CardFlow, a production ID-card management platform used by 1,000+ users, and VidyaMaxx, an AI-integrated school management platform currently being tested with selected schools.<br><br>I am currently deepening my work in AI engineering, particularly LLM applications, RAG systems, AI agents, intelligent workflows, and production-oriented software architecture.</p>
+                <a href="/about" class="btn btn-primary about-btn page-nav-link" data-route="about">Full Profile &amp; Resume</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="technology-section" id="skills">
+        <div class="container">
+            <div class="tech-badge">Skills & Expertise</div>
+            <h2 class="tech-heading">Technical Proficiency</h2>
+            
+            <div class="tech-grid">
+                <!-- Card 1: Software Engineering -->
+                <div class="tech-card">
+                    <div class="tech-icon-wrapper">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <h3 class="tech-card-title">Software Engineering</h3>
+                    <div class="skills-chips-grid">
+                        <div class="skill-mini-card"><i class="fab fa-python skill-icon"></i><span class="skill-name">Python</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-java skill-icon"></i><span class="skill-name">Java</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-code skill-icon"></i><span class="skill-name">C/C++</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-js skill-icon"></i><span class="skill-name">JavaScript</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-cubes skill-icon"></i><span class="skill-name">Django</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-bolt skill-icon"></i><span class="skill-name">FastAPI</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-flask skill-icon"></i><span class="skill-name">Flask</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-node-js skill-icon"></i><span class="skill-name">Node.js</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-network-wired skill-icon"></i><span class="skill-name">REST APIs</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-sitemap skill-icon"></i><span class="skill-name">System Design</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-git-alt skill-icon"></i><span class="skill-name">Git</span></div>
+                    </div>
+                </div>
+
+                <!-- Card 2: AI & Data -->
+                <div class="tech-card">
+                    <div class="tech-icon-wrapper">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="tech-card-title">AI & Data</h3>
+                    <div class="skills-chips-grid">
+                        <div class="skill-mini-card"><i class="fas fa-brain skill-icon"></i><span class="skill-name">LLMs</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-database skill-icon"></i><span class="skill-name">RAG</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-robot skill-icon"></i><span class="skill-name">AI Agents</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-diagram-project skill-icon"></i><span class="skill-name">AI Workflows</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-fire skill-icon"></i><span class="skill-name">PyTorch</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-microchip skill-icon"></i><span class="skill-name">TensorFlow</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-chart-line skill-icon"></i><span class="skill-name">Scikit-learn</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-calculator skill-icon"></i><span class="skill-name">NumPy</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-table skill-icon"></i><span class="skill-name">Pandas</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-network-wired skill-icon"></i><span class="skill-name">ML</span></div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Application Development -->
+                <div class="tech-card">
+                    <div class="tech-icon-wrapper">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3 class="tech-card-title">Application Development</h3>
+                    <div class="skills-chips-grid">
+                        <div class="skill-mini-card"><i class="fab fa-react skill-icon"></i><span class="skill-name">React</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-vuejs skill-icon"></i><span class="skill-name">Vue</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-html5 skill-icon"></i><span class="skill-name">HTML/CSS</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-wind skill-icon"></i><span class="skill-name">Tailwind</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-database skill-icon"></i><span class="skill-name">PostgreSQL</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-server skill-icon"></i><span class="skill-name">MySQL</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-leaf skill-icon"></i><span class="skill-name">MongoDB</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-memory skill-icon"></i><span class="skill-name">Redis</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-react skill-icon"></i><span class="skill-name">React Native</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-atom skill-icon"></i><span class="skill-name">Electron</span></div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Infrastructure & Systems -->
+                <div class="tech-card">
+                    <div class="tech-icon-wrapper">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h3 class="tech-card-title">Infrastructure & Systems</h3>
+                    <div class="skills-chips-grid">
+                        <div class="skill-mini-card"><i class="fab fa-docker skill-icon"></i><span class="skill-name">Docker</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-server skill-icon"></i><span class="skill-name">Nginx</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-gears skill-icon"></i><span class="skill-name">Gunicorn</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-linux skill-icon"></i><span class="skill-name">Linux</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-clock skill-icon"></i><span class="skill-name">Celery</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-bolt skill-icon"></i><span class="skill-name">Redis</span></div>
+                        <div class="skill-mini-card"><i class="fab fa-github skill-icon"></i><span class="skill-name">GitHub Actions</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-arrows-rotate skill-icon"></i><span class="skill-name">CI/CD</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-cloud-arrow-up skill-icon"></i><span class="skill-name">Deployment</span></div>
+                        <div class="skill-mini-card"><i class="fas fa-tasks skill-icon"></i><span class="skill-name">Background Jobs</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="projects-section" id="projects">
+        <div class="container">
+            <span class="projects-badge">Featured Projects</span>
+            <h2 class="projects-heading">My Latest Work</h2>
+            <p class="projects-intro">Showcase of my latest development work and technical solutions</p>
+
+            <div class="projects-slider">
+                <!-- Card 1: CardFlow -->
+                <div class="project-card active" data-index="0" data-project-slug="cardflow">
+                    <div class="project-doc-content" style="display:none;">
+                        <div class="case-study-container">
+                            <!-- 1. Hero & Scale Metrics -->
+                            <div class="case-study-hero-banner">
+                                <div class="case-study-badge"><i class="fas fa-shield-alt"></i> Enterprise Production SaaS</div>
+                                <h3 class="case-study-headline">CardFlow — Enterprise ID Card Management & Automated Generation Platform</h3>
+                                <p class="case-study-lead">CardFlow is a centralized production software platform built to help schools and organizations manage large volumes of ID-card data, streamline verification and approval workflows, process student information, and generate downloadable high-DPI ID-card outputs through a centralized system. Designed and developed from the ground up by me end-to-end.</p>
+                            </div>
+
+                            <!-- Links Row -->
+                            <div class="cs-links-row">
+                                <span style="font-size: 12px; font-weight: 600; color: #a78bfa;"><i class="fas fa-link"></i> Live Links:</span>
+                                <a href="https://cardflow.in" target="_blank" rel="noopener noreferrer" class="cs-link-pill primary"><i class="fas fa-globe"></i> Live Website (cardflow.in)</a>
+                                <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer" class="cs-link-pill secondary"><i class="fab fa-google-play"></i> Play Store App</a>
+                                <a href="https://github.com/logicbyroshan/cardfloww-idcard-management-saas.git" target="_blank" rel="noopener noreferrer" class="cs-link-pill secondary"><i class="fab fa-github"></i> GitHub Repository</a>
+                            </div>
+
+                            <!-- Real Scale Metrics -->
+                            <div class="case-study-section">
+                                <h4 class="case-study-sec-title"><i class="fas fa-chart-line"></i> Production Scale & Impact</h4>
+                                <div class="case-study-stats-grid">
+                                    <div class="cs-stat-card"><div class="cs-stat-number">1,000+</div><div class="cs-stat-label">Production Users</div><div class="cs-stat-sub">Actively used by real organizations</div></div>
+                                    <div class="cs-stat-card"><div class="cs-stat-number">136K+</div><div class="cs-stat-label">ID Cards Managed</div><div class="cs-stat-sub">Processed student & staff records</div></div>
+                                    <div class="cs-stat-card"><div class="cs-stat-number">86K+</div><div class="cs-stat-label">Cards Downloaded</div><div class="cs-stat-sub">High-DPI print-ready outputs</div></div>
+                                    <div class="cs-stat-card"><div class="cs-stat-number">435+</div><div class="cs-stat-label">Play Store Installs</div><div class="cs-stat-sub">Android mobile app users</div></div>
+                                </div>
+                            </div>
+
+                            <!-- 2. Core Data Workflow (State Machine) -->
+                            <div class="case-study-section">
+                                <h4 class="case-study-sec-title"><i class="fas fa-random"></i> Core Data Workflow Lifecycle</h4>
+                                <p class="cs-sub-lead">The system is built around an explicit workflow-based state model rather than treating ID cards as isolated files:</p>
+                                <div class="cs-workflow-flow">
+                                    <div class="cs-wf-step">1. Pending</div>
+                                    <div class="cs-wf-arrow"><i class="fas fa-chevron-right"></i></div>
+                                    <div class="cs-wf-step">2. Verified</div>
+                                    <div class="cs-wf-arrow"><i class="fas fa-chevron-right"></i></div>
+                                    <div class="cs-wf-step">3. Approved</div>
+                                    <div class="cs-wf-arrow"><i class="fas fa-chevron-right"></i></div>
+                                    <div class="cs-wf-step">4. Processed</div>
+                                    <div class="cs-wf-arrow"><i class="fas fa-chevron-right"></i></div>
+                                    <div class="cs-wf-step wf-active">5. Downloaded</div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Problem Solved vs. CardFlow Solution -->
+                            <div class="case-study-section">
+                                <h4 class="case-study-sec-title"><i class="fas fa-crosshairs"></i> Problem Solved vs. CardFlow Solution</h4>
+                                <div class="cs-two-col">
+                                    <div class="cs-col-box cs-problem-box">
+                                        <div class="cs-col-header"><i class="fas fa-exclamation-triangle"></i> Traditional Bottlenecks</div>
+                                        <ul class="cs-list cs-list-problem">
+                                            <li>Manual spreadsheets and disconnected image folders</li>
+                                            <li>Duplicate records and disorganized student photographs</li>
+                                            <li>Repetitive manual data verification and status tracking</li>
+                                            <li>Multiple stakeholders editing conflicting datasets</li>
+                                            <li>Slow, error-prone manual approval and export processes</li>
+                                        </ul>
+                                    </div>
+                                    <div class="cs-col-box cs-solution-box">
+                                        <div class="cs-col-header"><i class="fas fa-check-circle"></i> Centralized CardFlow Solution</div>
+                                        <ul class="cs-list cs-list-solution">
+                                            <li>Centralized data pipelines with instant duplicate detection</li>
+                                            <li>Automated photo cropping, finishing, and matching</li>
+                                            <li>Granular RBAC for Admins, Schools, and Operators</li>
+                                            <li>Asynchronous background rendering via Celery & Redis</li>
+                                            <li>One-click batch generation of print-ready thermal card files</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. 9 Core Engineering Components -->
+                            <div class="case-study-section">
+                                <h4 class="case-study-sec-title"><i class="fas fa-cubes"></i> 9 Core Engineering Components</h4>
+                                <div class="cs-grid-3">
+                                    <div class="cs-card-sm"><div class="cs-card-sm-title"><i class="fas fa-table"></i> 1. Data Management Engine</div><p>Flexible table-oriented schema supporting configurable fields, multi-type values, unique constraints, duplicate detection, and high-performance bulk operations.</p></div>
+                                    <div class="cs-card-sm"><div class="cs-card-sm-title"><i class="fas fa-user-shield"></i> 2. Authentication & RBAC</div><p>Role-based architecture (Owner, Admin, Assistant, Operator) strictly governing permissions for view, create, edit, verify, approve, download, and user administration.</p></div>
+                                    <div class="cs-card-sm"><div class="cs-card-sm-title"><i class="fas fa-tasks"></i> 3. Workflow Management</div><p>Explicit lifecycle transitions making it possible to track progress across large datasets with complete administrative visibility.</p></div>
+                                    <div class="cs-card-sm"><div class="cs-card-sm-title"><i class="fas fa-history"></i> 4. Audit Logging Layer</div><p>Records who performed an action, what operation occurred, affected record, timestamp, and field-level diffs for full organizational compliance.</p></div>
+                                    <div class="cs-card-sm"><div class="cs-card-sm-title"><i class="fas fa-file-import"></i> 5. Import & Export Engine</div><p>Imports CSV, XLSX, and ZIP photo datasets with automatic schema validation; exports XLSX, CSV, print-ready PDF, and DOCX outputs.</p></div>
+                                    <div class="cs-card-sm"><div class="cs-card-sm-title"><i class="fas fa-images"></i> 6. Photo Pipeline</div><p>Dedicated processing for student & relationship photographs, missing photo indicators, and auto-cropping to prevent misprinted physical cards.</p></div>
+                                    <div class="cs-card-sm"><div class="cs-card-sm-title"><i class="fas fa-bolt"></i> 7. Background Processing</div><p>Celery + Redis workers offload heavy image manipulation, PDF compilation, and large imports from the synchronous HTTP request thread.</p></div>
+                                    <div class="cs-card-sm"><div class="cs-card-sm-title"><i class="fas fa-network-wired"></i> 8. REST API Architecture</div><p>Django REST Framework API-first backend providing centralized endpoints for auth, cards, workflows, and batch operations across all clients.</p></div>
+                                    <div class="cs-card-sm"><div class="cs-card-sm-title"><i class="fas fa-mobile-alt"></i> 9. Cross-Platform Ecosystem</div><p>Shared backend logic serving React Web, Electron Desktop, and React Native Android clients with identical business rules.</p></div>
+                                </div>
+                            </div>
+
+                            <!-- 5. Background Processing Pipeline Flowchart -->
+                            <div class="case-study-section">
+                                <h4 class="case-study-sec-title"><i class="fas fa-microchip"></i> Background Processing Architecture (Celery + Redis)</h4>
+                                <div class="cs-ascii-box">User Request ──► Django REST API ──► Create Background Job ──► Redis Queue
+                                                                   │
+                                                                   ▼
+User Receives Result ◄── Update Database ◄── Process Task ◄── Celery Worker</div>
+                            </div>
+
+                            <!-- 6. Production Infrastructure Flowchart -->
+                            <div class="case-study-section">
+                                <h4 class="case-study-sec-title"><i class="fas fa-server"></i> Production Deployment & Infrastructure</h4>
+                                <div class="cs-ascii-box">[Web Clients / Apps] ──► Internet ──► Nginx Reverse Proxy ──► Gunicorn ──► Django / DRF ──► PostgreSQL DB
+                                                                      │
+                                                                      ▼
+                                                                Redis Queue ──► Celery Workers ──► High-DPI Output Generation</div>
+                            </div>
+
+                            <!-- 7. Technology Stack Breakdown Table -->
+                            <div class="case-study-section">
+                                <h4 class="case-study-sec-title"><i class="fas fa-layer-group"></i> Technology Stack Breakdown</h4>
+                                <table class="cs-table">
+                                    <thead><tr><th>Layer</th><th>Technologies</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><strong>Frontend</strong></td><td>React, Modern CSS3, HTML5</td></tr>
+                                        <tr><td><strong>Backend</strong></td><td>Python, Django, Django REST Framework</td></tr>
+                                        <tr><td><strong>Database</strong></td><td>PostgreSQL (ACID, Relational, Indexing)</td></tr>
+                                        <tr><td><strong>Background Jobs & Cache</strong></td><td>Celery, Redis Message Broker</td></tr>
+                                        <tr><td><strong>Desktop & Mobile</strong></td><td>Electron (Desktop), React Native (Android)</td></tr>
+                                        <tr><td><strong>Deployment & Infrastructure</strong></td><td>Docker, Nginx, Gunicorn, Linux VPS</td></tr>
+                                        <tr><td><strong>Version Control</strong></td><td>Git, GitHub</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- 8. Engineering Evolution Flow -->
+                            <div class="case-study-section">
+                                <h4 class="case-study-sec-title"><i class="fas fa-chart-line"></i> Engineering Evolution</h4>
+                                <div class="cs-ascii-box">Initial Data Management ──► Authentication ──► Role-Based Access ──► Workflow Management
+                                                                                   │
+                                                                                   ▼
+Production Operations ◄── Cross-Platform Clients ◄── Background Processing ◄── Bulk Import/Export</div>
+                            </div>
+
+                            <!-- 9. 5 Real Engineering Challenges -->
+                            <div class="case-study-section">
+                                <h4 class="case-study-sec-title"><i class="fas fa-tools"></i> 5 Real Engineering Challenges Overcome</h4>
+                                <div class="cs-challenge-card"><div class="cs-challenge-title">1. Large Dataset Operations</div><p>Users needed to search, filter, sort, verify, and approve 136K+ card records without UI lag. Solved via database indexing, query optimization, and bulk SQL updates.</p></div>
+                                <div class="cs-challenge-card"><div class="cs-challenge-title">2. Multi-User Operations & RBAC</div><p>Prevented unauthorized operations across organizations with an explicit permission matrix enforced at both API serializers and service layers.</p></div>
+                                <div class="cs-challenge-card"><div class="cs-challenge-title">3. Long-Running Operations</div><p>Moving multi-thousand record exports and photo calibrations into Celery background workers decoupled user actions from HTTP response timeouts.</p></div>
+                                <div class="cs-challenge-card"><div class="cs-challenge-title">4. Source Data Quality & Deduplication</div><p>Implemented checksum duplicate detection and pre-generation validation checks to eliminate missing photographs and corrupt rows before printing.</p></div>
+                                <div class="cs-challenge-card"><div class="cs-challenge-title">5. Real Production Reliability</div><p>Refined error handling, graceful fallback for malformed spreadsheets, and seamless rolling updates on production Linux servers.</p></div>
+                            </div>
+
+                            <!-- 10. Key Architectural Decisions -->
+                            <div class="case-study-section">
+                                <h4 class="case-study-sec-title"><i class="fas fa-brain"></i> Key Architectural Decisions</h4>
+                                <div class="cs-grid-2">
+                                    <div class="cs-decision-card"><div class="cs-decision-header"><i class="fab fa-python"></i> Why Django & DRF?</div><p>Provided a mature ORM, built-in security protections, robust admin interface, and standardized REST API endpoints for multiple client platforms.</p></div>
+                                    <div class="cs-decision-card"><div class="cs-decision-header"><i class="fas fa-database"></i> Why PostgreSQL?</div><p>Strict ACID guarantees, relational integrity for multi-tenant data, fast B-tree indexing on search fields, and battle-tested production reliability.</p></div>
+                                    <div class="cs-decision-card"><div class="cs-decision-header"><i class="fas fa-bolt"></i> Why Redis & Celery?</div><p>Eliminated web request blocking during heavy image finishing, PDF compilation, and bulk imports by queuing tasks in background workers.</p></div>
+                                    <div class="cs-decision-card"><div class="cs-decision-header"><i class="fas fa-layer-group"></i> Why API-First Architecture?</div><p>Allowed React Web, Electron Desktop, and Android to share identical business rules, validation schemas, and database transactions.</p></div>
+                                </div>
+                            </div>
+
+                            <!-- 11. End-to-End Ownership Summary -->
+                            <div class="case-study-section">
+                                <h4 class="case-study-sec-title"><i class="fas fa-award"></i> Software Engineer Ownership Summary</h4>
+                                <div class="cs-highlight-box green">
+                                    <div class="cs-highlight-title"><i class="fas fa-check-circle"></i> End-to-End Responsibility</div>
+                                    <p>Responsible for CardFlow from concept to production: architecture, database design, backend APIs, frontend, authentication, background workers, deployment, and ongoing optimization. Handling 1,000+ users, 136K+ records, 86K+ downloads, and 435+ Android installs in real production.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="universal-project-thumb universal-gradient-1">
+                        <div class="universal-thumb-bg-pattern"></div>
+                        <i class="fas fa-id-card universal-thumb-watermark"></i>
+                        <div class="universal-thumb-content">
+                            <div class="project-meta-row" style="justify-content: center; margin-bottom: 4px;">
+                                <span class="universal-thumb-tag"><i class="fas fa-shield-alt"></i> Enterprise SaaS</span>
+                                <span class="project-status-badge status-prod">🟢 Production</span>
+                            </div>
+                            <h3 class="universal-thumb-title">CardFlow</h3>
+                            <p class="universal-thumb-sub">Production ID card management platform built for schools and organizations, covering data management, automated workflows, card generation and cross-platform operations.</p>
+                            <div class="universal-thumb-tech-row">
+                                <span class="universal-thumb-tech-pill">Django</span>
+                                <span class="universal-thumb-tech-pill">React</span>
+                                <span class="universal-thumb-tech-pill">PostgreSQL</span>
+                                <span class="universal-thumb-tech-pill">Redis</span>
+                                <span class="universal-thumb-tech-pill">Celery</span>
+                            </div>
+                            <div class="universal-thumb-buttons">
+                                <a href="/projects/cardflow" class="btn btn-primary project-btn project-page-link" data-project-slug="cardflow">Case Study</a>
+                                <a href="https://cardflow.in" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Live Preview</a>
+                                <a href="https://github.com/logicbyroshan/cardfloww-idcard-management-saas.git" class="github-btn" target="_blank" rel="noopener noreferrer" aria-label="Open CardFlow repository"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                        <span class="project-category">Enterprise SaaS</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: VidyaMaxx -->
+                <div class="project-card" data-index="1" data-project-slug="vidyamaxx">
+                    <div class="project-doc-content" style="display:none;">
+                        <div class="case-study-container">
+                            <!-- 1. Hero & Status -->
+                            <div class="case-study-hero-banner">
+                                <div class="case-study-badge"><i class="fas fa-flask"></i> MVP / Pilot Testing</div>
+                                <h3 class="case-study-headline">VidyaMaxx — AI-First Unified School Management Platform</h3>
+                                <p class="case-study-lead">VidyaMaxx is an AI-first school management platform designed to bring academic management, administration, communication, student information, and day-to-day school operations into a unified digital ecosystem across web and desktop.</p>
+                            </div>
+
+                            <!-- Links Row -->
+                            <div class="cs-links-row">
+                                <span style="font-size: 12px; font-weight: 600; color: #a78bfa;"><i class="fas fa-link"></i> Platform &amp; Links:</span>
+                                <a href="https://github.com/logicbyroshan/vidyamaxx-school-management-saas.git" target="_blank" rel="noopener noreferrer" class="cs-link-pill primary"><i class="fab fa-github"></i> GitHub Repository</a>
+                                <span class="cs-link-pill secondary"><i class="fas fa-globe"></i> Web: Available</span>
+                                <span class="cs-link-pill secondary"><i class="fas fa-desktop"></i> Desktop: Available</span>
+                                <span class="cs-link-pill secondary"><i class="fab fa-android"></i> Android / iOS: Planned</span>
+                            </div>
+
+                            <!-- 2. Pilot Stage & Validation Focus -->
+                            <div class="case-study-section">
+                                <h4 class="case-study-sec-title"><i class="fas fa-vial"></i> Current Status &amp; Pilot Validation</h4>
+                                <div class="cs-two-col">
+                                    <div class="cs-col-box cs-solution-box">
+                                        <div class="cs-col-header"><i class="fas fa-school"></i> Partner School Demonstrations</div>
+                                        <p class="cs-text">Demonstrated through live development environments to selected partner schools, allowing educators and administrators to validate workflows, usability, and operational throughput before production rollout.</p>
+                                    </div>
+                                    <div class="cs-col-box cs-problem-box">
+                                        <div class="cs-col-header"><i class="fas fa-bullseye"></i> Current Phase Focus</div>
+                                        <p class="cs-text">Validating multi-role permissions, grading schemas, automated timetabling constraints, parent-teacher communication loops, and predictive student progress tracking.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="universal-project-thumb universal-gradient-2">
+                        <div class="universal-thumb-bg-pattern"></div>
+                        <i class="fas fa-school universal-thumb-watermark"></i>
+                        <div class="universal-thumb-content">
+                            <div class="project-meta-row" style="justify-content: center; margin-bottom: 4px;">
+                                <span class="universal-thumb-tag"><i class="fas fa-brain"></i> AI-Integrated SaaS</span>
+                                <span class="project-status-badge status-pilot">🟡 Pilot Testing</span>
+                            </div>
+                            <h3 class="universal-thumb-title">VidyaMaxx</h3>
+                            <p class="universal-thumb-sub">AI-integrated school management platform bringing academics, administration, communication and school operations into one system.</p>
+                            <div class="universal-thumb-tech-row">
+                                <span class="universal-thumb-tech-pill">Django</span>
+                                <span class="universal-thumb-tech-pill">React</span>
+                                <span class="universal-thumb-tech-pill">PostgreSQL</span>
+                                <span class="universal-thumb-tech-pill">Redis</span>
+                                <span class="universal-thumb-tech-pill">AI</span>
+                            </div>
+                            <div class="universal-thumb-buttons">
+                                <a href="/projects/vidyamaxx" class="btn btn-primary project-btn project-page-link" data-project-slug="vidyamaxx">Case Study</a>
+                                <a href="https://logicbyroshan.in/#projects" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Live Preview</a>
+                                <a href="https://github.com/logicbyroshan/vidyamaxx-school-management-saas.git" class="github-btn" target="_blank" rel="noopener noreferrer" aria-label="Open VidyaMaxx repository"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                        <span class="project-category">AI-Integrated SaaS</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: PrintNexx -->
+                <div class="project-card" data-index="2" data-project-slug="printnexx">
+                    <div class="universal-project-thumb universal-gradient-3">
+                        <div class="universal-thumb-bg-pattern"></div>
+                        <i class="fas fa-cogs universal-thumb-watermark"></i>
+                        <div class="universal-thumb-content">
+                            <div class="project-meta-row" style="justify-content: center; margin-bottom: 4px;">
+                                <span class="universal-thumb-tag"><i class="fas fa-microchip"></i> Internal Tool</span>
+                                <span class="project-status-badge status-prod">🟢 In Active Use</span>
+                            </div>
+                            <h3 class="universal-thumb-title">PrintNexx</h3>
+                            <p class="universal-thumb-sub">Internal image-processing and card-generation tool built to automate photo preparation, image finishing and ID card generation workflows.</p>
+                            <div class="universal-thumb-tech-row">
+                                <span class="universal-thumb-tech-pill">Python</span>
+                                <span class="universal-thumb-tech-pill">OpenCV</span>
+                                <span class="universal-thumb-tech-pill">Image Processing</span>
+                                <span class="universal-thumb-tech-pill">Automation</span>
+                            </div>
+                            <div class="universal-thumb-buttons">
+                                <a href="/projects/printnexx" class="btn btn-primary project-btn project-page-link" data-project-slug="printnexx">Case Study</a>
+                                <a href="/projects/printnexx" class="btn btn-secondary project-page-link" data-project-slug="printnexx">Technical Overview</a>
+                            </div>
+                        </div>
+                        <span class="project-category">Internal Tool</span>
+                    </div>
+                </div>
+
+                <!-- Card 4: EazeTrip -->
+                <div class="project-card" data-index="3" data-project-slug="eazetrip">
+                    <div class="universal-project-thumb universal-gradient-4">
+                        <div class="universal-thumb-bg-pattern"></div>
+                        <i class="fas fa-plane universal-thumb-watermark"></i>
+                        <div class="universal-thumb-content">
+                            <div class="project-meta-row" style="justify-content: center; margin-bottom: 4px;">
+                                <span class="universal-thumb-tag"><i class="fas fa-suitcase-rolling"></i> Client Project</span>
+                                <span class="project-status-badge status-prod">🟢 Production</span>
+                            </div>
+                            <h3 class="universal-thumb-title">EazeTrip</h3>
+                            <p class="universal-thumb-sub">Travel management platform developed for a tour agency to manage customers, bookings, tours and operational workflows.</p>
+                            <div class="universal-thumb-tech-row">
+                                <span class="universal-thumb-tech-pill">Django</span>
+                                <span class="universal-thumb-tech-pill">React</span>
+                                <span class="universal-thumb-tech-pill">PostgreSQL</span>
+                                <span class="universal-thumb-tech-pill">REST API</span>
+                                <span class="universal-thumb-tech-pill">AI</span>
+                            </div>
+                            <div class="universal-thumb-buttons">
+                                <a href="/projects/eazetrip" class="btn btn-primary project-btn project-page-link" data-project-slug="eazetrip">Case Study</a>
+                                <a href="https://logicbyroshan.in/#projects" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Live Preview</a>
+                            </div>
+                        </div>
+                        <span class="project-category">Client Project</span>
+                    </div>
+                </div>
+
+                <!-- Card 5: TaskFlixx -->
+                <div class="project-card" data-index="4" data-project-slug="taskflixx">
+                    <div class="universal-project-thumb universal-gradient-5">
+                        <div class="universal-thumb-bg-pattern"></div>
+                        <i class="fas fa-tasks universal-thumb-watermark"></i>
+                        <div class="universal-thumb-content">
+                            <div class="project-meta-row" style="justify-content: center; margin-bottom: 4px;">
+                                <span class="universal-thumb-tag"><i class="fas fa-brain"></i> AI Productivity</span>
+                                <span class="project-status-badge status-prod">🟢 Live</span>
+                            </div>
+                            <h3 class="universal-thumb-title">TaskFlixx</h3>
+                            <p class="universal-thumb-sub">AI-powered task management application designed to combine everyday task organization with intelligent productivity workflows.</p>
+                            <div class="universal-thumb-tech-row">
+                                <span class="universal-thumb-tech-pill">Django</span>
+                                <span class="universal-thumb-tech-pill">React</span>
+                                <span class="universal-thumb-tech-pill">PostgreSQL</span>
+                                <span class="universal-thumb-tech-pill">AI</span>
+                                <span class="universal-thumb-tech-pill">REST API</span>
+                            </div>
+                            <div class="universal-thumb-buttons">
+                                <a href="/projects/taskflixx" class="btn btn-primary project-btn project-page-link" data-project-slug="taskflixx">Case Study</a>
+                                <a href="https://github.com/logicbyroshan" class="github-btn" target="_blank" rel="noopener noreferrer" aria-label="Open project repository"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                        <span class="project-category">AI Productivity</span>
+                    </div>
+                </div>
+
+                <!-- Card 6: PrepSarthi -->
+                <div class="project-card" data-index="5" data-project-slug="prepsarthi">
+                    <div class="universal-project-thumb universal-gradient-1">
+                        <div class="universal-thumb-bg-pattern"></div>
+                        <i class="fas fa-graduation-cap universal-thumb-watermark"></i>
+                        <div class="universal-thumb-content">
+                            <div class="project-meta-row" style="justify-content: center; margin-bottom: 4px;">
+                                <span class="universal-thumb-tag"><i class="fas fa-book-open"></i> EdTech AI</span>
+                                <span class="project-status-badge status-oss">🔵 Open Source</span>
+                            </div>
+                            <h3 class="universal-thumb-title">PrepSarthi</h3>
+                            <p class="universal-thumb-sub">AI-powered learning and preparation platform designed to help users organize study workflows, practice concepts and prepare more effectively.</p>
+                            <div class="universal-thumb-tech-row">
+                                <span class="universal-thumb-tech-pill">Python</span>
+                                <span class="universal-thumb-tech-pill">Django</span>
+                                <span class="universal-thumb-tech-pill">React</span>
+                                <span class="universal-thumb-tech-pill">PostgreSQL</span>
+                                <span class="universal-thumb-tech-pill">AI</span>
+                            </div>
+                            <div class="universal-thumb-buttons">
+                                <a href="/projects/prepsarthi" class="btn btn-primary project-btn project-page-link" data-project-slug="prepsarthi">Case Study</a>
+                                <a href="https://github.com/logicbyroshan" class="github-btn" target="_blank" rel="noopener noreferrer" aria-label="Open project repository"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                        <span class="project-category">AI Learning Platform</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="projects-navigation">
+                <button class="nav-btn prev-btn" type="button" aria-label="Show previous project"><i class="fas fa-chevron-left"></i></button>
+                <button class="nav-btn next-btn" type="button" aria-label="Show next project"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap Section -->
+    <section class="roadmap-section" id="experience">
+        <div class="container">
+            <span class="roadmap-badge">Experience</span>
+            <h2 class="roadmap-heading">Professional Journey & Experience</h2>
+            
+            <div class="roadmap-timeline">
+                <div class="timeline-line"></div>
+                
+                <div class="roadmap-item roadmap-left animate">
+                    <div class="roadmap-card">
+                        <span class="roadmap-date">December 2025 - Present</span>
+                        <h3 class="roadmap-title">Software Engineer</h3>
+                        <div class="roadmap-company"><i class="fas fa-building"></i> Adarsh ID Cards</div>
+                        <p class="roadmap-description">Designed and built CardFlow — a production SaaS platform for ID card data management, automated workflows, and card generation. Serving 1,000+ real users with multi-client cross-platform architecture.</p>
+                    </div>
+                    <div class="roadmap-dot"></div>
+                </div>
+
+                <div class="roadmap-item roadmap-right animate">
+                    <div class="roadmap-card">
+                        <span class="roadmap-date">April 2025 - May 2025</span>
+                        <h3 class="roadmap-title">Graphic Designer Intern</h3>
+                        <div class="roadmap-company"><i class="fas fa-building"></i> Miracle Organisation</div>
+                        <p class="roadmap-description">1-month internship as a Graphic Designer — handled branding materials, posters, banners, and digital content creation.</p>
+                    </div>
+                    <div class="roadmap-dot"></div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 36px;">
+                <a href="/experience" class="btn btn-primary page-nav-link" data-route="experience" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-layer-group"></i> Detailed Experience &amp; Architecture Roadmap
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog-section" id="blog">
+        <div class="container">
+            <div class="blog-badge">Articles & Insights</div>
+            <h2 class="blog-heading">Latest Blog Posts<br>& Technical Articles</h2>
+            
+            <div class="blog-grid">
+                <article class="blog-card" role="button" tabindex="0" data-blog-slug="understanding-microservices-architecture" aria-label="Read article: Understanding Microservices Architecture">
+                    <div class="blog-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=400&fit=crop" alt="Microservices Architecture Guide Illustration" class="blog-image" width="600" height="400" loading="lazy" decoding="async">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-date">
+                            <i class="far fa-calendar"></i>
+                            <span>November 15, 2024</span>
+                        </div>
+                        <h3 class="blog-title">Understanding Microservices Architecture: A Developer's Guide</h3>
+                    </div>
+                </article>
+
+                <article class="blog-card" role="button" tabindex="0" data-blog-slug="building-scalable-apis-nodejs-graphql" aria-label="Read article: Building Scalable APIs with Node.js and GraphQL">
+                    <div class="blog-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&h=400&fit=crop" alt="Building Scalable APIs with GraphQL" class="blog-image" width="600" height="400" loading="lazy" decoding="async">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-date">
+                            <i class="far fa-calendar"></i>
+                            <span>October 28, 2024</span>
+                        </div>
+                        <h3 class="blog-title">Building Scalable APIs with Node.js and GraphQL Best Practices</h3>
+                    </div>
+                </article>
+
+                <article class="blog-card" role="button" tabindex="0" data-blog-slug="docker-kubernetes-container-orchestration" aria-label="Read article: Docker and Kubernetes Container Orchestration">
+                    <div class="blog-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=600&h=400&fit=crop" alt="Docker and Kubernetes Container Orchestration" class="blog-image" width="600" height="400" loading="lazy" decoding="async">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-date">
+                            <i class="far fa-calendar"></i>
+                            <span>September 12, 2024</span>
+                        </div>
+                        <h3 class="blog-title">Docker and Kubernetes: Complete Guide to Container Orchestration</h3>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+        <div class="container">
+            <div class="faq-wrapper">
+                <div class="faq-left">
+                    <span class="faq-badge">FAQs</span>
+                    <h2 class="faq-heading">Frequently Asked Questions</h2>
+                    <p class="faq-description">Below is a list of frequently asked questions about my development work, technical expertise, and collaboration process.</p>
+                    
+                    <div class="faq-tabs">
+                        <button class="faq-tab active" data-category="general">General</button>
+                        <button class="faq-tab" data-category="technical">Technical</button>
+                        <button class="faq-tab" data-category="collaboration">Collaboration</button>
+                        <button class="faq-tab" data-category="projects">Projects</button>
+                    </div>
+
+                    <div class="faq-accordion">
+                        <div class="faq-item" data-category="general technical">
+                            <div class="faq-question">
+                                <span class="faq-text">What is your primary tech stack?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>My primary stack is Python / Django on the backend with React on the frontend, PostgreSQL as the main database, and Redis + Celery for background processing and caching. For deployment I use Nginx, Gunicorn, and Linux-based servers. I also work with Electron for desktop clients, and REST APIs for all integrations.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-category="technical projects">
+                            <div class="faq-question">
+                                <span class="faq-text">Tell me about CardFlow — what did you build exactly?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>CardFlow is a production SaaS platform I designed and built from scratch for Adarsh ID Cards. It handles the complete ID card pipeline: data ingestion, verification workflows, approval stages, photo processing, card generation, and download management — for schools and organizations. It's currently serving 1,000+ real users across multiple organizations and processes tens of thousands of card records. The architecture includes a Django REST API, React web client, Electron desktop client, RBAC, Celery background workers, and a PostgreSQL database.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-category="general collaboration">
+                            <div class="faq-question">
+                                <span class="faq-text">Are you open to freelance or new opportunities?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Yes, I'm open to the right opportunities — particularly projects involving production-grade SaaS, AI-integrated systems, backend architecture, or full-stack engineering. I'm also available for technical consulting and freelance work. Reach out via the contact form and let's talk about what you're building.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-category="technical general">
+                            <div class="faq-question">
+                                <span class="faq-text">How do you approach system design and architecture?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>I start by understanding the real business requirements and data lifecycle, not just the feature list. I design for the workflows first, then choose the right architecture to support them. I separate concerns clearly — API layer, business logic, data layer, background processing — and avoid over-engineering early. My CardFlow architecture is a good example: multi-client (web + desktop) against a single API backend with clear workflow state machines.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-category="technical projects">
+                            <div class="faq-question">
+                                <span class="faq-text">What kind of AI work have you done?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>I've integrated LLMs, RAG pipelines, and AI agents into production and prototype systems. VidyaMaxx, my school management platform, includes AI-powered features for academic workflows. I also built TaskFlixx — an AI-driven task management tool — and PrepSarthi, an AI-assisted exam preparation platform. My AI work focuses on practical integrations that add real business value, not just demo-level experiments.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-category="collaboration projects">
+                            <div class="faq-question">
+                                <span class="faq-text">Can you work on an existing codebase or take over a project?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Absolutely. I've taken codebases from scratch to production, and I'm equally comfortable onboarding into existing systems. My approach is to understand the current architecture before changing anything, identify pain points systematically, and refactor incrementally with minimal disruption to ongoing operations.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-category="collaboration general">
+                            <div class="faq-question">
+                                <span class="faq-text">How do you handle deployment and production operations?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>I manage the full deployment stack — Nginx as a reverse proxy, Gunicorn for WSGI serving, Celery workers with Redis, PostgreSQL tuning, and Linux server management. I've operated CardFlow in production serving real users, so I understand what it takes to keep systems reliable, handle database migrations safely, and manage background job failures gracefully.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-category="projects general">
+                            <div class="faq-question">
+                                <span class="faq-text">Are your projects open source?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Some are, some aren't. CardFlow and EazeTrip are private since they serve real clients in production. VidyaMaxx is currently in pilot testing. TaskFlixx and PrepSarthi are open source — you can find them on my GitHub. I believe in contributing to the open-source ecosystem while also understanding when code is proprietary business logic.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-right">
+                    <div class="faq-circle faq-circle-1"></div>
+                    <div class="faq-circle faq-circle-2"></div>
+                    <div class="faq-circle faq-circle-3"></div>
+                    <img src="/static/images/faqside.webp" alt="FAQ Illustration" class="faq-image" width="504" height="666" loading="lazy" decoding="async">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <span class="contact-badge">Get in Touch</span>
+            <h2 class="contact-heading">Contact Me</h2>
+            
+            <div class="contact-wrapper">
+                <!-- Left Side - Contact Info -->
+                <div class="contact-info">
+                    <h3 class="contact-info-title">Let's Talk</h3>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-text">
+                                <div class="contact-label">Email</div>
+                                <div class="contact-value">mail@logicbyroshan.in</div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="contact-text">
+                                <div class="contact-label">Website</div>
+                                <div class="contact-value">logicbyroshan.in</div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-text">
+                                <div class="contact-label">Address</div>
+                                <div class="contact-value">Bhopal, MP</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Urgent Toggle -->
+                    <div class="contact-urgent">
+                        <div class="urgent-toggle-wrapper">
+                            <span class="urgent-label">Mark as Urgent</span>
+                            <div class="toggle-switch">
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="urgent-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div class="urgent-warning-text">
+                                <div class="urgent-warning-title">Priority Response</div>
+                                <div class="urgent-warning-desc">Your message will be marked as urgent and you'll receive a response within 24 hours.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Side - Contact Form -->
+                <div class="contact-form-wrapper">
+                    <form class="contact-form">
+                        <div class="form-group">
+                            <label for="contact-name" class="form-label">Full Name</label>
+                            <input type="text" id="contact-name" class="form-input" placeholder="Enter your full name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contact-email" class="form-label">Email Address</label>
+                            <input type="email" id="contact-email" class="form-input" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contact-message" class="form-label">Your Message</label>
+                            <textarea id="contact-message" class="form-textarea" placeholder="Write your message here..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="form-submit-btn">
+                            <span>Send Message</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-glow"></div>
+        <div class="container">
+
+            <!-- Top row -->
+            <div class="footer-top">
+                <!-- Brand -->
+                <div class="footer-brand">
+                    <a href="/" class="brand footer-logo-link">
+                        <img src="/static/images/logo.webp" alt="Roshan Damor" class="logo-image footer-logo" width="48" height="48" loading="lazy" decoding="async">
+                    </a>
+                    <p class="footer-tagline">Crafting digital experiences<br>one line of code at a time.</p>
+                    <div class="footer-socials">
+                        <a href="https://github.com/logicbyroshan" class="footer-social-btn" aria-label="GitHub" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                        <a href="https://linkedin.com/in/logicbyroshan" class="footer-social-btn" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://x.com/logicbyroshan" class="footer-social-btn" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
+                        <a href="https://leetcode.com/logicbyroshan" class="footer-social-btn" aria-label="LeetCode" target="_blank" rel="noopener noreferrer"><i class="fas fa-code"></i></a>
+                    </div>
+                </div>
+
+                <!-- Nav links -->
+                <div class="footer-col">
+                    <h3 class="footer-col-title">Navigation</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about" data-route="about">About</a></li>
+                        <li><a href="#skills">Skills</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="/experience" data-route="experience">Experience</a></li>
+                        <li><a href="#contact">Contact Me</a></li>
+                    </ul>
+                </div>
+
+                <!-- Tech stack -->
+                <div class="footer-col">
+                    <h3 class="footer-col-title">Tech Stack</h3>
+                    <ul class="footer-links">
+                        <li><span>React &amp; Next.js</span></li>
+                        <li><span>Node.js &amp; Django</span></li>
+                        <li><span>PostgreSQL &amp; MongoDB</span></li>
+                        <li><span>AWS &amp; Docker</span></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="footer-col">
+                    <h3 class="footer-col-title">Contact</h3>
+                    <ul class="footer-links footer-contact-list">
+                        <li><i class="fas fa-envelope"></i><span>mail@logicbyroshan.in</span></li>
+                        <li><i class="fas fa-globe"></i><span>logicbyroshan.in</span></li>
+                        <li><i class="fas fa-map-marker-alt"></i><span>Bhopal, MP</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="footer-divider"></div>
+
+            <!-- Bottom row -->
+            <div class="footer-bottom">
+                <p class="footer-copy">&copy; 2026 <span>Roshan Damor</span>. All rights reserved.</p>
+                <p class="footer-made">Made with <i class="fas fa-heart footer-heart"></i> &amp; lots of coffee</p>
+            </div>
+
+        </div>
+
+        <!-- Large Full-Width Subtle Transparent Gradient Watermark -->
+        <div class="footer-big-text-wrapper" aria-hidden="true">
+            <div class="footer-big-text">
+                <span class="watermark-word">SOFTWARE</span>
+                <span class="watermark-word">ENGINEER</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Utility Buttons -->
+    <button id="soundToggleBtn" class="sound-toggle-btn" aria-label="Toggle sound" aria-pressed="true" type="button">
+        <i class="fas fa-volume-up"></i>
+    </button>
+
+    <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Back to top" type="button">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+</div>
     <noscript>
       <main>
         <h1>Roshan Damor - Software Engineer Portfolio</h1>

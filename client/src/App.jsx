@@ -1,13 +1,13 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { useLenis } from 'lenis/react';
 import { fetchPortfolioData } from './api/portfolioApi';
 import { hydratePortfolioDom } from './api/hydratePortfolio';
 import defaultPortfolioHtml from './portfolio-body.html?raw';
 
-import ProjectDetailPage from './pages/ProjectDetailPage';
-import AboutPage from './pages/AboutPage';
-import BlogDetailPage from './pages/BlogDetailPage';
-import ExperiencePage from './pages/ExperiencePage';
+const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const BlogDetailPage = lazy(() => import('./pages/BlogDetailPage'));
+const ExperiencePage = lazy(() => import('./pages/ExperiencePage'));
 import RexiModal from './components/RexiModal';
 import AppNavbar from './components/AppNavbar';
 import SiteFooter from './components/SiteFooter';
@@ -431,6 +431,9 @@ function App() {
     };
 
     const initializeLegacyScripts = async () => {
+      // Execute core legacy scripts immediately so UI interactions are active without waiting for API
+      const scriptsPromise = loadScriptsSequentially(CORE_LEGACY_SCRIPTS);
+
       try {
         const apiData = await fetchPortfolioData();
         if (!cancelled) {
@@ -440,7 +443,7 @@ function App() {
         // Keep static fallback content if API is not reachable.
       }
 
-      await loadScriptsSequentially(CORE_LEGACY_SCRIPTS);
+      await scriptsPromise;
 
       if (cancelled) {
         return;
@@ -471,35 +474,37 @@ function App() {
   return (
     <>
       <RexiModal />
-      {route.name === 'project-detail' && (
-        <>
-          <AppNavbar currentRoute={route} onNavigate={navigate} />
-          <ProjectDetailPage slug={route.slug} onNavigate={navigate} />
-          <SiteFooter onNavigate={navigate} />
-        </>
-      )}
-      {route.name === 'blog-detail' && (
-        <>
-          <AppNavbar currentRoute={route} onNavigate={navigate} />
-          <BlogDetailPage slug={route.slug} onNavigate={navigate} />
-          <SiteFooter onNavigate={navigate} />
-        </>
-      )}
-      {route.name === 'experience' && (
-        <>
-          <AppNavbar currentRoute={route} onNavigate={navigate} />
-          <ExperiencePage onNavigate={navigate} />
-          <SiteFooter onNavigate={navigate} />
-        </>
-      )}
-      {route.name === 'about' && (
-        <>
-          <AppNavbar currentRoute={route} onNavigate={navigate} />
-          <AboutPage onNavigate={navigate} />
-          <SiteFooter onNavigate={navigate} />
-        </>
-      )}
-      {route.name === 'home' && <div dangerouslySetInnerHTML={content} />}
+      <Suspense fallback={<div className="loading-spinner" />}>
+        {route.name === 'project-detail' && (
+          <>
+            <AppNavbar currentRoute={route} onNavigate={navigate} />
+            <ProjectDetailPage slug={route.slug} onNavigate={navigate} />
+            <SiteFooter onNavigate={navigate} />
+          </>
+        )}
+        {route.name === 'blog-detail' && (
+          <>
+            <AppNavbar currentRoute={route} onNavigate={navigate} />
+            <BlogDetailPage slug={route.slug} onNavigate={navigate} />
+            <SiteFooter onNavigate={navigate} />
+          </>
+        )}
+        {route.name === 'experience' && (
+          <>
+            <AppNavbar currentRoute={route} onNavigate={navigate} />
+            <ExperiencePage onNavigate={navigate} />
+            <SiteFooter onNavigate={navigate} />
+          </>
+        )}
+        {route.name === 'about' && (
+          <>
+            <AppNavbar currentRoute={route} onNavigate={navigate} />
+            <AboutPage onNavigate={navigate} />
+            <SiteFooter onNavigate={navigate} />
+          </>
+        )}
+        {route.name === 'home' && <div dangerouslySetInnerHTML={content} />}
+      </Suspense>
     </>
   );
 }

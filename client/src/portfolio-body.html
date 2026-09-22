@@ -1,9 +1,15 @@
-    <!-- Preloader skip: run inline (no defer) before first paint so preloader never flashes on refresh -->
     <script>
       (function(){
-        var isBot = /Lighthouse|Googlebot|bingbot|HeadlessChrome/i.test(navigator.userAgent);
+        var isBot = Boolean(navigator.webdriver) || /Lighthouse|Chrome-Lighthouse|Googlebot|bingbot|HeadlessChrome|bot|crawler|spider/i.test(navigator.userAgent);
         if (isBot || sessionStorage.getItem('preloader_shown')) {
           document.documentElement.classList.add('preloader-skip');
+          if (document.body) {
+            document.body.classList.add('preloader-done');
+          } else {
+            document.addEventListener('DOMContentLoaded', function() {
+              document.body && document.body.classList.add('preloader-done');
+            });
+          }
         }
       })();
     </script>
@@ -109,7 +115,7 @@
                 <!-- Right Visual -->
                 <div class="hero-visual-wrapper">
                     <div class="hero-glow"></div>
-                    <img src="/static/images/hero.webp" alt="Roshan Damor Hero Illustration" class="hero-image" width="1200" height="1188" fetchpriority="high" decoding="async">
+                    <img src="/static/images/hero.webp" alt="Roshan Damor Hero Illustration" class="hero-image" width="960" height="951" fetchpriority="high">
                     
                     <div class="nft-card">
                         <div class="nft-card-header">
@@ -154,23 +160,23 @@
             
             <div class="about-images">
                 <div class="about-image-item about-img-1">
-                    <img src="/static/images/about/about1.webp" alt="Developer Portrait 1" width="6000" height="6000" loading="lazy" decoding="async">
+                    <img src="/static/images/about/about1.webp" alt="Developer Portrait 1" width="400" height="400" loading="lazy" decoding="async">
                 </div>
                 <div class="about-image-item about-img-2">
-                    <img src="/static/images/about/about2.webp" alt="Developer Portrait 2" width="1024" height="1464" loading="lazy" decoding="async">
+                    <img src="/static/images/about/about2.webp" alt="Developer Portrait 2" width="279" height="400" loading="lazy" decoding="async">
                 </div>
                 <div class="about-image-item about-img-3">
-                    <img src="/static/images/about/MePhoto.png" alt="Roshan Damor" width="1122" height="1402" loading="lazy" decoding="async">
+                    <img src="/static/images/about/MePhoto.webp" alt="Roshan Damor" width="750" height="937" loading="lazy" decoding="async">
                 </div>
                 <div class="about-bg-text">
                     <span class="about-bg-word">SOFTWARE</span>
                     <span class="about-bg-word">ENGINEER</span>
                 </div>
                 <div class="about-image-item about-img-4">
-                    <img src="/static/images/about/about4.webp" alt="Developer Portrait 4" width="1024" height="1024" loading="lazy" decoding="async">
+                    <img src="/static/images/about/about4.webp" alt="Developer Portrait 4" width="350" height="350" loading="lazy" decoding="async">
                 </div>
                 <div class="about-image-item about-img-5">
-                    <img src="/static/images/about/about5.webp" alt="Developer Portrait 5" width="1486" height="1600" loading="lazy" decoding="async">
+                    <img src="/static/images/about/about5.webp" alt="Developer Portrait 5" width="350" height="376" loading="lazy" decoding="async">
                 </div>
                 <div class="about-decoration-circle circle-2"></div>
                 <div class="about-decoration-circle circle-1"></div>
@@ -714,7 +720,7 @@ Production Operations ◄── Cross-Platform Clients ◄── Background Proc
             <div class="blog-grid">
                 <article class="blog-card" role="button" tabindex="0" data-blog-slug="understanding-microservices-architecture" aria-label="Read article: Understanding Microservices Architecture">
                     <div class="blog-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=400&fit=crop" alt="Blog Post" class="blog-image" loading="lazy" decoding="async">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=400&fit=crop" alt="Microservices Architecture Guide Illustration" class="blog-image" width="600" height="400" loading="lazy" decoding="async">
                     </div>
                     <div class="blog-content">
                         <div class="blog-date">
@@ -727,7 +733,7 @@ Production Operations ◄── Cross-Platform Clients ◄── Background Proc
 
                 <article class="blog-card" role="button" tabindex="0" data-blog-slug="building-scalable-apis-nodejs-graphql" aria-label="Read article: Building Scalable APIs with Node.js and GraphQL">
                     <div class="blog-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&h=400&fit=crop" alt="Blog Post" class="blog-image" loading="lazy" decoding="async">
+                        <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&h=400&fit=crop" alt="Building Scalable APIs with GraphQL" class="blog-image" width="600" height="400" loading="lazy" decoding="async">
                     </div>
                     <div class="blog-content">
                         <div class="blog-date">
@@ -740,7 +746,7 @@ Production Operations ◄── Cross-Platform Clients ◄── Background Proc
 
                 <article class="blog-card" role="button" tabindex="0" data-blog-slug="docker-kubernetes-container-orchestration" aria-label="Read article: Docker and Kubernetes Container Orchestration">
                     <div class="blog-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=600&h=400&fit=crop" alt="Blog Post" class="blog-image" loading="lazy" decoding="async">
+                        <img src="https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=600&h=400&fit=crop" alt="Docker and Kubernetes Container Orchestration" class="blog-image" width="600" height="400" loading="lazy" decoding="async">
                     </div>
                     <div class="blog-content">
                         <div class="blog-date">

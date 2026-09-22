@@ -1,54 +1,41 @@
 import React, { useEffect, useRef, useState } from 'react';
-import mermaid from 'mermaid';
 
-let mermaidInitialized = false;
+let mermaidInstance = null;
 
-function initMermaid() {
-  if (mermaidInitialized) return;
-  mermaid.initialize({
-    startOnLoad: false,
-    theme: 'base',
-    securityLevel: 'loose',
-    flowchart: {
-      useMaxWidth: true,
-      htmlLabels: true,
-      curve: 'basis',
-      nodeSpacing: 50,
-      rankSpacing: 50,
-      padding: 20
-    },
-    er: {
-      useMaxWidth: true,
-      fontSize: 15,
-      entityPadding: 16
-    },
-    themeVariables: {
-      darkMode: true,
-      background: 'transparent',
-      primaryColor: '#1e1b4b',
-      primaryTextColor: '#f8fafc',
-      primaryBorderColor: '#8b5cf6',
-      lineColor: '#38bdf8',
-      secondaryColor: '#2e1065',
-      tertiaryColor: '#0f172a',
-      fontFamily: 'Outfit, sans-serif',
-      fontSize: '15px',
-      nodeBorder: '#8b5cf6',
-      nodeTextColor: '#ffffff',
-      mainBkg: '#141a48',
-      clusterBkg: 'rgba(20, 26, 68, 0.85)',
-      clusterBorder: '#6366f1',
-      titleColor: '#38bdf8',
-      edgeLabelBackground: '#090d2e',
-      actorBkg: '#1e1b4b',
-      actorBorder: '#7c3aed',
-      actorTextColor: '#ffffff',
-      actorLineColor: '#38bdf8',
-      signalColor: '#38bdf8',
-      signalTextColor: '#f1f5f9'
-    }
-  });
-  mermaidInitialized = true;
+async function getMermaid() {
+  if (!mermaidInstance) {
+    const mod = await import('mermaid');
+    mermaidInstance = mod.default || mod;
+    mermaidInstance.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      securityLevel: 'loose',
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis',
+        nodeSpacing: 50,
+        rankSpacing: 50,
+        padding: 20
+      },
+      er: {
+        useMaxWidth: true,
+        fontSize: 15,
+        entityPadding: 16
+      },
+      themeVariables: {
+        darkMode: true,
+        background: 'transparent',
+        primaryColor: '#1e1b4b',
+        primaryTextColor: '#f8fafc',
+        primaryBorderColor: '#8b5cf6',
+        lineColor: '#6366f1',
+        secondaryColor: '#0f172a',
+        tertiaryColor: '#1e293b'
+      }
+    });
+  }
+  return mermaidInstance;
 }
 
 export default function MermaidDiagram({ chart, title, subtitle, diagramType = 'Flowchart' }) {
@@ -61,14 +48,17 @@ export default function MermaidDiagram({ chart, title, subtitle, diagramType = '
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
-    initMermaid();
     let isMounted = true;
     const renderId = `mermaid-${Math.random().toString(36).substring(2, 9)}`;
 
-    mermaid.render(renderId, chart.trim())
-      .then(({ svg }) => {
-        if (isMounted) {
-          setSvgContent(svg);
+    getMermaid()
+      .then((m) => {
+        if (!isMounted) return null;
+        return m.render(renderId, chart.trim());
+      })
+      .then((res) => {
+        if (res && isMounted) {
+          setSvgContent(res.svg);
           setError(null);
         }
       })
