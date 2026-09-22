@@ -555,19 +555,166 @@ BLOG_DATABASE = {
             {
                 "id": "domain-driven-boundaries",
                 "heading": "2. Defining Service Boundaries with Domain-Driven Design (DDD)",
-                "content": "The single biggest mistake in microservices is creating 'entity services' that turn every user action into a distributed chain of synchronous HTTP calls.\n\nInstead, define services around **Bounded Contexts**:\n- **Identity & Authentication**: Manages RBAC tokens, session invalidation, and tenant permissions.\n- **Order Fulfillment**: Encapsulates cart checkout, payment processing state machines, and inventory reservation.\n- **Notification Engine**: Decoupled asynchronous worker pool consuming events to dispatch SMS, Push, and Email alerts."
+                "content": "The single biggest mistake in microservices is creating 'entity services' (e.g., UserService, OrderService, ProductService) that turn every user action into a distributed chain of synchronous HTTP calls.\n\nInstead, define services around **Bounded Contexts**:\n- **Identity & Authentication**: Manages RBAC tokens, session invalidation, and tenant permissions.\n- **Order Fulfillment**: Encapsulates cart checkout, payment processing state machines, and inventory reservation.\n- **Notification Engine**: Decoupled asynchronous worker pool consuming events to dispatch SMS, Push, and Email alerts.\n\n> **Rule of Thumb**: If changing a single business feature requires coordinated commits across 4 different microservice repositories, your service boundaries are incorrectly coupled."
             },
             {
                 "id": "inter-service-communication",
                 "heading": "3. Synchronous vs. Asynchronous Communication",
-                "content": "Direct REST calls between microservices introduce cascading latency and tight runtime coupling. Modern distributed architectures employ a hybrid model:\n- **gRPC for Internal Synchronous RPCs**: Highly efficient binary serialization over HTTP/2.\n- **Message Brokers (Kafka / RabbitMQ / Redis Streams)**: Decouples the producer from consumers.",
+                "content": "Direct REST calls between microservices introduce cascading latency and tight runtime coupling. Modern distributed architectures employ a hybrid model:\n\n- **gRPC for Internal Synchronous RPCs**: Highly efficient binary serialization over HTTP/2 with strict Protocol Buffer contracts.\n- **Message Brokers (Kafka / RabbitMQ / Redis Streams) for Asynchronous Events**: Decouples the producer from consumers and guarantees event delivery even when downstream services are temporarily offline.",
                 "codeSnippet": {
                     "language": "python",
                     "filename": "events/publisher.py",
                     "description": "Example asynchronous event publishing using Redis Streams in Python:",
-                    "code": "import json\nimport redis\nfrom datetime import datetime\n\nclass DomainEventPublisher:\n    def __init__(self, redis_client: redis.Redis):\n        self.client = redis_client\n\n    def publish(self, stream_name: str, event_type: str, payload: dict) -> str:\n        event = {\n            'event_id': str(payload.get('id')),\n            'event_type': event_type,\n            'payload': json.dumps(payload),\n            'timestamp': datetime.utcnow().isoformat(),\n        }\n        return self.client.xadd(stream_name, event)\n"
+                    "code": "import json\nimport redis\nfrom datetime import datetime\n\nclass DomainEventPublisher:\n    def __init__(self, redis_client: redis.Redis):\n        self.client = redis_client\n\n    def publish(self, stream_name: str, event_type: str, payload: dict) -> str:\n        event = {\n            \"event_id\": str(payload.get(\"id\")),\n            \"event_type\": event_type,\n            \"timestamp\": datetime.utcnow().isoformat(),\n            \"payload\": json.dumps(payload)\n        }\n        # Append immutable event to distributed stream\n        message_id = self.client.xadd(stream_name, event)\n        return message_id"
                 }
+            },
+            {
+                "id": "data-management-sagas",
+                "heading": "4. Database-per-Service & The Saga Pattern",
+                "content": "In a microservices architecture, services must **never** directly read or write to another service's database. Sharing databases breaks encapsulation and makes independent schema migrations impossible.\n\nTo maintain cross-service consistency without two-phase commit (2PC) locks, use the **Saga Pattern**:\n- **Choreography-based Saga**: Each service executes a local transaction, publishes an event, and downstream services react to trigger next steps or compensatory rollbacks.\n- **Orchestration-based Saga**: A central orchestrator explicitly sends command messages to participant services and coordinates rollbacks if any step fails."
+            },
+            {
+                "id": "resilience-patterns",
+                "heading": "5. Resilience & Fault Tolerance Strategies",
+                "content": "In distributed systems, failures are inevitable. Designing for failure requires concrete protective mechanisms:\n- **Circuit Breakers**: Stop hammering a failing downstream service and immediately return fallback responses.\n- **Exponential Backoff with Jitter**: Avoid thundering herds by adding randomized delay to automatic retries.\n- **Bulkheads**: Isolate thread pools and connection pools so that failures in non-critical features cannot exhaust resources for core user flows."
             }
+        ],
+        "takeaways": [
+            "Start with a modular monolith and split only when clear domain boundaries and scaling bottlenecks emerge.",
+            "Enforce database-per-service strictly to maintain deployment autonomy.",
+            "Prefer asynchronous event-driven messaging over synchronous HTTP chains.",
+            "Implement distributed tracing (OpenTelemetry) and centralized structured logging from day one.",
+            "Design every inter-service call with timeouts, retries, and circuit breaker fallbacks."
+        ]
+    },
+
+    "building-scalable-apis-nodejs-graphql": {
+        "slug": "building-scalable-apis-nodejs-graphql",
+        "title": "Building Scalable APIs with Node.js and GraphQL Best Practices",
+        "subtitle": "How to architect high-performance GraphQL APIs with DataLoader batching, schema modularization, and edge caching strategies.",
+        "category": "Backend & API Engineering",
+        "date": "October 28, 2024",
+        "readTime": "6 min read",
+        "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1200&h=675&fit=crop",
+        "tags": ["Node.js", "GraphQL", "APIs", "Redis", "Performance"],
+        "author": {
+            "name": "Roshan Damor",
+            "role": "Software Engineer",
+            "avatar": "/static/images/hero.webp",
+            "bio": "Full-stack software engineer focused on distributed backend architectures, scalable database designs, and production AI workflows."
+        },
+        "tldr": "GraphQL allows client-driven data fetching, but naive resolver implementations can easily cripple database performance via the N+1 problem. Solving this requires DataLoader batching, query depth limiting, and Redis caching.",
+        "toc": [
+            {"id": "why-graphql", "title": "1. Why GraphQL for Modern Frontends"},
+            {"id": "solving-n-plus-one", "title": "2. Solving the N+1 Problem with DataLoader"},
+            {"id": "schema-design", "title": "3. Production Schema Modularization"},
+            {"id": "query-protection", "title": "4. Protecting Against Malicious Deep Queries"},
+            {"id": "caching-strategies", "title": "5. Caching & Performance Optimization"}
+        ],
+        "sections": [
+            {
+                "id": "why-graphql",
+                "heading": "1. Why GraphQL for Modern Frontends",
+                "content": "As frontends evolve into rich, multi-platform client applications (React Web, React Native, Electron), REST APIs often lead to two chronic problems:\n- **Over-fetching**: Downloading massive JSON payloads with dozens of unneeded properties.\n- **Under-fetching (Waterfall Requests)**: Needing to make 4-5 sequential HTTP requests just to render a single dashboard screen.\n\nGraphQL eliminates both by allowing client applications to declare the exact data shape they need in a single roundtrip."
+            },
+            {
+                "id": "solving-n-plus-one",
+                "heading": "2. Solving the N+1 Problem with DataLoader",
+                "content": "The most common performance pitfall in GraphQL is the **N+1 query problem**. If a query requests 50 authors and each author's books, a naive resolver executes 1 SQL query for the authors and 50 separate SQL queries for the books!\n\n**DataLoader** batches all individual requests within a single Node.js event loop tick and executes a single `WHERE id IN (...)` bulk query:",
+                "codeSnippet": {
+                    "language": "javascript",
+                    "filename": "loaders/bookLoader.js",
+                    "description": "Batch loading database records using DataLoader in Node.js:",
+                    "code": "import DataLoader from 'dataloader';\nimport db from '../db.js';\n\nexport const createBookLoader = () => {\n  return new DataLoader(async (authorIds) => {\n    const books = await db.query(\n      'SELECT * FROM books WHERE author_id = ANY($1)',\n      [authorIds]\n    );\n    const booksByAuthorId = new Map();\n    books.rows.forEach((book) => {\n      if (!booksByAuthorId.has(book.author_id)) {\n        booksByAuthorId.set(book.author_id, []);\n      }\n      booksByAuthorId.get(book.author_id).push(book);\n    });\n    return authorIds.map((id) => booksByAuthorId.get(id) || []);\n  });\n};"
+                }
+            },
+            {
+                "id": "schema-design",
+                "heading": "3. Production Schema Modularization",
+                "content": "Never write your entire GraphQL schema in one giant schema file. Group types, queries, mutations, and resolvers by business feature modules:\n- `modules/user/user.typeDefs.js` & `user.resolvers.js`\n- `modules/project/project.typeDefs.js` & `project.resolvers.js`\n- `modules/analytics/analytics.typeDefs.js` & `analytics.resolvers.js`\n\nMerge them using tools like `@graphql-tools/schema` into an executable production schema."
+            },
+            {
+                "id": "query-protection",
+                "heading": "4. Protecting Against Malicious Deep Queries",
+                "content": "Because GraphQL gives clients control over query composition, malicious actors can send circular or deeply nested queries (e.g. `user -> friends -> friends -> friends...`) that exhaust server CPU and memory.\n\nEssential defenses:\n- **Query Depth Limiting**: Reject queries deeper than 6-8 nesting levels.\n- **Query Complexity Cost Analysis**: Assign cost weights to fields and reject requests exceeding safe complexity budgets.\n- **Rate Limiting by Token/IP**: Throttle requests using Redis token buckets."
+            },
+            {
+                "id": "caching-strategies",
+                "heading": "5. Caching & Performance Optimization",
+                "content": "Unlike REST where HTTP caching uses URLs naturally, GraphQL POST requests require specialized caching:\n- **DataLoader In-Memory Per-Request Cache**: Deduplicates identical entity fetches within a single HTTP request lifecycle.\n- **Redis Response Cache**: Cache deterministic query results by hashing the query string and variables.\n- **Persisted Queries (APQ)**: Clients send SHA-256 hashes instead of full query strings, cutting network payload size and enabling CDN edge caching."
+            }
+        ],
+        "takeaways": [
+            "Always use DataLoader in resolvers to eliminate the N+1 database problem.",
+            "Enforce query depth and complexity analysis before executing user queries.",
+            "Modularize schema definitions by business domain rather than technical layers.",
+            "Implement Persisted Queries for bandwidth savings and CDN edge caching.",
+            "Authenticate users in middleware and pass permission context into resolver layers."
+        ]
+    },
+
+    "docker-kubernetes-container-orchestration": {
+        "slug": "docker-kubernetes-container-orchestration",
+        "title": "Docker and Kubernetes: Complete Guide to Container Orchestration",
+        "subtitle": "From multi-stage Docker builds to production Kubernetes deployments, autoscaling, and zero-downtime rolling updates.",
+        "category": "DevOps & Cloud Infrastructure",
+        "date": "September 12, 2024",
+        "readTime": "8 min read",
+        "image": "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=1200&h=675&fit=crop",
+        "tags": ["Docker", "Kubernetes", "DevOps", "CI/CD", "Cloud"],
+        "author": {
+            "name": "Roshan Damor",
+            "role": "Software Engineer",
+            "avatar": "/static/images/hero.webp",
+            "bio": "Full-stack software engineer focused on distributed backend architectures, scalable database designs, and production AI workflows."
+        },
+        "tldr": "Containers package application code with dependencies for environment parity, while Kubernetes orchestrates automated scaling, self-healing, rolling deployments, and service discovery across production clusters.",
+        "toc": [
+            {"id": "multi-stage-docker", "title": "1. Multi-Stage Docker Build Optimization"},
+            {"id": "k8s-building-blocks", "title": "2. Kubernetes Core Primitives & Topology"},
+            {"id": "health-probes", "title": "3. Liveness, Readiness & Startup Probes"},
+            {"id": "config-secrets", "title": "4. Managing ConfigMaps & Cloud Secrets"},
+            {"id": "zero-downtime", "title": "5. Zero-Downtime Rolling Deployments & HPA"}
+        ],
+        "sections": [
+            {
+                "id": "multi-stage-docker",
+                "heading": "1. Multi-Stage Docker Build Optimization",
+                "content": "A common production mistake is deploying bloated Docker images containing compilers, build SDKs, and temporary artifacts.\n\n**Multi-stage builds** keep image sizes under 50MB and drastically reduce the security vulnerability attack surface:",
+                "codeSnippet": {
+                    "language": "bash",
+                    "filename": "Dockerfile",
+                    "description": "Optimized multi-stage Dockerfile for production Python/Node apps:",
+                    "code": "FROM python:3.11-slim AS builder\nWORKDIR /app\nRUN apt-get update && apt-get install -y --no-install-recommends gcc libpq-dev\nCOPY requirements.txt .\nRUN pip install --no-cache-dir --user -r requirements.txt\n\nFROM python:3.11-slim\nWORKDIR /app\nCOPY --from=builder /root/.local /root/.local\nCOPY . .\nENV PATH=/root/.local/bin:$PATH\nUSER nobody\nEXPOSE 8000\nCMD [\"gunicorn\", \"config.wsgi:application\", \"--bind\", \"0.0.0.0:8000\", \"--workers\", \"4\"]"
+                }
+            },
+            {
+                "id": "k8s-building-blocks",
+                "heading": "2. Kubernetes Core Primitives & Topology",
+                "content": "Understanding how Kubernetes organizes workloads is essential for building resilient deployments:\n- **Pod**: The smallest deployable unit in Kubernetes, wrapping one or more tightly coupled containers.\n- **Deployment**: Manages declarative state, automated rollouts, and rolling version upgrades.\n- **Service**: Stable network endpoint (ClusterIP, NodePort, LoadBalancer) that abstracts dynamic Pod IP addresses.\n- **Ingress**: Routes external HTTP/HTTPS traffic to internal services based on hostnames and URL paths."
+            },
+            {
+                "id": "health-probes",
+                "heading": "3. Liveness, Readiness & Startup Probes",
+                "content": "Kubernetes uses three distinct health probes to keep applications self-healing without dropping active traffic:\n- **Startup Probe**: Determines if slow-starting apps (e.g. warming caches or compiling schemas) have initialized.\n- **Readiness Probe**: Dictates whether the Pod is ready to receive network traffic from the Service load balancer.\n- **Liveness Probe**: Detects deadlocks and crashes, triggering automated Pod restarts if the probe fails."
+            },
+            {
+                "id": "config-secrets",
+                "heading": "4. Managing ConfigMaps & Cloud Secrets",
+                "content": "Never bake environment configurations or credentials into Docker container images:\n- **ConfigMaps**: Store non-sensitive configuration keys (e.g., `LOG_LEVEL`, `API_BASE_URL`, `MAX_RETRIES`).\n- **Secrets**: Encrypt sensitive credentials (database passwords, API tokens, JWT private keys) and inject them securely as environment variables or volume mounts."
+            },
+            {
+                "id": "zero-downtime",
+                "heading": "5. Zero-Downtime Rolling Deployments & Horizontal Pod Autoscaling (HPA)",
+                "content": "Kubernetes allows continuous deployments with zero downtime by gradually replacing old Pods with new Pods using `maxSurge` and `maxUnavailable` controls.\n\nCombine this with **Horizontal Pod Autoscaling (HPA)** to automatically scale Pod replicas based on real-time CPU, memory, or custom Prometheus metrics during traffic spikes."
+            }
+        ],
+        "takeaways": [
+            "Always use multi-stage Docker builds and non-root users in production.",
+            "Configure accurate CPU and memory requests and limits on every Pod.",
+            "Implement readiness and liveness probes to prevent dropped traffic during deployments.",
+            "Never store sensitive credentials in images; inject via Kubernetes Secrets.",
+            "Use Horizontal Pod Autoscaler (HPA) to dynamically handle production traffic spikes."
         ]
     }
 }
