@@ -179,6 +179,36 @@ export default function BlogDetailPage({ slug, onNavigate }) {
     </aside>
   );
 
+  if (!article) {
+    return (
+      <div className="page-container">
+        <div className="page-wrapper" style={{ padding: '40px 20px' }}>
+          <div className="empty-state-card" style={{ maxWidth: '640px', margin: '40px auto' }}>
+            <div className="empty-state-glow"></div>
+            <div className="empty-state-icon-wrapper">
+              <i className="fas fa-book-open"></i>
+            </div>
+            <div className="empty-state-badge">
+              <span className="badge-dot"></span>
+              Engineering Publications
+            </div>
+            <h2 className="empty-state-title">Article Not Found</h2>
+            <p className="empty-state-desc">
+              The requested technical article is currently not available or has not been published yet in DevAdmin.
+            </p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => onNavigate('home', 'blog')}
+            >
+              <i className="fas fa-arrow-left" style={{ marginRight: '8px' }}></i> Return to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="page-container">
       <div className="page-wrapper">

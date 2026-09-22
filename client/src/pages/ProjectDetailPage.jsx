@@ -378,21 +378,30 @@ export default function ProjectDetailPage({ slug, onNavigate }) {
   if (error || !project) {
     return (
       <div className="page-container">
-        <div className="page-wrapper" style={{ padding: '80px 20px', textAlign: 'center' }}>
-          <div style={{ display: 'inline-block', fontSize: '48px', color: '#f87171', marginBottom: '16px' }}>
-            <i className="fas fa-exclamation-triangle"></i>
+        <div className="page-wrapper" style={{ padding: '40px 20px' }}>
+          <div className="empty-state-card" style={{ maxWidth: '640px', margin: '40px auto' }}>
+            <div className="empty-state-glow"></div>
+            <div className="empty-state-icon-wrapper">
+              <i className="fas fa-folder-open"></i>
+            </div>
+            <div className="empty-state-badge">
+              <span className="badge-dot"></span>
+              Project Catalog
+            </div>
+            <h2 className="empty-state-title">Project Case Study Not Found</h2>
+            <p className="empty-state-desc">
+              The requested project documentation could not be found or has not been published yet in DevAdmin.
+            </p>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => onNavigate('home', 'projects')}
+              >
+                <i className="fas fa-arrow-left" style={{ marginRight: '8px' }}></i> Return to Projects
+              </button>
+            </div>
           </div>
-          <h2 style={{ color: '#fff', fontSize: '24px', marginBottom: '12px' }}>Project Not Found</h2>
-          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '15px', maxWidth: '480px', margin: '0 auto 28px' }}>
-            The requested project could not be found or has been moved. Explore other projects from the catalog.
-          </p>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => onNavigate('home', 'projects')}
-          >
-            <i className="fas fa-arrow-left" style={{ marginRight: '8px' }}></i> Return to Projects
-          </button>
         </div>
       </div>
     );

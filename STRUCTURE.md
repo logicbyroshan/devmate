@@ -3,19 +3,17 @@
 ```
 DevMate/
 ├── .gitignore                   # Git ignore specifications for Python, Node, Vite, and OS
+├── LICENSE                      # Proprietary software license notice
 ├── README.md                    # Main repository landing overview & quick-start
 ├── SETUP.md                     # Detailed local setup and verification guide
 ├── API.md                       # Comprehensive REST API specification & Admin Dashboard Guide
 ├── ADMIN_API.md                 # Staff Admin REST API reference & authentication
-├── api.md                       # Canonical lowercase API specification copy
 ├── SECURITY.md                  # Security policies, disclosure process, and hardening
 ├── STRUCTURE.md                 # Project architecture and directory structure map
 ├── ABOUT.md                     # Mission statement, engineering highlights & tech stack
-├── CONTRIBUTING.md              # Open source contribution workflow & PR rules
-├── CODE_OF_CONDUCT.md           # Community standards & Contributor Covenant
 ├── DEPLOYMENT.md                # Production deployment guide (VPS, Nginx, Gunicorn, Systemd)
 │
-├── client/                      # Modern React 18 + Vite 5 Single Page Application
+├── client/                      # Modern React 18 + Vite 5 Single Page Application (100% Decoupled API Consumer)
 │   ├── index.html               # Main entrypoint, SEO tags, JSON-LD schemas, Google Fonts
 │   ├── package.json             # NPM dependencies (Vite, React, Vitest, ESLint, Lenis, KaTeX)
 │   ├── vite.config.js           # Vite build config with backend proxy and path resolution

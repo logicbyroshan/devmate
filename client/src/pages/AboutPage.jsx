@@ -195,6 +195,21 @@ export default function AboutPage({ onNavigate }) {
                 <div style={{ textAlign: 'center', padding: '24px' }}>
                   <i className="fas fa-spinner fa-spin" style={{ fontSize: '24px', color: '#38bdf8' }}></i>
                 </div>
+              ) : groupedSkills.length === 0 ? (
+                <div className="empty-state-card" style={{ padding: '36px 20px', maxWidth: '100%' }}>
+                  <div className="empty-state-glow"></div>
+                  <div className="empty-state-icon-wrapper" style={{ width: '56px', height: '56px', fontSize: '22px' }}>
+                    <i className="fas fa-layer-group"></i>
+                  </div>
+                  <div className="empty-state-badge">
+                    <span className="badge-dot"></span>
+                    Skill Matrix
+                  </div>
+                  <h4 className="empty-state-title" style={{ fontSize: '18px' }}>Technical Skills Updating</h4>
+                  <p className="empty-state-desc" style={{ fontSize: '13px', marginBottom: '14px' }}>
+                    Skill proficiencies and categorized frameworks are currently being synchronized from DevAdmin.
+                  </p>
+                </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
                   {groupedSkills.map((domain, idx) => (

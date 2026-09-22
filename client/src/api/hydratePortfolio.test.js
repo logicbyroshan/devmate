@@ -87,3 +87,39 @@ describe('Dynamic Project Status Display', () => {
   });
 });
 
+describe('Dynamic Empty State Rendering', () => {
+  it('renders futuristic empty state card when skills array is empty', async () => {
+    const mockContainer = { innerHTML: '' };
+    globalThis.document = {
+      querySelector: (sel) => (sel === '.tech-grid' ? mockContainer : null),
+    };
+    const { updateSkills } = await import('./hydratePortfolio');
+    updateSkills([]);
+    expect(mockContainer.innerHTML).toContain('empty-state-card');
+    expect(mockContainer.innerHTML).toContain('Technical Proficiencies Updating');
+  });
+
+  it('renders futuristic empty state card when projects array is empty', async () => {
+    const mockSlider = { innerHTML: '' };
+    globalThis.document = {
+      querySelector: (sel) => (sel === '.projects-slider' ? mockSlider : null),
+    };
+    const { updateProjects } = await import('./hydratePortfolio');
+    updateProjects([]);
+    expect(mockSlider.innerHTML).toContain('empty-state-card');
+    expect(mockSlider.innerHTML).toContain('Projects Under Active Curation');
+  });
+
+  it('renders futuristic empty state card when experience array is empty', async () => {
+    const mockTimeline = { innerHTML: '' };
+    globalThis.document = {
+      querySelector: (sel) => (sel === '.roadmap-timeline' ? mockTimeline : null),
+    };
+    const { updateExperience } = await import('./hydratePortfolio');
+    updateExperience([]);
+    expect(mockTimeline.innerHTML).toContain('empty-state-card');
+    expect(mockTimeline.innerHTML).toContain('Career Timeline Updating');
+  });
+});
+
+

@@ -401,6 +401,26 @@ function updateSkills(skills = []) {
 
   const validSkills = Array.isArray(skills) ? skills.filter(Boolean) : [];
   if (!validSkills.length) {
+    container.innerHTML = `
+      <div class="empty-state-card">
+        <div class="empty-state-glow"></div>
+        <div class="empty-state-icon-wrapper">
+          <i class="fas fa-layer-group"></i>
+        </div>
+        <div class="empty-state-badge">
+          <span class="badge-dot"></span>
+          Skill Matrix
+        </div>
+        <h3 class="empty-state-title">Technical Proficiencies Updating</h3>
+        <p class="empty-state-desc">
+          Core technical competencies, language proficiencies, and engineering tools are being synchronized live from DevAdmin.
+        </p>
+        <div class="empty-state-status-pill">
+          <i class="fas fa-satellite-dish" style="color: #38bdf8;"></i>
+          <span>Connected to DevAdmin API</span>
+        </div>
+      </div>
+    `;
     return;
   }
 
@@ -485,6 +505,26 @@ function updateProjects(projects = []) {
 
   const validProjects = Array.isArray(projects) ? projects.filter(Boolean) : [];
   if (!validProjects.length) {
+    slider.innerHTML = `
+      <div class="empty-state-card" style="margin: 0 auto; width: 100%;">
+        <div class="empty-state-glow"></div>
+        <div class="empty-state-icon-wrapper">
+          <i class="fas fa-folder-open"></i>
+        </div>
+        <div class="empty-state-badge">
+          <span class="badge-dot"></span>
+          Project Catalog
+        </div>
+        <h3 class="empty-state-title">Projects Under Active Curation</h3>
+        <p class="empty-state-desc">
+          Engineering case studies, system architecture models, and live production deployments are being curated. Published projects from DevAdmin will appear here automatically.
+        </p>
+        <div class="empty-state-status-pill">
+          <i class="fas fa-code-branch" style="color: #a78bfa;"></i>
+          <span>Awaiting Published Projects</span>
+        </div>
+      </div>
+    `;
     return;
   }
 
@@ -550,7 +590,29 @@ function updateExperience(experience = []) {
   if (!timeline) return;
 
   const items = Array.isArray(experience) ? experience.filter(Boolean) : [];
-  if (!items.length) return;
+  if (!items.length) {
+    timeline.innerHTML = `
+      <div class="empty-state-card" style="margin: 0 auto; width: 100%;">
+        <div class="empty-state-glow"></div>
+        <div class="empty-state-icon-wrapper">
+          <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="empty-state-badge">
+          <span class="badge-dot"></span>
+          Career Roadmap
+        </div>
+        <h3 class="empty-state-title">Career Timeline Updating</h3>
+        <p class="empty-state-desc">
+          Professional engineering positions, software milestones, and organizational impact metrics are being updated in DevAdmin.
+        </p>
+        <div class="empty-state-status-pill">
+          <i class="fas fa-road" style="color: #38bdf8;"></i>
+          <span>Connected to DevAdmin API</span>
+        </div>
+      </div>
+    `;
+    return;
+  }
 
   const timelineLine = '<div class="timeline-line"></div>';
 
