@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { fetchBlogBySlug, fetchBlogs } from '../api/portfolioApi';
 import { BLOG_ARTICLES } from '../api/blogData';
 import CodeBlockShiki from '../components/doc/CodeBlockShiki';
+import RichDocRenderer from '../components/doc/RichDocRenderer';
 import '../../public/static/css/doc-engine.css';
 
 export default function BlogDetailPage({ slug, onNavigate }) {
@@ -279,34 +280,16 @@ export default function BlogDetailPage({ slug, onNavigate }) {
               </div>
             )}
 
-            {/* Article sections */}
+            {/* Article sections / Full Rich Content */}
             <div className="blog-body-prose">
-              {article.sections && Array.isArray(article.sections) ? (
+              {article.content ? (
+                <RichDocRenderer content={article.content} />
+              ) : article.sections && Array.isArray(article.sections) ? (
                 article.sections.map((sec) => (
                   <section key={sec.id} id={sec.id} className="blog-article-section">
                     <h2 className="blog-section-title">{sec.heading}</h2>
                     <div className="blog-section-content">
-                      {sec.content && sec.content.split('\n\n').map((paragraph, pIdx) => {
-                        if (paragraph.startsWith('>')) {
-                          return (
-                            <blockquote key={pIdx} className="blog-blockquote">
-                              {paragraph.replace(/^>\s*/, '')}
-                            </blockquote>
-                          );
-                        }
-                        if (paragraph.startsWith('-')) {
-                          return (
-                            <ul key={pIdx} className="blog-prose-list">
-                              {paragraph.split('\n').map((item, iIdx) => (
-                                <li key={iIdx} dangerouslySetInnerHTML={{ __html: item.replace(/^-\s*/, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>') }} />
-                              ))}
-                            </ul>
-                          );
-                        }
-                        return (
-                          <p key={pIdx} dangerouslySetInnerHTML={{ __html: paragraph.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>') }} />
-                        );
-                      })}
+                      <RichDocRenderer content={sec.content} />
                     </div>
                     {sec.codeSnippet && (
                       <div style={{ margin: '24px 0' }}>
