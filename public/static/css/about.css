@@ -490,9 +490,9 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 500px) {
     .about-section {
-        padding: 60px 0;
+        padding: 50px 0;
     }
     
     .about-heading {
@@ -500,96 +500,57 @@
     }
     
     .about-images {
-        max-width: 400px;
-        height: 300px;
+        position: relative !important;
+        width: 100% !important;
+        max-width: 320px !important;
+        height: auto !important;
+        min-height: auto !important;
+        margin: 0 auto 28px auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     
-    .about-img-1 {
-        width: 75px;
-        height: 75px;
-        border-radius: 18px;
-        left: 2%;
-        top: 18%;
+    /* Hide all extra floating images, background typography, and decorations */
+    .about-img-1,
+    .about-img-2,
+    .about-img-4,
+    .about-img-5,
+    .about-bg-text,
+    .about-decoration-circle,
+    .about-decoration-dot {
+        display: none !important;
     }
     
-    .about-img-2 {
-        width: 30px;
-        height: 30px;
-        border-radius: 10px;
-        left: 8%;
-        bottom: 22%;
-    }
-    
+    /* Center big image only */
     .about-img-3 {
-        width: 160px;
-        height: 200px;
-        margin-left: -80px;
-        margin-top: -100px;
-        padding: 10px;
-        border-radius: 15px;
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        margin: 0 auto !important;
+        transform: none !important;
+        width: min(100%, 280px) !important;
+        height: auto !important;
+        aspect-ratio: 4 / 5 !important;
+        display: block !important;
+        padding: 12px !important;
+        box-sizing: border-box !important;
+        border-radius: 16px 16px 0 0 !important;
+        z-index: 2 !important;
     }
     
     .about-img-3 img {
-        border-radius: 12px;
-    }
-    
-    .about-img-4 {
-        width: 60px;
-        height: 60px;
-        border-radius: 16px;
-        right: 3%;
-        top: 20%;
-    }
-    
-    .about-img-5 {
-        width: 54px;
-        height: 54px;
-        border-radius: 14px;
-        right: 6%;
-        bottom: 18%;
-    }
-    
-    .circle-1 {
-        width: 31px;
-        height: 31px;
-    }
-    
-    .circle-2 {
-        width: 53px;
-        height: 53px;
-    }
-    
-    .about-decoration-dot {
-        width: 5px;
-        height: 5px;
-    }
-    
-    .dot-1, .dot-2, .dot-5, .dot-8 {
-        width: 5px;
-        height: 5px;
-    }
-    
-    .dot-3, .dot-6, .dot-7, .dot-9 {
-        width: 3px;
-        height: 3px;
-    }
-    
-    .dot-4 {
-        width: 4px;
-        height: 4px;
-    }
-    
-    .dot-10 {
-        width: 4px;
-        height: 4px;
-    }
-    
-    .about-bg-word {
-        font-size: 60px;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
+        border-radius: 12px 12px 0 0 !important;
     }
     
     .about-description {
-        font-size: 15px;
+        font-size: 14.5px;
     }
     
     .about-subdescription {
@@ -599,79 +560,25 @@
 
 @media (max-width: 375px) {
     .about-section {
-        padding: 50px 0;
+        padding: 44px 0;
     }
     
     .about-heading {
-        font-size: 26px;
+        font-size: 25px;
     }
     
     .about-images {
-        max-width: 340px;
-        height: 250px;
-    }
-    
-    .about-img-1 {
-        width: 62px;
-        height: 62px;
-        border-radius: 15px;
-        left: 3%;
-        top: 18%;
-    }
-    
-    .about-img-2 {
-        width: 26px;
-        height: 26px;
-        border-radius: 8px;
-        left: 10%;
-        bottom: 24%;
+        max-width: 280px !important;
+        margin: 0 auto 24px auto !important;
     }
     
     .about-img-3 {
-        width: 140px;
-        height: 175px;
-        margin-left: -70px;
-        margin-top: -87.5px;
-        padding: 8px;
-        border-radius: 13px;
-    }
-    
-    .about-img-3 img {
-        border-radius: 10px;
-    }
-    
-    .about-img-4 {
-        width: 50px;
-        height: 50px;
-        border-radius: 13px;
-        right: 4%;
-        top: 22%;
-    }
-    
-    .about-img-5 {
-        width: 45px;
-        height: 45px;
-        border-radius: 12px;
-        right: 8%;
-        bottom: 20%;
-    }
-    
-    .circle-1 {
-        width: 26px;
-        height: 26px;
-    }
-    
-    .circle-2 {
-        width: 45px;
-        height: 45px;
-    }
-    
-    .about-bg-word {
-        font-size: 46px;
+        width: min(100%, 250px) !important;
+        padding: 10px !important;
     }
     
     .about-description {
-        font-size: 14px;
+        font-size: 13.5px;
     }
     
     .about-subdescription {

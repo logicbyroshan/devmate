@@ -522,6 +522,57 @@
     }
 }
 
+/* Under 500px: About section center big image only */
+@media screen and (max-width: 500px) {
+    .about-images {
+        position: relative !important;
+        width: 100% !important;
+        max-width: 320px !important;
+        height: auto !important;
+        min-height: auto !important;
+        margin: 0 auto 28px auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .about-img-1,
+    .about-img-2,
+    .about-img-4,
+    .about-img-5,
+    .about-bg-text,
+    .about-decoration-circle,
+    .about-decoration-dot {
+        display: none !important;
+    }
+
+    .about-img-3 {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        margin: 0 auto !important;
+        transform: none !important;
+        width: min(100%, 280px) !important;
+        height: auto !important;
+        aspect-ratio: 4 / 5 !important;
+        display: block !important;
+        padding: 12px !important;
+        box-sizing: border-box !important;
+        border-radius: 16px 16px 0 0 !important;
+        z-index: 2 !important;
+    }
+
+    .about-img-3 img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+}
+
 /* Phone baseline */
 @media screen and (max-width: 480px) {
     .navbar-dock-backdrop {
