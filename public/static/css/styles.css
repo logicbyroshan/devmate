@@ -470,16 +470,19 @@ body {
     padding: 12px 26px;
     background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%) !important;
     color: #ffffff !important;
-    border: 1px solid rgba(56, 189, 248, 0.5) !important;
+    border: 1px solid rgba(56, 189, 248, 0.6) !important;
     border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 4px 18px rgba(37, 99, 235, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .form-submit-btn:hover {
     transform: translateY(-2px);
     background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%) !important;
-    border-color: rgba(56, 189, 248, 0.75) !important;
-    box-shadow: 0 6px 22px rgba(56, 189, 248, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+    border-color: rgba(56, 189, 248, 0.85) !important;
+    box-shadow: 0 6px 24px rgba(56, 189, 248, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    opacity: 1 !important;
 }
 
 .github-btn {
@@ -663,7 +666,6 @@ body {
 .tech-card,
 .project-card,
 .roadmap-card,
-.contact-wrapper,
 .faq-item,
 .blog-image-wrapper,
 .about-img-3,
@@ -674,6 +676,11 @@ body {
     background: linear-gradient(180deg, var(--card-gradient-start) 0%, rgba(10, 16, 36, 0.5) 55%, var(--card-gradient-end) 100%) !important;
     -webkit-mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
     mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
+}
+
+.contact-wrapper {
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
 }
 
 .btn,
