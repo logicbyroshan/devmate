@@ -38,6 +38,16 @@
     <link rel="alternate" href="https://logicbyroshan.in/" hreflang="en" />
     <link rel="alternate" href="https://logicbyroshan.in/" hreflang="x-default" />
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context Data" />
+
+    <!-- Geo & Local AEO Signals -->
+    <meta name="geo.region" content="IN-MP" />
+    <meta name="geo.placename" content="Bhopal" />
+    <meta name="geo.position" content="23.259933;77.412615" />
+    <meta name="ICBM" content="23.259933, 77.412615" />
+    <meta name="distribution" content="global" />
+    <meta name="rating" content="general" />
+    <meta name="revisit-after" content="3 days" />
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="profile" />
@@ -72,7 +82,7 @@
     />
     <meta name="twitter:image" content="https://logicbyroshan.in/static/images/hero.webp" />
 
-    <!-- Schema.org Rich Structured Data (JSON-LD) for Search & Generative AI Engines -->
+    <!-- Schema.org Rich Structured Data (JSON-LD) for Search & Generative AI Engines (AEO) -->
     <script type="application/ld+json" id="seo-schema-graph">
       {
         "@context": "https://schema.org",
@@ -95,9 +105,16 @@
             "url": "https://logicbyroshan.in/",
             "image": "https://logicbyroshan.in/static/images/hero.webp",
             "jobTitle": "Software Engineer & AI Developer",
-            "description": "Roshan Damor is Software Engineer, AI Engineer, and Full Stack Developer from University Institute of Technology, RGPV Bhopal (UIT RGPV). Creator of CardFlow SaaS (1,000+ users) and VidyaMaxx AI Platform.",
+            "description": "Roshan Damor is Software Engineer, AI Engineer, and Full Stack Developer from University Institute of Technology, RGPV Bhopal (UIT RGPV). Creator of CardFlow SaaS (1,000+ users, 136K+ cards processed) and VidyaMaxx AI Platform.",
             "gender": "Male",
             "nationality": "Indian",
+            "email": "mailto:mail@logicbyroshan.in",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Bhopal",
+              "addressRegion": "Madhya Pradesh",
+              "addressCountry": "IN"
+            },
             "alumniOf": {
               "@type": "CollegeOrUniversity",
               "name": "University Institute of Technology, RGPV Bhopal",
@@ -137,18 +154,28 @@
               "https://leetcode.com/logicbyroshan",
               "https://logicbyroshan.in"
             ],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "Professional Inquiries & Hiring",
+              "email": "mail@logicbyroshan.in",
+              "url": "https://logicbyroshan.in/#contact"
+            },
             "knowsAbout": [
               "Software Engineering",
               "Artificial Intelligence (AI)",
               "Full Stack Web Development",
-              "LLM Applications",
-              "RAG Systems",
+              "Large Language Models (LLMs)",
+              "Retrieval-Augmented Generation (RAG)",
               "Python",
               "Django",
-              "React.js",
+              "Django REST Framework",
+              "FastAPI",
+              "React.js 18",
+              "Next.js",
               "PostgreSQL",
               "Redis",
               "Celery",
+              "Docker",
               "System Architecture",
               "Distributed Systems",
               "SaaS Platforms",
@@ -174,7 +201,53 @@
             "name": "Roshan Damor - Software Engineer Profile",
             "mainEntity": {
               "@id": "https://logicbyroshan.in/#person"
+            },
+            "speakable": {
+              "@type": "SpeakableSpecification",
+              "cssSelector": [
+                ".hero-heading",
+                ".hero-description",
+                ".about-description",
+                ".faq-question",
+                ".faq-answer"
+              ]
             }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://logicbyroshan.in/#breadcrumbs",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://logicbyroshan.in/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "About",
+                "item": "https://logicbyroshan.in/about"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Experience",
+                "item": "https://logicbyroshan.in/experience"
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Projects",
+                "item": "https://logicbyroshan.in/#projects"
+              },
+              {
+                "@type": "ListItem",
+                "position": 5,
+                "name": "Articles",
+                "item": "https://logicbyroshan.in/#blog"
+              }
+            ]
           },
           {
             "@type": "ItemList",
@@ -186,18 +259,18 @@
                 "@type": "SoftwareApplication",
                 "name": "CardFlow",
                 "applicationCategory": "BusinessApplication",
-                "operatingSystem": "Web, Desktop",
+                "operatingSystem": "Web, Cloud",
                 "url": "https://logicbyroshan.in/projects/cardflow",
-                "description": "Production SaaS platform for ID card management and automated generation serving 1,000+ active users.",
+                "description": "Production SaaS platform for ID card management and automated generation serving 1,000+ active users and 136,000+ processed cards.",
                 "author": { "@id": "https://logicbyroshan.in/#person" }
               },
               {
                 "@type": "SoftwareApplication",
                 "name": "VidyaMaxx",
                 "applicationCategory": "EducationalApplication",
-                "operatingSystem": "Web, Desktop",
+                "operatingSystem": "Web, Cloud",
                 "url": "https://logicbyroshan.in/projects/vidyamaxx",
-                "description": "AI-integrated school management platform bringing academics, operations, and parent communication together.",
+                "description": "AI-integrated school management ERP unifying academic reporting, operations, fee management, and parent communication.",
                 "author": { "@id": "https://logicbyroshan.in/#person" }
               },
               {
@@ -206,7 +279,34 @@
                 "applicationCategory": "UtilitiesApplication",
                 "operatingSystem": "Desktop, Cross-platform",
                 "url": "https://logicbyroshan.in/projects/printnexx",
-                "description": "Internal image processing and card finishing tool built with Python and OpenCV.",
+                "description": "High-throughput automated image processing and card finishing pipeline built with Python and OpenCV.",
+                "author": { "@id": "https://logicbyroshan.in/#person" }
+              },
+              {
+                "@type": "SoftwareApplication",
+                "name": "EazeTrip",
+                "applicationCategory": "TravelApplication",
+                "operatingSystem": "Web, Cloud",
+                "url": "https://logicbyroshan.in/projects/eazetrip",
+                "description": "B2B travel operations management software streamlining booking itineraries, vendor workflows, and client coordination.",
+                "author": { "@id": "https://logicbyroshan.in/#person" }
+              },
+              {
+                "@type": "SoftwareApplication",
+                "name": "TaskFlixx",
+                "applicationCategory": "ProductivityApplication",
+                "operatingSystem": "Web, Cloud",
+                "url": "https://logicbyroshan.in/projects/taskflixx",
+                "description": "AI-powered contextual task scheduling and developer workflow automation tool.",
+                "author": { "@id": "https://logicbyroshan.in/#person" }
+              },
+              {
+                "@type": "SoftwareApplication",
+                "name": "PrepSarthi",
+                "applicationCategory": "EducationalApplication",
+                "operatingSystem": "Web, Cloud",
+                "url": "https://logicbyroshan.in/projects/prepsarthi",
+                "description": "Adaptive AI-driven learning and exam preparation platform with automated question synthesis.",
                 "author": { "@id": "https://logicbyroshan.in/#person" }
               }
             ]
@@ -228,7 +328,7 @@
                 "name": "What is Roshan Damor's education and background?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Roshan Damor completed his engineering degree at University Institute of Technology, RGPV Bhopal (UIT RGPV). He is currently working as Software Engineer at Adarsh ID Cards while building AI platforms like VidyaMaxx and CardFlow."
+                  "text": "Roshan Damor completed his engineering degree (B.Tech in Information Technology) at University Institute of Technology, RGPV Bhopal (UIT RGPV). He works as a Software Engineer at Adarsh ID Cards while architecting SaaS and AI platforms like CardFlow and VidyaMaxx."
                 }
               },
               {
@@ -236,7 +336,7 @@
                 "name": "What major software projects has Roshan Damor built?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Roshan Damor has built CardFlow (production SaaS with 1,000+ users and 136K+ cards processed), VidyaMaxx (AI-first unified school management platform), PrintNexx (automated image processing tool with OpenCV), EazeTrip (travel operations SaaS), TaskFlixx (AI productivity tool), and PrepSarthi (AI EdTech platform)."
+                  "text": "Roshan Damor has built CardFlow (production SaaS with 1,000+ users and 136,000+ cards processed), VidyaMaxx (AI-first unified school management platform), PrintNexx (automated image processing tool with OpenCV), EazeTrip (travel operations SaaS), TaskFlixx (AI productivity tool), and PrepSarthi (AI EdTech platform)."
                 }
               },
               {
@@ -244,7 +344,15 @@
                 "name": "What technologies and AI capabilities does Roshan Damor specialize in?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Roshan specializes in Python, Django, React.js, PostgreSQL, Redis, Celery, Docker, REST APIs, LLM integration, RAG architectures, AI agents, and production software deployment."
+                  "text": "Roshan specializes in Python, Django, FastAPI, React.js 18, Next.js, PostgreSQL, Redis, Celery, Docker, REST APIs, LLM integration (OpenAI, Claude, Gemini), RAG architectures, AI agents, and production software deployment."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How can I contact or hire Roshan Damor?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "You can contact Roshan Damor directly via email at mail@logicbyroshan.in or connect on LinkedIn at https://linkedin.com/in/logicbyroshan and GitHub at https://github.com/logicbyroshan."
                 }
               }
             ]

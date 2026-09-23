@@ -210,6 +210,11 @@ function App() {
 
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     if (canonicalLink) canonicalLink.setAttribute('href', canonical);
+
+    const ogType = document.querySelector('meta[property="og:type"]');
+    if (ogType) {
+      ogType.setAttribute('content', route.name === 'blog-detail' ? 'article' : (route.name === 'home' || route.name === 'about' ? 'profile' : 'website'));
+    }
   }, [route.name, route.slug]);
 
   const navigate = useCallback((targetRoute, param) => {
