@@ -1,8 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLenis } from 'lenis/react';
 
 export default function AppNavbar({ currentRoute, onNavigate }) {
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
+
+  useLenis((lenis) => {
+    if (!lenis) return;
+    const scroll = typeof lenis.scroll === 'number' ? lenis.scroll : window.scrollY;
+    const direction = lenis.direction ?? 0;
+    if (scroll > 60 && direction === 1) {
+      setHidden(true);
+    } else if (direction === -1 || scroll <= 20) {
+      setHidden(false);
+    }
+  });
 
   useEffect(() => {
     const handleScroll = () => {

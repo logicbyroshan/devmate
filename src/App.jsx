@@ -99,6 +99,39 @@ function App() {
   const markup = defaultPortfolioHtml || '';
   const lenis = useLenis();
 
+  // Smart Navbar auto-hide on scroll down, show on scroll up (Lenis integration)
+  useLenis((lenisInstance) => {
+    if (!lenisInstance) return;
+    const scroll = typeof lenisInstance.scroll === 'number' ? lenisInstance.scroll : window.scrollY;
+    const direction = lenisInstance.direction ?? 0;
+    const nav = document.getElementById('mainNavbar') || document.querySelector('.navbar-tabbar');
+    if (!nav) return;
+    if (scroll > 60 && direction === 1) {
+      nav.classList.add('navbar-hidden');
+    } else if (direction === -1 || scroll <= 20) {
+      nav.classList.remove('navbar-hidden');
+    }
+  });
+
+  // Standard scroll listener fallback
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const nav = document.getElementById('mainNavbar') || document.querySelector('.navbar-tabbar');
+      if (!nav) return;
+      if (currentScrollY > 60 && currentScrollY > lastScrollY + 5) {
+        nav.classList.add('navbar-hidden');
+      } else if (currentScrollY < lastScrollY - 5 || currentScrollY <= 20) {
+        nav.classList.remove('navbar-hidden');
+      }
+      lastScrollY = Math.max(0, currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Synchronize route changes on popstate or hashchange
   useEffect(() => {
     const handleLocationChange = () => {
