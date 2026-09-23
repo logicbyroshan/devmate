@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * AuraDigitalBackground / BinaryRainBackground
- * Implements the Meng To / Aura.build animated ceiling grid with dripping stalactites:
- * 1. Fixed horizontal digital matrix ceiling along the very top of the viewport.
- * 2. Stalactite columns of micro-blocks / 0 & 1 bits hanging down at organic staggered heights.
- * 3. Droplets detaching from stalactite tips and accelerating downward into darkness.
- * 4. Ambient top nebula aura illumination in electric blue and cyber lavender.
- * 5. Glitch scanwaves and twinkling diamond glints across the ceiling grid.
+ * BinaryRainBackground / AuraDigitalBackground
+ * 1. Centered inverted-triangle canopy: concentrated in the center of the viewport,
+ *    tapering down from top center into a V-shaped triangular code matrix.
+ * 2. Composed exclusively of binary bits ('0', '1') and code symbols ('<', '>', '/', '{', '}', '*', '+', '~').
+ * 3. Falling code droplets: leading code glyph with trailing binary characters cascading down softly.
+ * 4. Atmospheric transparency: subtle, cyber-hacker aesthetic that sits strictly in the background
+ *    behind all cards, buttons, and content.
  */
 export default function BinaryRainBackground() {
   const canvasRef = useRef(null);
@@ -22,89 +22,102 @@ export default function BinaryRainBackground() {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // Digital matrix parameters
-    const cellSize = 5;
-    const cellGap = 3;
-    const stride = cellSize + cellGap; // 8px
-    let columns = Math.ceil(width / stride);
+    // Grid spacing tailored for legible monospace glyphs
+    const strideX = 14;
+    const strideY = 15;
+    let columns = Math.ceil(width / strideX);
 
-    // Characters for occasional digital glyph rendering
-    const glyphs = ['0', '1', '·', '▪', '▫'];
+    // Code symbols pool (mostly 0 and 1 with code syntax characters)
+    const CODE_GLYPHS = ['0', '1', '0', '1', '1', '0', '<', '>', '/', '{', '}', '*', '+', '~', ';', '#', 'λ', '0', '1'];
 
-    // Precalculate column landscapes (peaks and valleys of the hanging digital stalactites)
     let columnProfiles = [];
     let droplets = [];
 
     const spawnDroplet = (initial = false) => {
-      if (columnProfiles.length === 0) return;
-      const colIdx = Math.floor(Math.random() * columnProfiles.length);
-      const col = columnProfiles[colIdx];
-      const startY = col.tipY - Math.random() * 15;
+      // Pick randomly among active central triangle columns
+      const activeColumns = columnProfiles.filter((c) => c.active && c.cells.length > 0);
+      if (activeColumns.length === 0) return;
+
+      const col = activeColumns[Math.floor(Math.random() * activeColumns.length)];
+      const startY = col.tipY - Math.random() * 12;
 
       droplets.push({
-        x: colIdx * stride + cellSize / 2,
-        y: initial ? startY + Math.random() * 200 : startY,
-        vy: 0.8 + Math.random() * 1.2,
-        gravity: 0.035 + Math.random() * 0.02,
+        x: col.x + strideX / 2,
+        y: initial ? startY + Math.random() * 220 : startY,
+        vy: 1.0 + Math.random() * 1.5,
+        gravity: 0.02 + Math.random() * 0.015,
         life: 0,
-        maxLife: 160 + Math.random() * 240, // Distance it falls before fading out
+        maxLife: 140 + Math.random() * 180, // Falling distance before dissolving
+        char: CODE_GLYPHS[Math.floor(Math.random() * CODE_GLYPHS.length)],
         trail: [],
-        char: Math.random() < 0.5 ? '0' : '1',
       });
     };
 
     const initGrid = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
-      columns = Math.ceil(width / stride);
+      columns = Math.ceil(width / strideX);
+
+      const centerX = width * 0.5;
+      // Triangle width span: central ~76% of viewport (min 420px, max 1100px)
+      const triangleHalfWidth = Math.min(Math.max(width * 0.38, 280), 580);
 
       columnProfiles = [];
+
       for (let c = 0; c < columns; c++) {
-        // Base continuous ceiling depth (rows 6 to 14)
-        const baseCeiling = Math.floor(
-          7 + Math.sin(c * 0.07) * 3 + Math.cos(c * 0.14) * 2.5
-        );
-        // Stalactite hanging depth: cluster peaks hanging down 20-45 rows (~160px - 360px)
-        const hangPeak =
-          Math.pow(Math.sin(c * 0.045 + 0.8), 2) * 22 +
-          Math.sin(c * 0.12) * 8 +
-          Math.cos(c * 0.02) * 6;
-        const totalDepth = Math.max(baseCeiling + 4, Math.floor(baseCeiling + hangPeak));
+        const x = c * strideX;
+        const distFromCenter = Math.abs(x - centerX);
+        const normalizedDist = distFromCenter / triangleHalfWidth;
 
-        // Generate static cell data with twinkling parameters
+        if (normalizedDist >= 1.0) {
+          // Outside the central triangle: inactive
+          columnProfiles.push({
+            col: c,
+            x,
+            active: false,
+            cells: [],
+            tipY: 0,
+          });
+          continue;
+        }
+
+        // Triangular envelope: deepest at center (normalizedDist = 0), sloping upward towards edges
+        const triangleShape = Math.pow(1 - normalizedDist, 0.88);
+        const centerMaxRows = 24 + Math.sin(c * 0.3) * 3 + Math.cos(c * 0.5) * 2;
+        const totalRows = Math.max(2, Math.floor(centerMaxRows * triangleShape));
+
+        // Generate cells for this column
         const cells = [];
-        for (let r = 0; r < totalDepth; r++) {
-          // In ceiling (r < baseCeiling), fill probability is ~92%. Down the stalactite, it tapers
-          let exists = true;
-          if (r >= baseCeiling) {
-            const prob = Math.pow(1 - (r - baseCeiling) / (totalDepth - baseCeiling), 0.85);
-            exists = Math.random() < prob;
-          }
+        for (let r = 0; r < totalRows; r++) {
+          // Higher density at top, tapering towards tip of triangle
+          const rowRatio = r / totalRows;
+          const densityProb = Math.pow(1 - rowRatio * 0.65, 0.9);
 
-          if (exists) {
+          if (Math.random() < densityProb) {
             cells.push({
               row: r,
-              isSpecial: Math.random() < 0.07, // Sparkle / diamond glint
-              isGlyph: Math.random() < 0.25,
-              glyph: glyphs[Math.floor(Math.random() * glyphs.length)],
-              phase: Math.random() * Math.PI * 2,
-              speed: 0.02 + Math.random() * 0.04,
+              char: CODE_GLYPHS[Math.floor(Math.random() * CODE_GLYPHS.length)],
+              isSparkle: Math.random() < 0.08,
+              twinkleSpeed: 0.02 + Math.random() * 0.04,
+              twinklePhase: Math.random() * Math.PI * 2,
+              glitchCounter: Math.floor(Math.random() * 120),
             });
           }
         }
 
         columnProfiles.push({
           col: c,
-          baseCeiling,
-          totalDepth,
+          x,
+          active: true,
+          totalRows,
           cells,
-          tipY: totalDepth * stride,
+          tipY: totalRows * strideY,
         });
       }
 
-      // Initialize detached falling droplets
+      // Initialize falling code streams
       droplets = [];
-      const dropletCount = Math.min(65, Math.floor(columns * 0.35));
+      const dropletCount = Math.min(38, Math.floor(columns * 0.22));
       for (let i = 0; i < dropletCount; i++) {
         spawnDroplet(true);
       }
@@ -119,8 +132,8 @@ export default function BinaryRainBackground() {
     window.addEventListener('resize', handleResize, { passive: true });
 
     let lastTime = 0;
-    const fpsInterval = 1000 / 30; // 30 FPS smooth & light
-    let scanWaveX = -200;
+    const fpsInterval = 1000 / 30; // 30 FPS smooth & lightweight
+    let scanWaveX = -250;
 
     const draw = (currentTime) => {
       animationFrameId = requestAnimationFrame(draw);
@@ -134,82 +147,93 @@ export default function BinaryRainBackground() {
       // Clear frame
       ctx.clearRect(0, 0, width, height);
 
-      // 1. Ambient Top Nebula Aura Glow
+      // 1. Ambient Triangular Center Nebula Glow
+      const centerX = width * 0.5;
       const ambientGlow = ctx.createRadialGradient(
-        width * 0.5,
+        centerX,
         0,
-        20,
-        width * 0.5,
+        10,
+        centerX,
         0,
-        width * 0.65
+        width * 0.42
       );
-      ambientGlow.addColorStop(0, 'rgba(56, 189, 248, 0.22)');
-      ambientGlow.addColorStop(0.35, 'rgba(99, 102, 241, 0.12)');
-      ambientGlow.addColorStop(0.7, 'rgba(30, 27, 75, 0.06)');
+      ambientGlow.addColorStop(0, 'rgba(56, 189, 248, 0.16)');
+      ambientGlow.addColorStop(0.35, 'rgba(37, 99, 235, 0.08)');
+      ambientGlow.addColorStop(0.7, 'rgba(15, 23, 42, 0.03)');
       ambientGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = ambientGlow;
-      ctx.fillRect(0, 0, width, height * 0.7);
+      ctx.fillRect(0, 0, width, height * 0.65);
 
-      // 2. Horizontal Cyber Scan Wave Progression
-      scanWaveX += 6;
-      if (scanWaveX > width + 400) {
-        scanWaveX = -300;
+      // 2. Horizontal Subtle Cyber Scan Wave
+      scanWaveX += 5.5;
+      if (scanWaveX > width + 300) {
+        scanWaveX = -250;
       }
 
       const time = currentTime * 0.001;
 
-      // 3. Render Matrix Ceiling Grid & Stalactite Columns
+      // 3. Render Triangular Code Grid (0, 1, and code symbols)
+      ctx.font = '600 11px "SF Mono", "Fira Code", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
       for (let c = 0; c < columnProfiles.length; c++) {
         const col = columnProfiles[c];
-        const x = c * stride;
+        if (!col.active || col.cells.length === 0) continue;
+
+        const x = col.x + strideX / 2;
 
         // Wave distance factor
-        const distFromWave = Math.abs(x - scanWaveX);
-        const waveBoost = distFromWave < 120 ? (1 - distFromWave / 120) * 0.45 : 0;
+        const distFromWave = Math.abs(col.x - scanWaveX);
+        const waveBoost = distFromWave < 100 ? (1 - distFromWave / 100) * 0.35 : 0;
 
         for (let i = 0; i < col.cells.length; i++) {
           const cell = col.cells[i];
-          const y = cell.row * stride;
+          const y = cell.row * strideY + strideY / 2;
 
-          // Vertical taper: 1 at top down to 0.15 at stalactite tip
-          const vertRatio = cell.row / col.totalDepth;
-          const depthFade = Math.pow(1 - vertRatio * 0.75, 1.2);
+          // Occasional subtle glitch character mutation
+          cell.glitchCounter++;
+          if (cell.glitchCounter > 150 + Math.random() * 200) {
+            cell.char = CODE_GLYPHS[Math.floor(Math.random() * CODE_GLYPHS.length)];
+            cell.glitchCounter = 0;
+          }
+
+          // Vertical depth taper (more transparent toward bottom tip of triangle)
+          const vertRatio = cell.row / col.totalRows;
+          const depthFade = Math.pow(1 - vertRatio * 0.68, 1.1);
 
           // Twinkle pulse
-          const pulse = 0.5 + 0.5 * Math.sin(time * 3 * cell.speed + cell.phase);
-          const alpha = Math.min(1, Math.max(0.12, (0.35 + 0.5 * pulse + waveBoost) * depthFade));
+          const pulse = 0.5 + 0.5 * Math.sin(time * 3 * cell.twinkleSpeed + cell.twinklePhase);
+          const alpha = Math.min(0.85, Math.max(0.12, (0.28 + 0.42 * pulse + waveBoost) * depthFade));
 
-          if (cell.isSpecial && (pulse > 0.75 || waveBoost > 0.2)) {
-            // Bright diamond sparkle / highlight
-            ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, alpha + 0.3)})`;
+          if (cell.isSparkle && (pulse > 0.78 || waveBoost > 0.18)) {
+            // Bright cyber white diamond glint
+            ctx.fillStyle = `rgba(240, 249, 255, ${Math.min(0.95, alpha + 0.35)})`;
             ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 8;
-            ctx.fillRect(x, y, cellSize, cellSize);
+            ctx.shadowBlur = 6;
+            ctx.fillText(cell.char, x, y);
             ctx.shadowBlur = 0;
-          } else if (cell.isGlyph && (pulse > 0.6 || waveBoost > 0.1)) {
-            // Occasional 0 or 1 digital glyph
-            ctx.fillStyle = `rgba(186, 230, 253, ${alpha})`;
-            ctx.font = `600 ${cellSize + 1}px monospace`;
-            ctx.textAlign = 'center';
-            ctx.fillText(cell.glyph, x + cellSize / 2, y + cellSize);
+          } else if (waveBoost > 0.12) {
+            // Scanwave highlight (sky blue)
+            ctx.fillStyle = `rgba(147, 197, 253, ${alpha})`;
+            ctx.fillText(cell.char, x, y);
           } else {
-            // Standard digital matrix block
-            if (waveBoost > 0.15) {
-              ctx.fillStyle = `rgba(147, 197, 253, ${alpha})`;
-            } else {
-              ctx.fillStyle = `rgba(56, 189, 248, ${alpha})`;
-            }
-            ctx.fillRect(x, y, cellSize, cellSize);
+            // Standard electric cyan binary glyph
+            ctx.fillStyle = `rgba(56, 189, 248, ${alpha})`;
+            ctx.fillText(cell.char, x, y);
           }
         }
       }
 
-      // 4. Render Detaching & Falling Droplets
+      // 4. Render Falling Code Droplets (0 and 1 streams with trailing characters)
       for (let i = droplets.length - 1; i >= 0; i--) {
         const d = droplets[i];
 
-        // Add current pos to trail
-        d.trail.unshift({ y: d.y, alpha: 1 });
+        // Add previous pos to trail
+        d.trail.unshift({
+          y: d.y,
+          char: CODE_GLYPHS[Math.floor(Math.random() * CODE_GLYPHS.length)],
+        });
         if (d.trail.length > 5) d.trail.pop();
 
         // Advance position with gentle gravity
@@ -217,30 +241,30 @@ export default function BinaryRainBackground() {
         d.y += d.vy;
         d.life += d.vy;
 
-        // Droplet fade out as it travels down
+        // Droplet fade out as it travels down past hero
         const lifeRatio = d.life / d.maxLife;
         const dropAlpha = Math.max(0, 1 - lifeRatio);
 
-        if (dropAlpha <= 0.02 || d.y > height * 0.75) {
+        if (dropAlpha <= 0.02 || d.y > height * 0.7) {
           // Reset droplet
           droplets.splice(i, 1);
           spawnDroplet(false);
           continue;
         }
 
-        // Draw trail
+        // Draw trail characters
         for (let t = 0; t < d.trail.length; t++) {
           const tp = d.trail[t];
-          const trailAlpha = (1 - t / d.trail.length) * dropAlpha * 0.45;
+          const trailAlpha = (1 - t / d.trail.length) * dropAlpha * 0.38;
           ctx.fillStyle = `rgba(56, 189, 248, ${trailAlpha})`;
-          ctx.fillRect(d.x - cellSize / 2, tp.y, cellSize * 0.8, cellSize * 0.8);
+          ctx.fillText(tp.char, d.x, tp.y);
         }
 
-        // Draw falling head droplet (glowing cyan / white head)
-        ctx.fillStyle = `rgba(224, 242, 254, ${dropAlpha * 0.95})`;
+        // Draw leading falling glyph (glowing cyan / white)
+        ctx.fillStyle = `rgba(224, 242, 254, ${dropAlpha * 0.9})`;
         ctx.shadowColor = '#38bdf8';
         ctx.shadowBlur = 6;
-        ctx.fillRect(d.x - cellSize / 2, d.y, cellSize, cellSize + 2);
+        ctx.fillText(d.char, d.x, d.y);
         ctx.shadowBlur = 0;
       }
     };

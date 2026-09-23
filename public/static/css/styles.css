@@ -114,7 +114,7 @@ body {
     pointer-events: none;
     z-index: 0;
     mix-blend-mode: screen;
-    opacity: 0.95;
+    opacity: 0.85;
 }
 
 #root {
