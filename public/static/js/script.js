@@ -122,11 +122,14 @@ function initCoreInteractions() {
             window.requestAnimationFrame(() => {
                 const currentScrollY = window.scrollY;
                 const nav = document.getElementById('mainNavbar') || document.querySelector('.navbar-tabbar');
+                const backdrop = document.getElementById('navbarDockBackdrop') || document.querySelector('.navbar-dock-backdrop');
                 if (nav) {
                     if (currentScrollY > 60 && currentScrollY > lastNavScrollY + 5) {
                         nav.classList.add('navbar-hidden');
+                        if (backdrop) backdrop.classList.add('navbar-hidden');
                     } else if (currentScrollY < lastNavScrollY - 5 || currentScrollY <= 20) {
                         nav.classList.remove('navbar-hidden');
+                        if (backdrop) backdrop.classList.remove('navbar-hidden');
                     }
                 }
                 lastNavScrollY = Math.max(0, currentScrollY);
