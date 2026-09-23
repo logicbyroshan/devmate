@@ -3,7 +3,7 @@
    ======================================== */
 .site-footer {
     position: relative;
-    background: linear-gradient(180deg, rgba(4, 6, 22, 0) 0%, rgba(4, 6, 22, 0.95) 15%, #040616 100%);
+    background: #000000;
     padding: 80px 0 0;
     margin-top: 0;
     overflow: hidden;
@@ -11,15 +11,7 @@
 
 /* Subtle top-center purple glow */
 .footer-glow {
-    position: absolute;
-    top: -60px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 600px;
-    height: 220px;
-    background: radial-gradient(ellipse at center, rgba(124, 58, 237, 0.18) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+    display: none;
 }
 
 .site-footer .container {
@@ -32,7 +24,7 @@
     display: grid;
     grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
     gap: 48px 40px;
-    padding-bottom: 50px;
+    padding-bottom: 36px;
 }
 
 /* ── Brand column ──────────────────────── */
@@ -81,16 +73,16 @@
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.18) 0%, rgba(167, 139, 250, 0.08) 100%);
-    border: 1px solid rgba(124, 58, 237, 0.28);
-    color: #a78bfa;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.28);
+    color: #38bdf8;
     font-size: 15px;
     text-decoration: none;
     transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
 }
 
 .footer-social-btn:hover {
-    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+    background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 100%);
     border-color: transparent;
     color: #ffffff;
     transform: translateY(-3px);
@@ -115,7 +107,7 @@
     left: 0;
     width: 36px;
     height: 2px;
-    background: linear-gradient(90deg, #7c3aed 0%, transparent 100%);
+    background: linear-gradient(90deg, #38bdf8 0%, transparent 100%);
     border-radius: 2px;
 }
 
@@ -145,7 +137,7 @@
 }
 
 .footer-links li a:hover {
-    color: #a78bfa;
+    color: #38bdf8;
     padding-left: 5px;
 }
 
@@ -162,7 +154,7 @@
 }
 
 .footer-contact-list li i {
-    color: #7c3aed;
+    color: #38bdf8;
     font-size: 13px;
     margin-top: 3px;
     flex-shrink: 0;
@@ -174,7 +166,19 @@
 
 /* ── Divider ───────────────────────────── */
 .footer-divider {
-    display: none;
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.22) 15%,
+        rgba(56, 189, 248, 0.65) 50%,
+        rgba(255, 255, 255, 0.22) 85%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    border: none;
+    margin: 0 0 24px 0;
 }
 
 /* ── Bottom bar ────────────────────────── */
@@ -182,7 +186,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 24px 0 0;
+    padding: 10px 0 0;
     flex-wrap: wrap;
     gap: 10px;
 }
@@ -197,7 +201,7 @@
 }
 
 .footer-copy span {
-    color: #a78bfa;
+    color: #38bdf8;
     font-weight: 500;
 }
 

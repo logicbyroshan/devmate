@@ -19,11 +19,11 @@
 
 .faq-badge {
     display: inline-block;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(167, 139, 250, 0.1) 100%);
-    border: 1px solid rgba(124, 58, 237, 0.3);
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.35);
     border-radius: 20px;
     padding: 8px 24px;
-    color: #a78bfa;
+    color: #38bdf8;
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.5px;
@@ -69,11 +69,11 @@
 
 .faq-tab:hover {
     background: rgba(40, 50, 110, 0.6);
-    border-color: rgba(124, 58, 237, 0.3);
+    border-color: rgba(56, 189, 248, 0.4);
 }
 
 .faq-tab.active {
-    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+    background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 100%);
     border-color: transparent;
     color: var(--text-color);
 }
@@ -81,9 +81,9 @@
 .faq-accordion {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
     min-height: 380px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .faq-item {
@@ -92,7 +92,7 @@
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     border: none;
-    border-radius: 10px;
+    border-radius: 14px 14px 0 0;
     overflow: hidden;
     transition: background-color 0.3s ease;
 }
@@ -120,7 +120,7 @@
 .faq-number {
     font-family: var(--font-heading);
     font-size: 16px;
-    color: #a78bfa;
+    color: #38bdf8;
     font-weight: 500;
     min-width: 35px;
 }
@@ -135,7 +135,7 @@
 
 .faq-icon {
     font-size: 22px;
-    color: #a78bfa;
+    color: #38bdf8;
     font-weight: 300;
     transition: transform 0.3s ease;
     min-width: 30px;

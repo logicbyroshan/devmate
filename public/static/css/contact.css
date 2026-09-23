@@ -10,10 +10,10 @@
     display: block;
     text-align: center;
     padding: 8px 20px;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(167, 139, 250, 0.1) 100%);
-    border: 1px solid rgba(124, 58, 237, 0.3);
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.35);
     border-radius: 20px;
-    color: #a78bfa;
+    color: #38bdf8;
     font-size: 14px;
     font-weight: 500;
     font-family: var(--font-body);
@@ -38,7 +38,7 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: none;
-    border-radius: 24px;
+    border-radius: 24px 24px 0 0;
     padding: 50px;
     display: grid;
     grid-template-columns: 1fr 1.5fr;
@@ -78,13 +78,13 @@
 .contact-icon {
     width: 45px;
     height: 45px;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.3) 0%, rgba(167, 139, 250, 0.2) 100%);
-    border: 1px solid rgba(124, 58, 237, 0.4);
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(96, 165, 250, 0.15) 100%);
+    border: 1px solid rgba(56, 189, 248, 0.4);
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #a78bfa;
+    color: #38bdf8;
     font-size: 20px;
     flex-shrink: 0;
 }
@@ -95,7 +95,7 @@
 
 .contact-label {
     font-size: 13px;
-    color: #a78bfa;
+    color: #38bdf8;
     font-weight: 500;
     margin-bottom: 5px;
     text-transform: uppercase;
@@ -142,8 +142,8 @@
 }
 
 .toggle-switch.active {
-    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
-    border-color: #a78bfa;
+    background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 100%);
+    border-color: #38bdf8;
 }
 
 .toggle-slider {
@@ -253,9 +253,9 @@
 
 .form-input:focus,
 .form-textarea:focus {
-    border-color: rgba(124, 58, 237, 0.5);
+    border-color: rgba(56, 189, 248, 0.6);
     background: rgba(20, 25, 55, 0.8);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
 }
 
 .form-textarea {
