@@ -45,10 +45,11 @@
         line-height: 1.6;
     }
 
-    /* Requested: hero image a little smaller */
     .hero-image {
-        max-width: 82%;
-        margin-bottom: -48px;
+        width: 98%;
+        max-width: 98%;
+        margin: 0 auto -48px auto;
+        display: block;
     }
 
     .nft-card {
@@ -109,41 +110,15 @@
 
 /* Tablet portrait + small laptop (1280 -> 999 target band) */
 @media screen and (max-width: 999px) {
-    /* Use mobile navbar layout for tablet widths to avoid desktop crowding */
-    .navbar-desktop {
-        display: none;
+    .navbar,
+    .navbar-tabbar {
+        top: 14px;
+        padding: 5px 6px;
     }
 
-    .navbar-mobile {
-        display: block;
-    }
-
-    .navbar {
-        top: 12px;
-        width: calc(100% - 32px);
-        max-width: 580px;
-        margin: 12px auto 0;
-        padding: 12px;
-        border-radius: 10px;
-    }
-
-    .nav-menu {
-        gap: 18px;
-    }
-
-    .nav-link {
-        font-size: 14px;
-    }
-
-    .logo-image {
-        height: 40px;
-        width: 40px;
-    }
-
-    .btn-nav,
-    .nav-actions .btn-primary {
-        padding: 11px 18px !important;
-        font-size: 13px !important;
+    .nav-tab-link {
+        padding: 7px 16px;
+        font-size: 13.5px;
     }
 
     .hero-section {
@@ -212,13 +187,10 @@
         letter-spacing: 0.4px;
     }
 
-    /* Hero image: 20px narrower than the card below it */
     .hero-image {
-        width: calc(100% - 20px);
-        max-width: calc(100% - 20px);
-        margin-bottom: -34px;
-        margin-left: auto;
-        margin-right: auto;
+        width: 98%;
+        max-width: 98%;
+        margin: 0 auto -34px auto;
         display: block;
     }
 
@@ -226,8 +198,7 @@
         width: 100%;
         max-width: 100%;
         margin: 0 auto;
-        border-radius: 18px;
-        overflow: hidden;
+        border-radius: 18px 18px 0 0;
         box-sizing: border-box;
     }
 
@@ -337,25 +308,15 @@
 
 /* Large phones / compact tablets */
 @media screen and (max-width: 767px) {
-    .navbar-desktop {
-        display: none;
-    }
-
-    .navbar-mobile {
-        display: block;
-    }
-
-    .navbar {
+    .navbar,
+    .navbar-tabbar {
         top: 10px;
-        width: calc(100% - 24px);
-        margin: 10px auto 0;
-        padding: 10px;
-        border-radius: 10px;
+        padding: 4px 6px;
     }
 
-    .logo-image {
-        height: 36px;
-        width: 36px;
+    .nav-tab-link {
+        padding: 6px 12px;
+        font-size: 13px;
     }
 
     .hero-section,
@@ -412,16 +373,15 @@
     }
 
     .hero-image {
-        max-width: 100%;
-        margin-bottom: -24px;
-    }
-
-    .nft-countdown {
-        justify-content: center;
+        width: 98%;
+        max-width: 98%;
+        margin: 0 auto -24px auto;
+        display: block;
     }
 
     .nft-card {
-        padding: 18px;
+        padding: 16px;
+        border-radius: 16px 16px 0 0;
     }
 
     .nft-card-title {

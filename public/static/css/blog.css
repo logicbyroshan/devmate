@@ -9,11 +9,11 @@
 
 .blog-badge {
     display: inline-block;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(167, 139, 250, 0.1) 100%);
-    border: 1px solid rgba(124, 58, 237, 0.3);
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.35);
     border-radius: 20px;
     padding: 8px 24px;
-    color: #a78bfa;
+    color: #38bdf8;
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.5px;
@@ -60,7 +60,7 @@
     overflow: hidden;
     position: relative;
     z-index: 2;
-    border-radius: 20px;
+    border-radius: 20px 20px 0 0;
     background: linear-gradient(180deg, var(--card-gradient-start) 0%, rgba(25, 30, 65, 0.6) 50%, var(--card-gradient-end) 100%);
     backdrop-filter: blur(10px);
     border: none;
@@ -72,7 +72,7 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
-    border-radius: 12px;
+    border-radius: 12px 12px 0 0;
 }
 
 .blog-card:hover .blog-image {
@@ -97,7 +97,7 @@
 }
 
 .blog-date i {
-    color: #a78bfa;
+    color: #38bdf8;
 }
 
 .blog-title {

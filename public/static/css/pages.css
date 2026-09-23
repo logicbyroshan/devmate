@@ -31,10 +31,10 @@
     align-items: center;
     gap: 8px;
     padding: 6px 18px;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(56, 189, 248, 0.15) 100%);
-    border: 1px solid rgba(124, 58, 237, 0.35);
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.35);
     border-radius: 20px;
-    color: #a78bfa;
+    color: #38bdf8;
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -53,7 +53,7 @@
 }
 
 .page-title .text-gradient {
-    background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 100%);
+    background: linear-gradient(90deg, #38bdf8 0%, #60a5fa 60%, #93c5fd 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }

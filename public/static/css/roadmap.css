@@ -11,10 +11,10 @@
     display: block;
     text-align: center;
     padding: 8px 20px;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(167, 139, 250, 0.1) 100%);
-    border: 1px solid rgba(124, 58, 237, 0.3);
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.35);
     border-radius: 20px;
-    color: #a78bfa;
+    color: #38bdf8;
     font-size: 14px;
     font-weight: 500;
     font-family: var(--font-body);
@@ -47,7 +47,7 @@
 .timeline-line {
     position: absolute;
     width: 2px;
-    background: linear-gradient(180deg, rgba(124, 58, 237, 0.3) 0%, rgba(167, 139, 250, 0.5) 50%, rgba(124, 58, 237, 0.3) 100%);
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.3) 0%, rgba(96, 165, 250, 0.5) 50%, rgba(56, 189, 248, 0.3) 100%);
     top: 0;
     bottom: 0;
     left: 50%;
@@ -60,8 +60,8 @@
     position: absolute;
     width: 10px;
     height: 10px;
-    background: rgba(124, 58, 237, 0.4);
-    border: 2px solid rgba(124, 58, 237, 0.6);
+    background: rgba(56, 189, 248, 0.4);
+    border: 2px solid rgba(56, 189, 248, 0.6);
     border-radius: 50%;
     left: 50%;
     transform: translateX(-50%);
@@ -101,7 +101,7 @@
 .roadmap-card {
     background: linear-gradient(180deg, var(--card-gradient-start) 0%, var(--card-gradient-end) 100%);
     border: 1px solid rgba(124, 58, 237, 0.25);
-    border-radius: 16px;
+    border-radius: 16px 16px 0 0;
     padding: 24px 22px 20px;
     position: relative;
     backdrop-filter: blur(8px);
@@ -142,11 +142,11 @@
     position: absolute;
     width: 16px;
     height: 16px;
-    background: #7c3aed;
+    background: #38bdf8;
     border: 4px solid var(--bg-color);
     border-radius: 50%;
     top: 30px;
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.6);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
     z-index: 2;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }

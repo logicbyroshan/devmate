@@ -88,7 +88,7 @@ html.modal-open {
 .modal-box-rexi::-webkit-scrollbar-thumb,
 .modal-box-project::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.4); border-radius: 4px; }
 
-/* purple top-accent line */
+/* blue top-accent line */
 .modal-box::before,
 .modal-box-rexi::before,
 .modal-box-project::before {
@@ -98,7 +98,7 @@ html.modal-open {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #7c3aed, #c4b5fd, transparent);
+    background: linear-gradient(90deg, transparent, #38bdf8, #93c5fd, transparent);
     border-radius: 20px 20px 0 0;
 }
 
@@ -115,7 +115,7 @@ html.modal-open {
     background: rgba(15, 20, 55, 0.92);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(124, 58, 237, 0.25);
+    border-bottom: 1px solid rgba(56, 189, 248, 0.25);
     border-radius: 20px 20px 0 0;
 }
 
@@ -451,7 +451,7 @@ html.modal-open {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #7c3aed, #5c27fe);
+    background: linear-gradient(135deg, #38bdf8, #60a5fa);
     color: #fff;
     font-family: 'Outfit', sans-serif;
     font-weight: 700;
@@ -460,7 +460,7 @@ html.modal-open {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 0 12px rgba(124, 58, 237, 0.4);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
 }
 
 .doc-step-content {

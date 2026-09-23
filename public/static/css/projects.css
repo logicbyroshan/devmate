@@ -11,10 +11,10 @@
     display: block;
     text-align: center;
     padding: 8px 20px;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(167, 139, 250, 0.1) 100%);
-    border: 1px solid rgba(124, 58, 237, 0.3);
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.35);
     border-radius: 20px;
-    color: #a78bfa;
+    color: #38bdf8;
     font-size: 14px;
     font-weight: 500;
     font-family: var(--font-body);
@@ -47,8 +47,14 @@
     max-width: 1200px;
     width: 100%;
     margin: 0 auto 16px;
-    overflow-x: hidden;
+    overflow: hidden;
     padding-bottom: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.projects-slider::-webkit-scrollbar {
+    display: none;
 }
 
 .project-card {
@@ -58,7 +64,7 @@
     -webkit-backdrop-filter: blur(8px);
     border: none;
     box-shadow: none;
-    border-radius: 24px;
+    border-radius: 24px 24px 0 0;
     padding: 16px 20px;
     position: absolute;
     width: 100%;
@@ -227,10 +233,10 @@
 
 .project-tech-badge {
     padding: 8px 18px;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(167, 139, 250, 0.1) 100%);
-    border: 1px solid rgba(124, 58, 237, 0.3);
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.35);
     border-radius: 20px;
-    color: #a78bfa;
+    color: #38bdf8;
     font-size: 13px;
     font-weight: 500;
     font-family: var(--font-body);
@@ -238,8 +244,8 @@
 }
 
 .project-tech-badge:hover {
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.3) 0%, rgba(167, 139, 250, 0.2) 100%);
-    border-color: rgba(124, 58, 237, 0.5);
+    background: rgba(56, 189, 248, 0.25);
+    border-color: rgba(56, 189, 248, 0.55);
     transform: translateY(-2px);
 }
 

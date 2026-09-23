@@ -9,11 +9,11 @@
 
 .tech-badge {
     display: inline-block;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(167, 139, 250, 0.1) 100%);
-    border: 1px solid rgba(124, 58, 237, 0.3);
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.35);
     border-radius: 20px;
     padding: 8px 24px;
-    color: #a78bfa;
+    color: #38bdf8;
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.5px;
@@ -51,7 +51,7 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: none;
-    border-radius: 20px;
+    border-radius: 20px 20px 0 0;
     padding: 70px 30px 50px;
     text-align: center;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
@@ -70,11 +70,11 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(180deg, rgba(124, 58, 237, 0.15) 0%, rgba(168, 85, 247, 0.08) 50%, rgba(168, 85, 247, 0) 100%);
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.15) 0%, rgba(96, 165, 250, 0.08) 50%, transparent 100%);
     opacity: 0;
     transition: opacity 0.4s ease;
     z-index: 1;
-    border-radius: 20px;
+    border-radius: 20px 20px 0 0;
 }
 
 .tech-card:hover::before {
@@ -89,7 +89,7 @@
 .tech-icon-wrapper {
     width: 100px;
     height: 100px;
-    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+    background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -145,15 +145,15 @@
 }
 
 .skill-mini-card:hover {
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.25) 0%, rgba(56, 189, 248, 0.12) 100%);
-    border-color: rgba(167, 139, 250, 0.55);
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(96, 165, 250, 0.15) 100%);
+    border-color: rgba(56, 189, 248, 0.55);
     transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 6px 16px rgba(124, 58, 237, 0.28), 0 0 12px rgba(56, 189, 248, 0.2);
+    box-shadow: 0 6px 16px rgba(56, 189, 248, 0.28), 0 0 12px rgba(56, 189, 248, 0.2);
 }
 
 .skill-mini-card .skill-icon {
     font-size: 14px;
-    color: #a78bfa;
+    color: #38bdf8;
     transition: color 0.25s ease, transform 0.25s ease;
     flex-shrink: 0;
     display: flex;
