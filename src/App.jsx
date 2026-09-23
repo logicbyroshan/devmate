@@ -168,8 +168,8 @@ function App() {
       description = 'Read the full background, education at UIT RGPV Bhopal, technical skill graph, and software engineering philosophy of Roshan Damor.';
       canonical = 'https://logicbyroshan.in/about';
     } else if (route.name === 'experience') {
-      title = 'Experience & Career Roadmap | Roshan Damor (Software Engineer)';
-      description = 'Detailed professional journey and architectural roadmap of Roshan Damor — Software Engineer at Adarsh ID Cards, CardFlow SaaS, and Miracle Organisation.';
+      title = 'Professional Journey | Roshan Damor (Software Engineer)';
+      description = 'Professional journey and architectural roadmap of Roshan Damor — Software Engineer at Adarsh ID Cards, CardFlow SaaS, and Miracle Organisation.';
       canonical = 'https://logicbyroshan.in/experience';
     } else if (route.name === 'project-detail') {
       const formattedSlug = (route.slug || 'cardflow').toUpperCase();

@@ -15,7 +15,7 @@
     display: inline-block;
     background: rgba(56, 189, 248, 0.12);
     border: 1px solid rgba(56, 189, 248, 0.35);
-    border-radius: 20px;
+    border-radius: 4px;
     padding: 6px 16px;
     color: #38bdf8;
     font-size: 13px;
@@ -118,7 +118,7 @@
     top: 20%;
     z-index: 3;
     opacity: 0.85;
-    border-radius: 40px;
+    border-radius: 6px;
 }
 
 .about-img-2 {
@@ -128,7 +128,7 @@
     bottom: 25%;
     z-index: 2;
     opacity: 0.75;
-    border-radius: 22px;
+    border-radius: 6px;
 }
 
 .about-img-3 {
@@ -139,7 +139,7 @@
     margin-left: -200px;
     margin-top: -250px;
     z-index: 10;
-    border-radius: 30px 30px 0 0;
+    border-radius: 8px 8px 0 0;
     opacity: 1;
 }
 
@@ -154,7 +154,7 @@
     top: 22%;
     z-index: 3;
     opacity: 0.85;
-    border-radius: 35px;
+    border-radius: 6px;
 }
 
 .about-img-5 {
@@ -164,7 +164,7 @@
     bottom: 20%;
     z-index: 2;
     opacity: 0.75;
-    border-radius: 32px;
+    border-radius: 6px;
 }
 
 /* Decorative circles */

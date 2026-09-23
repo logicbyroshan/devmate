@@ -584,7 +584,7 @@ html.modal-open {
     font-weight: 600;
     padding: 12px 22px;
     text-decoration: none;
-    border-radius: 12px;
+    border-radius: 6px;
     box-sizing: border-box;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -616,7 +616,7 @@ html.modal-open {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    border-radius: 14px;
+    border-radius: 8px;
     overflow: hidden;
     border: 1px solid rgba(56, 189, 248, 0.35);
     background: #000000;
@@ -656,7 +656,7 @@ html.modal-open {
     gap: 8px;
     width: fit-content;
     padding: 5px 12px;
-    border-radius: 20px;
+    border-radius: 4px;
     background: rgba(0, 0, 0, 0.72);
     border: 1px solid rgba(56, 189, 248, 0.35);
     font-size: 12px;
@@ -781,7 +781,7 @@ html.modal-open {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    border-radius: 12px;
+    border-radius: 6px;
     text-decoration: none;
     font-family: var(--font-body);
     font-weight: 600;

@@ -112,7 +112,8 @@
 @media screen and (max-width: 999px) {
     .navbar,
     .navbar-tabbar {
-        top: 14px;
+        bottom: 16px;
+        top: auto;
         padding: 5px 6px;
     }
 
@@ -310,7 +311,8 @@
 @media screen and (max-width: 767px) {
     .navbar,
     .navbar-tabbar {
-        top: 10px;
+        bottom: 12px;
+        top: auto;
         padding: 4px 6px;
     }
 

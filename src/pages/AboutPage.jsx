@@ -85,9 +85,6 @@ export default function AboutPage({ onNavigate }) {
           <h1 className="page-title">
             About <span className="text-gradient">{fullName}</span>
           </h1>
-          <p className="page-subtitle">
-            {profile?.bio || 'Software Engineer focused on high-concurrency backend systems, scalable SaaS platforms, and production AI architectures.'}
-          </p>
         </header>
 
         {/* Two-Column About Grid */}
