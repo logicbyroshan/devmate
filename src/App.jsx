@@ -11,6 +11,7 @@ const ExperiencePage = lazy(() => import('./pages/ExperiencePage'));
 import RexiModal from './components/RexiModal';
 import AppNavbar from './components/AppNavbar';
 import SiteFooter from './components/SiteFooter';
+import BinaryRainBackground from './components/BinaryRainBackground';
 
 const CORE_LEGACY_SCRIPTS = [
   '/static/js/script.js',
@@ -18,7 +19,6 @@ const CORE_LEGACY_SCRIPTS = [
 ];
 
 const DEFERRED_LEGACY_SCRIPTS = [
-  '/static/js/sounds.js',
   '/static/js/faq.js',
   '/static/js/projects.js',
   '/static/js/contact.js',
@@ -278,15 +278,6 @@ function App() {
           return;
         }
       }
-
-      // 7. Wire SFX click for React-page buttons (sounds.js handles home view)
-      if (route.name !== 'home') {
-        const sfxTarget = e.target.closest('.btn, .nav-link, .mobile-nav-link, .doc-ctrl-btn, .blog-sb-link, .blog-sb-share-btn');
-        if (sfxTarget && window._SoundEngine) {
-          window._SoundEngine.initAudio();
-          window._SoundEngine.playClick();
-        }
-      }
     };
 
     document.addEventListener('click', handleClick);
@@ -473,6 +464,7 @@ function App() {
 
   return (
     <>
+      <BinaryRainBackground />
       <RexiModal />
       <Suspense fallback={<div className="loading-spinner" />}>
         {route.name === 'project-detail' && (
