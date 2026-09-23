@@ -166,20 +166,14 @@ body {
     z-index: 998;
     background: linear-gradient(
         to top,
-        rgba(2, 6, 23, 0.95) 0%,
-        rgba(4, 11, 30, 0.82) 32%,
-        rgba(8, 22, 54, 0.48) 64%,
-        rgba(14, 34, 76, 0.16) 84%,
+        rgba(3, 5, 11, 0.96) 0%,
+        rgba(3, 5, 11, 0.82) 35%,
+        rgba(3, 5, 11, 0.50) 65%,
+        rgba(3, 5, 11, 0.15) 85%,
         transparent 100%
-    ),
-    radial-gradient(
-        ellipse 760px 85px at 50% 100%,
-        rgba(56, 189, 248, 0.22) 0%,
-        rgba(37, 99, 235, 0.12) 40%,
-        transparent 75%
     );
-    backdrop-filter: blur(16px) saturate(160%);
-    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     -webkit-mask-image: linear-gradient(to top, black 0%, black 50%, transparent 100%);
     mask-image: linear-gradient(to top, black 0%, black 50%, transparent 100%);
     transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -205,14 +199,12 @@ body {
     max-width: calc(100vw - 32px);
     margin: 0;
     padding: 6px 8px;
-    background: rgba(8, 12, 24, 0.9);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(56, 189, 248, 0.3);
+    background: #090d1a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.92),
-                0 0 20px rgba(56, 189, 248, 0.12),
-                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.95),
+                0 4px 12px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
                 opacity 0.3s ease,
                 border-color 0.25s ease,
@@ -220,18 +212,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.navbar-tabbar::after {
-    content: '';
-    position: absolute;
-    inset: -10px -20px;
-    background: radial-gradient(ellipse at 50% 60%, rgba(56, 189, 248, 0.26) 0%, rgba(37, 99, 235, 0.12) 45%, transparent 75%);
-    border-radius: 16px;
-    z-index: -1;
-    pointer-events: none;
-    filter: blur(14px);
-    opacity: 0.9;
 }
 
 .navbar.navbar-hidden,
@@ -243,10 +223,10 @@ body {
 
 .navbar:hover,
 .navbar-tabbar:hover {
-    border-color: rgba(56, 189, 248, 0.5);
-    box-shadow: 0 14px 35px -5px rgba(0, 0, 0, 0.95),
-                0 0 25px rgba(56, 189, 248, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.98),
+                0 6px 16px rgba(0, 0, 0, 0.9),
+                inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .navbar .container::before,
