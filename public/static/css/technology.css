@@ -2,7 +2,7 @@
    TECHNOLOGY SECTION
    ======================================== */
 .technology-section {
-    padding: 100px 0;
+    padding: 80px 0;
     position: relative;
     text-align: center;
 }
@@ -17,7 +17,7 @@
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.5px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .tech-heading {
@@ -26,7 +26,7 @@
     font-weight: 400;
     color: var(--text-color);
     text-align: center;
-    margin-bottom: 80px;
+    margin-bottom: 28px;
     line-height: 1.2;
 }
 
@@ -36,7 +36,7 @@
     gap: 30px;
     max-width: 1200px;
     width: 100%;
-    margin: 60px auto 0;
+    margin: 50px auto 0;
 }
 
 .tech-card {
@@ -242,18 +242,18 @@
    ======================================== */
 @media screen and (max-width: 767px) {
     .technology-section {
-        padding: 60px 0;
+        padding: 56px 0;
     }
 
     .tech-badge {
         font-size: 13px;
         padding: 6px 20px;
-        margin-bottom: 15px;
+        margin-bottom: 14px;
     }
 
     .tech-heading {
         font-size: 32px;
-        margin-bottom: 40px;
+        margin-bottom: 24px;
         padding: 0 20px;
     }
 
@@ -261,16 +261,16 @@
         grid-template-columns: 1fr;
         gap: 20px;
         padding: 0 20px;
-        margin-top: 20px;
+        margin-top: 15px;
     }
 
     .tech-card {
-        padding: 50px 25px 35px;
-        margin-top: 55px;
+        padding: 46px 20px 30px;
+        margin-top: 48px;
     }
 
     .tech-card:first-child {
-        margin-top: 55px;
+        margin-top: 45px;
     }
 
     .tech-icon-wrapper {
@@ -320,17 +320,17 @@
 
 @media screen and (max-width: 480px) {
     .technology-section {
-        padding: 50px 0;
+        padding: 44px 0;
     }
 
     .tech-heading {
         font-size: 28px;
-        margin-bottom: 35px;
+        margin-bottom: 20px;
     }
 
     .tech-card {
-        padding: 45px 16px 28px;
-        margin-top: 48px;
+        padding: 42px 16px 26px;
+        margin-top: 45px;
     }
 
     .skills-chips-grid {

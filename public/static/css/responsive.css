@@ -317,8 +317,8 @@
     }
 
     .nav-tab-link {
-        padding: 6px 12px;
-        font-size: 13px;
+        padding: 6px 10px;
+        font-size: 12px;
     }
 
     .hero-section,
@@ -329,8 +329,8 @@
     .blog-section,
     .faq-section,
     .contact-section {
-        padding-top: 62px;
-        padding-bottom: 62px;
+        padding-top: 56px;
+        padding-bottom: 56px;
     }
 
     .hero-container,
@@ -408,8 +408,8 @@
     .blog-heading,
     .faq-heading,
     .contact-heading {
-        font-size: 30px;
-        margin-bottom: 28px;
+        font-size: 28px;
+        margin-bottom: 24px;
     }
 
     .projects-intro,
@@ -478,6 +478,22 @@
 
 /* Phone baseline */
 @media screen and (max-width: 480px) {
+    .navbar,
+    .navbar-tabbar {
+        bottom: 10px;
+        padding: 3px 4px;
+        max-width: calc(100vw - 16px);
+    }
+
+    .nav-tabbar-menu {
+        gap: 2px;
+    }
+
+    .nav-tab-link {
+        padding: 5px 8px;
+        font-size: 11.5px;
+    }
+
     .hero-section,
     .about-section,
     .technology-section,
@@ -486,8 +502,8 @@
     .blog-section,
     .faq-section,
     .contact-section {
-        padding-top: 50px;
-        padding-bottom: 50px;
+        padding-top: 44px;
+        padding-bottom: 44px;
     }
 
     .hero-container,
@@ -584,7 +600,8 @@
     .blog-heading,
     .faq-heading,
     .contact-heading {
-        font-size: 26px;
+        font-size: 25px;
+        margin-bottom: 20px;
     }
 
     .project-title {
@@ -1547,6 +1564,11 @@
 
     .screenshot-slide-title {
         font-size: 14px;
+    }
+
+    .nav-tab-link {
+        padding: 4px 6px;
+        font-size: 10.5px;
     }
 }
 

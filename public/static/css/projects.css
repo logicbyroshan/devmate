@@ -3,7 +3,7 @@
    ======================================== */
 
 .projects-section {
-    padding: 80px 0 40px;
+    padding: 80px 0;
     position: relative;
 }
 
@@ -19,7 +19,7 @@
     font-weight: 500;
     font-family: var(--font-body);
     letter-spacing: 0.5px;
-    margin: 0 auto 20px;
+    margin: 0 auto 16px;
     width: fit-content;
 }
 
@@ -27,26 +27,17 @@
     font-family: var(--font-heading);
     font-size: 48px;
     color: var(--text-color);
-    margin-bottom: 15px;
+    margin-bottom: 40px;
     text-align: center;
     line-height: 1.2;
     font-weight: 400;
-}
-
-.projects-intro {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 16px;
-    font-family: var(--font-body);
-    font-weight: 300;
-    margin-bottom: 40px;
 }
 
 .projects-slider {
     position: relative;
     max-width: 1200px;
     width: 100%;
-    margin: 0 auto 16px;
+    margin: 0 auto;
     overflow: hidden;
     padding-bottom: 0;
     scrollbar-width: none;
@@ -506,12 +497,7 @@
 
     .projects-heading {
         font-size: 32px;
-        margin-bottom: 40px;
-    }
-
-    .projects-intro {
-        font-size: 15px;
-        margin-bottom: 40px;
+        margin-bottom: 24px;
     }
 
     .project-card {
@@ -575,16 +561,12 @@
 
 @media (max-width: 576px) {
     .projects-section {
-        padding: 50px 0;
+        padding: 44px 0;
     }
 
     .projects-heading {
         font-size: 28px;
-    }
-
-    .projects-intro {
-        font-size: 14px;
-        margin-bottom: 35px;
+        margin-bottom: 20px;
     }
 
     .project-card {
