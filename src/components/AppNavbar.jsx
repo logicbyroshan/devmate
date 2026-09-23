@@ -76,8 +76,10 @@ export default function AppNavbar({ currentRoute, onNavigate }) {
   const isExperienceTabActive = isExperienceActive || (!isAboutActive && activeSection === 'experience');
 
   return (
-    <header className={`navbar navbar-tabbar ${hidden ? 'navbar-hidden' : ''}`} id="mainNavbar">
-      <nav className="nav-tabbar-menu" aria-label="Main Navigation">
+    <>
+      <div className={`navbar-dock-backdrop ${hidden ? 'navbar-hidden' : ''}`} id="navbarDockBackdrop" aria-hidden="true" />
+      <header className={`navbar navbar-tabbar ${hidden ? 'navbar-hidden' : ''}`} id="mainNavbar">
+        <nav className="nav-tabbar-menu" aria-label="Main Navigation">
         <a
           href="#home"
           className={`nav-tab-link ${isHomeActive ? 'active' : ''}`}
@@ -115,5 +117,6 @@ export default function AppNavbar({ currentRoute, onNavigate }) {
         </a>
       </nav>
     </header>
-  );
+  </>
+);
 }

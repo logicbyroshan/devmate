@@ -309,6 +309,10 @@
 
 /* Large phones / compact tablets */
 @media screen and (max-width: 767px) {
+    .navbar-dock-backdrop {
+        height: 90px;
+    }
+
     .navbar,
     .navbar-tabbar {
         bottom: 12px;
@@ -478,6 +482,10 @@
 
 /* Phone baseline */
 @media screen and (max-width: 480px) {
+    .navbar-dock-backdrop {
+        height: 82px;
+    }
+
     .navbar,
     .navbar-tabbar {
         bottom: 10px;
