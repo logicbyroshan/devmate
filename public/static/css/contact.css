@@ -2,7 +2,7 @@
    Contact Section
    ======================================== */
 .contact-section {
-    padding: 100px 0;
+    padding: 80px 0;
     position: relative;
 }
 
@@ -18,7 +18,7 @@
     font-weight: 500;
     font-family: var(--font-body);
     letter-spacing: 0.5px;
-    margin: 0 auto 20px;
+    margin: 0 auto 16px;
     width: fit-content;
 }
 
@@ -26,7 +26,7 @@
     font-family: var(--font-heading);
     font-size: 48px;
     color: var(--text-color);
-    margin-bottom: 60px;
+    margin-bottom: 40px;
     text-align: center;
     line-height: 1.2;
     font-weight: 400;
@@ -344,17 +344,18 @@
 
 @media (max-width: 767px) {
     .contact-section {
-        padding: 60px 0;
+        padding: 56px 0;
     }
 
     .contact-badge {
         font-size: 13px;
         padding: 6px 16px;
+        margin-bottom: 14px;
     }
 
     .contact-heading {
         font-size: 32px;
-        margin-bottom: 40px;
+        margin-bottom: 24px;
     }
 
     .contact-wrapper {
