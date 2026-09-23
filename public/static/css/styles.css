@@ -565,7 +565,7 @@ body {
     background: rgba(56, 189, 248, 0.25);
     border-color: rgba(56, 189, 248, 0.5);
     color: #ffffff;
-    transform: translateY(-1px);
+    transform: none !important;
 }
 
 /* Shared polish layer for visual consistency across sections */
@@ -585,6 +585,24 @@ body {
     border-bottom: none !important;
     position: relative;
     box-shadow: none;
+}
+
+/* Card hover stability - no card jitter or positional movement */
+.nft-card:hover,
+.tech-card:hover,
+.project-card:hover,
+.project-card.active:hover,
+.roadmap-card:hover,
+.roadmap-item:hover .roadmap-card,
+.contact-wrapper:hover,
+.faq-item:hover,
+.blog-image-wrapper:hover,
+.empty-state-card:hover,
+.about-profile-card:hover,
+.about-main-article:hover,
+.exp-deep-card:hover,
+.blog-card:hover {
+    transform: none !important;
 }
 
 .nft-card::before,
@@ -886,7 +904,7 @@ body {
     background: rgba(56, 189, 248, 0.08);
     border-color: rgba(56, 189, 248, 0.35);
     box-shadow: 0 4px 16px rgba(56, 189, 248, 0.15);
-    transform: translateY(-2px);
+    transform: none !important;
 }
 
 .nft-card-body .stat-item:not(:last-child)::after {
@@ -1349,7 +1367,7 @@ html.preloader-skip #main-content {
 }
 
 .empty-state-card:hover {
-    transform: translateY(-3px);
+    transform: none !important;
     box-shadow: 0 30px 70px rgba(4, 6, 26, 0.8), 0 0 40px rgba(56, 189, 248, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 

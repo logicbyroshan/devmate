@@ -81,6 +81,11 @@
     position: relative;
 }
 
+.project-card:hover,
+.project-card.active:hover {
+    transform: translateX(0) !important;
+}
+
 .project-card.slide-out-left {
     animation: slideOutLeft 0.6s ease forwards;
 }
@@ -246,7 +251,7 @@
 .project-tech-badge:hover {
     background: rgba(56, 189, 248, 0.25);
     border-color: rgba(56, 189, 248, 0.55);
-    transform: translateY(-2px);
+    transform: none !important;
 }
 
 .project-btn {

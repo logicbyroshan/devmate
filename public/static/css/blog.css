@@ -75,8 +75,12 @@
     border-radius: 12px 12px 0 0;
 }
 
+.blog-card:hover {
+    transform: none !important;
+}
+
 .blog-card:hover .blog-image {
-    transform: none;
+    transform: none !important;
 }
 
 .blog-content {

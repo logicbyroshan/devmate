@@ -338,7 +338,7 @@ html.modal-open {
 
 .doc-er-table-card:hover {
     border-color: rgba(167, 139, 250, 0.6);
-    transform: translateY(-2px);
+    transform: none !important;
 }
 
 .doc-er-table-name {
@@ -1095,7 +1095,7 @@ html.modal-open {
 .download-option-card:hover {
     background: rgba(124,58,237,0.12);
     border-color: rgba(124,58,237,0.4);
-    transform: translateX(4px);
+    transform: none !important;
 }
 
 .download-option-icon {
@@ -2282,7 +2282,7 @@ html.modal-open {
 }
 
 .cs-stat-card:hover {
-    transform: translateY(-2px);
+    transform: none !important;
     border-color: rgba(167, 139, 250, 0.4);
 }
 
@@ -2627,7 +2627,7 @@ html.modal-open {
 }
 
 .cs-link-pill:hover {
-    transform: translateY(-2px);
+    transform: none !important;
     color: #ffffff;
 }
 
