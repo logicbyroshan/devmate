@@ -112,6 +112,29 @@ function initCoreInteractions() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
+
+    // Smart Navbar hide on scroll down, show on scroll up
+    let lastNavScrollY = window.scrollY;
+    let navTicking = false;
+
+    window.addEventListener('scroll', function () {
+        if (!navTicking) {
+            window.requestAnimationFrame(() => {
+                const currentScrollY = window.scrollY;
+                const nav = document.getElementById('mainNavbar') || document.querySelector('.navbar-tabbar');
+                if (nav) {
+                    if (currentScrollY > 60 && currentScrollY > lastNavScrollY + 5) {
+                        nav.classList.add('navbar-hidden');
+                    } else if (currentScrollY < lastNavScrollY - 5 || currentScrollY <= 20) {
+                        nav.classList.remove('navbar-hidden');
+                    }
+                }
+                lastNavScrollY = Math.max(0, currentScrollY);
+                navTicking = false;
+            });
+            navTicking = true;
+        }
+    }, { passive: true });
 }
 
 if (document.readyState === 'loading') {

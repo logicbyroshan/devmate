@@ -1,6 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 export default function AppNavbar({ currentRoute, onNavigate }) {
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > 60 && currentScrollY > lastScrollY.current + 5) {
+        setHidden(true);
+      } else if (currentScrollY < lastScrollY.current - 5 || currentScrollY <= 20) {
+        setHidden(false);
+      }
+      lastScrollY.current = Math.max(0, currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const handleNav = (e, target, anchor) => {
     e.preventDefault();
     onNavigate(target, anchor);
@@ -10,7 +28,7 @@ export default function AppNavbar({ currentRoute, onNavigate }) {
   const isExperienceActive = currentRoute === 'experience' || (typeof currentRoute === 'object' && currentRoute?.name === 'experience');
 
   return (
-    <header className="navbar navbar-tabbar" id="mainNavbar">
+    <header className={`navbar navbar-tabbar ${hidden ? 'navbar-hidden' : ''}`} id="mainNavbar">
       <nav className="nav-tabbar-menu" aria-label="Main Navigation">
         <a
           href="#skills"

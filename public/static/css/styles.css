@@ -155,38 +155,50 @@ body {
 }
 
 /* ========================================
-   Navigation (Floating Tab Bar)
+   Navigation (Floating Dock - Smart Hide on Scroll Down, Show on Scroll Up)
    ======================================== */
 .navbar,
 .navbar-tabbar {
-    position: sticky;
+    position: fixed;
     top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 1000;
     width: fit-content;
     max-width: calc(100vw - 32px);
-    margin: 16px auto 0 auto;
+    margin: 0;
     padding: 6px 8px;
-    background: rgba(10, 15, 29, 0.72);
+    background: rgba(10, 15, 29, 0.82);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-top: 1px solid rgba(56, 189, 248, 0.25);
-    border-radius: 9999px;
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.8),
-                0 0 20px rgba(56, 189, 248, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.12);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.85),
+                0 0 20px rgba(56, 189, 248, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.3s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+.navbar.navbar-hidden,
+.navbar-tabbar.navbar-hidden {
+    transform: translate(-50%, -135%);
+    opacity: 0;
+    pointer-events: none;
+}
+
 .navbar:hover,
 .navbar-tabbar:hover {
-    border-color: rgba(56, 189, 248, 0.35);
+    border-color: rgba(56, 189, 248, 0.45);
     box-shadow: 0 14px 35px -5px rgba(0, 0, 0, 0.9),
-                0 0 25px rgba(56, 189, 248, 0.18),
-                inset 0 1px 0 rgba(255, 255, 255, 0.16);
+                0 0 25px rgba(56, 189, 248, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .navbar .container::before,
@@ -207,8 +219,8 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 8px 20px;
-    border-radius: 9999px;
+    padding: 8px 18px;
+    border-radius: 10px;
     color: #94a3b8;
     text-decoration: none;
     font-family: var(--font-body);
