@@ -114,6 +114,11 @@
     text-align: left;
 }
 
+.roadmap-card:hover,
+.roadmap-item:hover .roadmap-card {
+    transform: none !important;
+}
+
 .roadmap-left .roadmap-card::after {
     content: '';
     position: absolute;

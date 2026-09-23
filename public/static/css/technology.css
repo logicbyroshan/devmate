@@ -82,7 +82,7 @@
 }
 
 .tech-card:hover {
-    transform: translateY(0);
+    transform: none !important;
     box-shadow: none;
 }
 
@@ -147,8 +147,8 @@
 .skill-mini-card:hover {
     background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(96, 165, 250, 0.15) 100%);
     border-color: rgba(56, 189, 248, 0.55);
-    transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 6px 16px rgba(56, 189, 248, 0.28), 0 0 12px rgba(56, 189, 248, 0.2);
+    transform: none !important;
+    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.25), 0 0 10px rgba(56, 189, 248, 0.15);
 }
 
 .skill-mini-card .skill-icon {
@@ -163,7 +163,7 @@
 
 .skill-mini-card:hover .skill-icon {
     color: #38bdf8;
-    transform: scale(1.18);
+    transform: none !important;
 }
 
 .skill-mini-card .skill-name {
@@ -210,7 +210,7 @@
 
 .skills-list li:hover {
     color: #ffffff;
-    transform: translateX(5px);
+    transform: none !important;
 }
 
 .tech-card-desc {
