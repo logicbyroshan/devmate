@@ -41,17 +41,17 @@ export default function RexiModal() {
 
   return (
     <>
-      {/* ── Resume Modal ────────────────────────────────── */}
+      {/* ── Resume & Video Presentation Modal ───────────────────────── */}
       <div className="modal-overlay" id="modal-resume">
-        <div className="modal-box">
+        <div className="modal-box modal-box-resume">
           {/* Sticky header bar with icon + title + close button */}
           <div className="modal-header-bar">
             <div className="modal-header-left">
-              <div className="modal-icon-wrap modal-icon-compact">
-                <i className="fas fa-file-alt"></i>
+              <div className="modal-icon-wrap modal-icon-compact modal-icon-blue">
+                <i className="fas fa-play-circle"></i>
               </div>
               <div>
-                <h2 className="modal-title modal-title-compact">Resume</h2>
+                <h2 className="modal-title modal-title-compact">Resume &amp; Video Presentation</h2>
                 <p className="modal-subtitle" style={{ margin: 0, fontSize: '12px' }}>{fullName} &mdash; {roleTitle}</p>
               </div>
             </div>
@@ -61,41 +61,65 @@ export default function RexiModal() {
               </button>
             </div>
           </div>
-          {/* Resume rows */}
-          <div className="modal-resume-preview" style={{ marginTop: '4px' }}>
-            <div className="resume-row">
-              <span className="resume-label">Name</span>
-              <span className="resume-value">{fullName}</span>
-            </div>
-            <div className="resume-row">
-              <span className="resume-label">Role</span>
-              <span className="resume-value">{roleTitle}</span>
-            </div>
-            <div className="resume-row">
-              <span className="resume-label">Core Tech</span>
-              <span className="resume-value">Python &middot; Django &middot; React &middot; PostgreSQL &middot; Redis &middot; Celery</span>
-            </div>
-            <div className="resume-row">
-              <span className="resume-label">Experience</span>
-              <span className="resume-value">{yearsExp} Engineering Work</span>
-            </div>
-            <div className="resume-row">
-              <span className="resume-label">Location</span>
-              <span className="resume-value">{location}</span>
+
+          {/* Interactive Video Showcase Card */}
+          <div className="modal-video-card-wrap">
+            <div className="modal-video-card">
+              <img
+                src="/static/images/hero.webp"
+                alt="Roshan Damor Video Resume"
+                className="modal-video-thumbnail"
+                loading="eager"
+              />
+              <div className="modal-video-overlay">
+                <div className="modal-video-top-tag">
+                  <span className="pulse-indicator"></span>
+                  <span>Video Resume &middot; 1:00 min</span>
+                </div>
+                <a
+                  href={videoResumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="modal-video-play-btn"
+                  aria-label="Watch Video Presentation on YouTube"
+                  title="Watch on YouTube"
+                >
+                  <div className="play-pulse-ring"></div>
+                  <i className="fas fa-play"></i>
+                </a>
+                <div className="modal-video-bottom-info">
+                  <span className="modal-video-category">ENGINEERING PRESENTATION</span>
+                  <h3 className="modal-video-title">Full Stack Systems, SaaS &amp; AI Architecture</h3>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="modal-actions">
+
+          {/* Action Buttons */}
+          <div className="modal-actions modal-actions-resume">
             {resumeUrl ? (
-              <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary modal-btn">
-                <i className="fas fa-download"></i> Download PDF
+              <a href={resumeUrl} download="Roshan_Damor_Resume.pdf" target="_blank" rel="noopener noreferrer" className="btn btn-primary modal-btn">
+                <i className="fas fa-file-download"></i>
+                <span>Download Resume</span>
               </a>
             ) : (
-              <a href={`mailto:${email}`} className="btn btn-primary modal-btn">
-                <i className="fas fa-download"></i> Request PDF
+              <a href={`mailto:${email}?subject=Resume%20Request`} className="btn btn-primary modal-btn">
+                <i className="fas fa-file-download"></i>
+                <span>Download Resume</span>
               </a>
             )}
+            <a
+              href={videoResumeUrl}
+              className="btn btn-secondary modal-btn modal-btn-yt"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <i className="fab fa-youtube yt-icon"></i>
+              <span>Watch on YouTube</span>
+            </a>
             <a href="/about" className="btn btn-secondary modal-btn" data-route="about">
-              <i className="fas fa-eye"></i> Full Profile
+              <i className="fas fa-user-circle"></i>
+              <span>Full Profile</span>
             </a>
           </div>
         </div>
@@ -103,11 +127,10 @@ export default function RexiModal() {
 
       {/* ── Video Resume Modal ──────────────────────────── */}
       <div className="modal-overlay" id="modal-video-resume">
-        <div className="modal-box">
-          {/* Sticky header bar with icon + title + close button */}
+        <div className="modal-box modal-box-resume">
           <div className="modal-header-bar">
             <div className="modal-header-left">
-              <div className="modal-icon-wrap modal-icon-purple modal-icon-compact">
+              <div className="modal-icon-wrap modal-icon-blue modal-icon-compact">
                 <i className="fas fa-play-circle"></i>
               </div>
               <div>
@@ -121,24 +144,63 @@ export default function RexiModal() {
               </button>
             </div>
           </div>
-          {/* Video placeholder */}
-          <div className="modal-video-wrap" style={{ marginTop: '8px' }}>
-            <div className="modal-video-placeholder">
-              <div className="video-play-btn"><i className="fas fa-play"></i></div>
-              <p className="video-placeholder-text">Video Resume &middot; 1:00 min</p>
+
+          <div className="modal-video-card-wrap">
+            <div className="modal-video-card">
+              <img
+                src="/static/images/hero.webp"
+                alt="Roshan Damor Video Resume"
+                className="modal-video-thumbnail"
+                loading="eager"
+              />
+              <div className="modal-video-overlay">
+                <div className="modal-video-top-tag">
+                  <span className="pulse-indicator"></span>
+                  <span>Video Resume &middot; 1:00 min</span>
+                </div>
+                <a
+                  href={videoResumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="modal-video-play-btn"
+                  aria-label="Watch Video Presentation on YouTube"
+                  title="Watch on YouTube"
+                >
+                  <div className="play-pulse-ring"></div>
+                  <i className="fas fa-play"></i>
+                </a>
+                <div className="modal-video-bottom-info">
+                  <span className="modal-video-category">ENGINEERING PRESENTATION</span>
+                  <h3 className="modal-video-title">Full Stack Systems, SaaS &amp; AI Architecture</h3>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="modal-actions">
+
+          <div className="modal-actions modal-actions-resume">
+            {resumeUrl ? (
+              <a href={resumeUrl} download="Roshan_Damor_Resume.pdf" target="_blank" rel="noopener noreferrer" className="btn btn-primary modal-btn">
+                <i className="fas fa-file-download"></i>
+                <span>Download Resume</span>
+              </a>
+            ) : (
+              <a href={`mailto:${email}?subject=Resume%20Request`} className="btn btn-primary modal-btn">
+                <i className="fas fa-file-download"></i>
+                <span>Download Resume</span>
+              </a>
+            )}
             <a
               href={videoResumeUrl}
-              className="btn btn-primary modal-btn"
+              className="btn btn-secondary modal-btn modal-btn-yt"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <i className="fab fa-youtube"></i> Watch on YouTube
+              <i className="fab fa-youtube yt-icon"></i>
+              <span>Watch on YouTube</span>
             </a>
             <a href={`mailto:${email}`} className="btn btn-secondary modal-btn">
-              <i className="fas fa-paper-plane"></i> Contact Me
+              <i className="fas fa-paper-plane"></i>
+              <span>Contact Me</span>
             </a>
           </div>
         </div>

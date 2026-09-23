@@ -47,8 +47,8 @@ html.modal-open {
     width: 90vw;
     max-width: 680px;
     max-height: 85vh;
-    background: linear-gradient(160deg, rgba(25, 32, 85, 0.98) 0%, rgba(10, 14, 50, 0.98) 100%);
-    border: 1px solid rgba(124, 58, 237, 0.35);
+    background: linear-gradient(165deg, rgba(8, 14, 28, 0.98) 0%, rgba(2, 4, 10, 0.98) 100%);
+    border: 1px solid rgba(56, 189, 248, 0.35);
     border-radius: 20px;
     padding: 24px 28px 28px;
     overflow-y: auto !important;
@@ -57,13 +57,13 @@ html.modal-open {
     touch-action: pan-y !important;
     box-shadow:
         0 0 0 1px rgba(255,255,255,0.06),
-        0 24px 80px rgba(92, 39, 254, 0.28),
-        0 8px 32px rgba(0,0,0,0.6);
+        0 24px 80px rgba(0, 0, 0, 0.95),
+        0 0 35px rgba(56, 189, 248, 0.16);
     transform: translateY(28px) scale(0.97);
     transition: transform 0.32s cubic-bezier(0.22,1,0.36,1), opacity 0.28s ease, max-width 0.3s cubic-bezier(0.16,1,0.3,1), max-height 0.3s cubic-bezier(0.16,1,0.3,1), width 0.3s cubic-bezier(0.16,1,0.3,1), height 0.3s cubic-bezier(0.16,1,0.3,1);
     /* scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: rgba(124,58,237,0.35) transparent;
+    scrollbar-color: rgba(56, 189, 248, 0.35) transparent;
 }
 
 .modal-overlay.modal-visible .modal-box,
@@ -86,7 +86,7 @@ html.modal-open {
 .modal-box::-webkit-scrollbar-thumb,
 .modal-box--blog::-webkit-scrollbar-thumb,
 .modal-box-rexi::-webkit-scrollbar-thumb,
-.modal-box-project::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.4); border-radius: 4px; }
+.modal-box-project::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.4); border-radius: 4px; }
 
 /* blue top-accent line */
 .modal-box::before,
@@ -112,7 +112,7 @@ html.modal-open {
     justify-content: space-between;
     margin: -24px -28px 20px -28px;
     padding: 16px 28px 14px 28px;
-    background: rgba(15, 20, 55, 0.92);
+    background: rgba(6, 11, 24, 0.94);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(56, 189, 248, 0.25);
@@ -589,89 +589,230 @@ html.modal-open {
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ─── Resume preview ─────────────────────── */
-.modal-resume-preview {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+/* ─── Resume & Video Showcase Modal ─────────────────────── */
+.modal-box-resume {
+    max-width: 580px !important;
+    background: linear-gradient(165deg, rgba(8, 14, 28, 0.98) 0%, rgba(2, 4, 10, 0.98) 100%) !important;
+    border: 1px solid rgba(56, 189, 248, 0.35) !important;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08),
+                0 24px 80px rgba(0, 0, 0, 0.95),
+                0 0 35px rgba(56, 189, 248, 0.16) !important;
 }
 
-.resume-row {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    padding: 10px 14px;
-    border-radius: 10px;
-    transition: background 0.2s;
+.modal-icon-blue {
+    background: rgba(56, 189, 248, 0.15) !important;
+    color: #38bdf8 !important;
+    border: 1px solid rgba(56, 189, 248, 0.35) !important;
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.25) !important;
 }
 
-.resume-row:hover { background: rgba(124,58,237,0.08); }
-
-.resume-label {
-    font-family: 'Outfit', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: rgba(167,139,250,0.7);
-    min-width: 72px;
-    flex-shrink: 0;
+.modal-video-card-wrap {
+    width: 100%;
+    margin-top: 14px;
+    margin-bottom: 20px;
 }
 
-.resume-value {
-    font-family: 'Outfit', sans-serif;
-    font-size: 14px;
-    color: rgba(255,255,255,0.88);
-    line-height: 1.5;
-}
-
-/* ─── Video modal ────────────────────────── */
-.modal-video-wrap {
+.modal-video-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
     border-radius: 14px;
     overflow: hidden;
-    border: 1px solid rgba(124,58,237,0.3);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    background: #000000;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8),
+                0 0 20px rgba(56, 189, 248, 0.1);
 }
 
-.modal-video-placeholder {
-    background: linear-gradient(160deg, rgba(15,20,70,0.9) 0%, rgba(5,8,35,0.9) 100%);
-    height: 240px;
+.modal-video-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.7) contrast(1.1);
+    transform: scale(1.02);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), filter 0.4s ease;
+    display: block;
+}
+
+.modal-video-card:hover .modal-video-thumbnail {
+    filter: brightness(0.82) contrast(1.15);
+    transform: scale(1.06);
+}
+
+.modal-video-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(4, 7, 20, 0.25) 45%, rgba(2, 4, 12, 0.94) 100%);
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    padding: 16px 20px;
+    z-index: 2;
+}
+
+.modal-video-top-tag {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 16px;
-    cursor: pointer;
-    transition: background 0.3s;
+    gap: 8px;
+    width: fit-content;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.72);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    font-size: 12px;
+    font-weight: 600;
+    color: #38bdf8;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
-.modal-video-placeholder:hover {
-    background: linear-gradient(160deg, rgba(40,20,120,0.9) 0%, rgba(15,8,55,0.9) 100%);
-}
-
-.video-play-btn {
-    width: 64px;
-    height: 64px;
+.pulse-indicator {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #5c27fe, #7c3aed);
+    background: #ef4444;
+    box-shadow: 0 0 8px #ef4444;
+    animation: livePulse 1.8s infinite;
+}
+
+@keyframes livePulse {
+    0%, 100% {
+        transform: scale(0.9);
+        opacity: 0.9;
+    }
+    50% {
+        transform: scale(1.3);
+        opacity: 1;
+        box-shadow: 0 0 14px #ef4444;
+    }
+}
+
+.modal-video-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 22px;
-    color: #fff;
-    box-shadow: 0 0 24px rgba(92,39,254,0.5), 0 0 60px rgba(92,39,254,0.2);
-    transition: transform 0.25s, box-shadow 0.25s;
+    color: #ffffff !important;
+    text-decoration: none;
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.6),
+                0 0 60px rgba(37, 99, 235, 0.4);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    cursor: pointer;
+    z-index: 5;
 }
 
-.modal-video-placeholder:hover .video-play-btn {
-    transform: scale(1.1);
-    box-shadow: 0 0 36px rgba(92,39,254,0.7), 0 0 80px rgba(92,39,254,0.3);
+.modal-video-play-btn i {
+    margin-left: 3px;
 }
 
-.video-placeholder-text {
-    font-family: 'Outfit', sans-serif;
-    font-size: 13px;
-    color: rgba(196,181,253,0.6);
+.play-pulse-ring {
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px solid rgba(56, 189, 248, 0.55);
+    animation: playPulseRing 2.2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes playPulseRing {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.9;
+    }
+    70%, 100% {
+        transform: scale(1.55);
+        opacity: 0;
+    }
+}
+
+.modal-video-play-btn:hover {
+    transform: translate(-50%, -50%) scale(1.14);
+    box-shadow: 0 0 45px rgba(56, 189, 248, 0.9),
+                0 0 80px rgba(37, 99, 235, 0.6);
+}
+
+.modal-video-bottom-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 2;
+}
+
+.modal-video-category {
+    font-size: 11px;
+    font-weight: 700;
+    color: #38bdf8;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.modal-video-title {
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 400;
+    color: #ffffff;
     margin: 0;
+    line-height: 1.35;
+}
+
+/* Modal Action Buttons (Resume) */
+.modal-actions-resume {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+.modal-actions-resume .modal-btn {
+    flex: 1 1 calc(33.333% - 8px);
+    min-width: 140px;
+    height: 44px;
+    font-size: 13.5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-weight: 600;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+
+.modal-actions-resume .modal-btn:hover {
+    transform: translateY(-2px);
+}
+
+.modal-btn-yt {
+    background: rgba(239, 68, 68, 0.12) !important;
+    border: 1px solid rgba(239, 68, 68, 0.35) !important;
+    color: #ffffff !important;
+}
+
+.modal-btn-yt:hover {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    border-color: #ef4444 !important;
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.45) !important;
+    color: #ffffff !important;
+}
+
+.yt-icon {
+    color: #ef4444;
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+.modal-btn-yt:hover .yt-icon {
+    color: #ffffff;
 }
 
 /* ─── Compact Rexi Header & Expanded Chat ───── */
