@@ -63,14 +63,11 @@ export default function ExperiencePage({ onNavigate }) {
         {/* Hero Header */}
         <header className="page-hero">
           <span className="page-badge">
-            <i className="fas fa-briefcase"></i> Work History &amp; Roadmap
+            <i className="fas fa-briefcase"></i> Professional Journey
           </span>
           <h1 className="page-title">
-            Engineering <span className="text-gradient">Experience</span>
+            Professional <span className="text-gradient">Journey</span>
           </h1>
-          <p className="page-subtitle">
-            A comprehensive breakdown of professional roles, core architecture decisions, scaled systems, and technical leadership.
-          </p>
         </header>
 
         {loading ? (
