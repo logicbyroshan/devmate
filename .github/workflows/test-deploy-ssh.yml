@@ -1,0 +1,33 @@
+name: Test VPS SSH
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-ssh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure SSH
+        env:
+          SSH_KEY: ${{ secrets.DEPLOYSSHKEY }}
+          KNOWN_HOSTS: |
+            |1|du07S3O4l1wvOVfbiF8U4vGeaTQ=|uy8RmXePVkwECh4fjSO6hcVJCFQ= ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAU8tMuOfK9dX3rU8b1Damkx05swFr0vqdcbE8yCBz7O
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/devmate_deploy
+          chmod 600 ~/.ssh/devmate_deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Test SSH connection
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOYHOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOYUSER }}
+        run: |
+          ssh \
+            -i ~/.ssh/devmate_deploy \
+            -o IdentitiesOnly=yes \
+            -o BatchMode=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            'echo "SSH OK"; whoami; docker ps --format "table {{.Names}}\t{{.Status}}"'
